@@ -30,6 +30,8 @@ ext {
 
 dependencies {
 
+	// common module
+	implementation project(':core')
 
 
 	// jwt
@@ -87,8 +89,6 @@ dependencies {
 	// swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-
-
 }
 
 dependencyManagement {
@@ -103,3 +103,7 @@ def querydslSrcDir = 'src/main/generated'
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+bootJar.enabled = false
+
+jar.enabled = true

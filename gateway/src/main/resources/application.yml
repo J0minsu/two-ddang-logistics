@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: gateway
+
+  data:
+    redis:
+      host: ${redis-url}
+      port: ${redis-port}
+      username: ${redis-username}
+      password: ${redis-password}
+
+server:
+  port: 19091

@@ -6,13 +6,21 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
-@Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class UpdateOrderStatusResponseDto {
+@Builder
+public class OrderDetailResponse {
 
     private UUID orderId;
+    private UUID reqCompanyId;
+    private String reqCompanyName;
+    private UUID resCompanyId;
+    private String resCompanyName;
+    private String requestedBy;
+    private List<OrderProductResponse> orderProducts;
+    private Long totalPrice;
     private OrderStatus orderStatus;
 }

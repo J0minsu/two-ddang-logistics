@@ -1,16 +1,17 @@
 package com.two_ddang.logistics.order.presentation.response;
 
+import com.two_ddang.logistics.order.domain.model.OrderStatus;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderProductResponseDto {
+@Builder
+public class CancelOrderResponse {
 
-    private UUID productId;
-    private String productName;
-    private Integer quantity;
-    private Long price;
+    private UUID orderId;
+    private OrderStatus orderStatus;
 }

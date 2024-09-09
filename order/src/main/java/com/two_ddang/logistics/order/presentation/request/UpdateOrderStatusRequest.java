@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateOrderStatusRequestDto {
+public class UpdateOrderStatusRequest {
 
     private OrderStatus orderStatus;
 }

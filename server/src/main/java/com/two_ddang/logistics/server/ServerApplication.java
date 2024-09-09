@@ -1,13 +1,13 @@
-package com.sparta.b2b.company;
+package com.two_ddang.logistics.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CompanyApplication {
+public class ServerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CompanyApplication.class, args);
+		SpringApplication.run(ServerApplication.class, args);
 	}
 
 }

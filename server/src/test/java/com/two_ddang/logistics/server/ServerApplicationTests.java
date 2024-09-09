@@ -1,10 +1,10 @@
-package com.sparta.b2b.company;
+package com.two_ddang.logistics.server;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CompanyApplicationTests {
+class ServerApplicationTests {
 
 	@Test
 	void contextLoads() {

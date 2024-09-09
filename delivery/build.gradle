@@ -68,7 +68,7 @@ dependencies {
 		implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 		implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 		// circuit breaker
-		implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j'
+		implementation 'io.github.resilience4j:resilience4j-spring-boot3:2.2.0'
 		runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
 	//common

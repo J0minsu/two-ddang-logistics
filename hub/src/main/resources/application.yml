@@ -1,6 +1,6 @@
 spring:
   application:
-    name: delivery
+    name: hub
   datasource:
     url: jdbc:mysql://${url}
     username: ${username}
@@ -21,7 +21,7 @@ spring:
       password: ${redis-password}
 
 server:
-  port: 19096
+  port: 19093
 eureka:
   client:
     service-url:

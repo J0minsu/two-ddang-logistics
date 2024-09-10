@@ -39,7 +39,6 @@ public class OrderService {
     @Transactional
     public CreateOrderResponse createOrder(CreateOrderRequest createOrderRequest) {
         UUID reqCompanyId = createOrderRequest.getReqCompanyId();
-        CompanyDetailResponse reqCompany = companyService.getCompany(reqCompanyId).getData();
         UUID resCompanyId = createOrderRequest.getResCompanyId();
         CompanyDetailResponse resCompany = companyService.getCompany(resCompanyId).getData();
 

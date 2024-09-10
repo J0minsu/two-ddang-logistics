@@ -1,0 +1,46 @@
+package com.two_ddang.logistics.hub.domain.model;
+
+import com.two_ddang.logistics.core.entity.BaseEntity;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicUpdate;
+
+import java.util.UUID;
+
+@Entity
+@Getter
+@DynamicUpdate
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(exclude = "hub")
+@Comment("허브 담당자")
+public class HubAgent extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Comment("허브 담당자 ID")
+    private UUID id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, unique = true
+            , foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hub_id", nullable = false
+            , foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
+    private Hub hub;
+
+    private HubAgent(User user, Hub hub) {
+        this.user = user;
+        this.hub = hub;
+    }
+
+    public static HubAgent of(User user, Hub hub) {
+        return new HubAgent(user, hub);
+    }
+
+}

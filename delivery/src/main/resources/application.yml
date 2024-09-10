@@ -2,7 +2,7 @@ spring:
   application:
     name: delivery
   datasource:
-    url: jdbc:postgresql://${url}/postgres
+    url: jdbc:postgresql://${url}/ddang_logistics
     username: ${username}
     password: ${password}
     driver-class-name: org.postgresql.Driver

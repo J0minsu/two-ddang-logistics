@@ -1,8 +1,6 @@
-package com.two_ddang.logistics.delivery;
+package com.two_ddang.logistics.hub.application.service;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +13,7 @@ public class ProductService {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final CircuitBreakerRegistry circuitBreakerRegistry;
 
-    @PostConstruct
+    /*@PostConstruct
     public void registerEventListener() {
         circuitBreakerRegistry.circuitBreaker("productService").getEventPublisher()
             .onStateTransition(event -> log.info("#######CircuitBreaker State Transition: {}", event)) // 상태 전환 이벤트 리스너
@@ -44,7 +42,7 @@ public class ProductService {
             productId,
             "Fallback Product"
         );
-    }
+    }*/
 
 
     // 이벤트 설명 표

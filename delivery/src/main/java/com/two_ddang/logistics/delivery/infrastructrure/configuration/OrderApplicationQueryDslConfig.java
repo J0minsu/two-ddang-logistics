@@ -1,4 +1,4 @@
-package com.two_ddang.logistics.delivery;
+package com.two_ddang.logistics.delivery.infrastructrure.configuration;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

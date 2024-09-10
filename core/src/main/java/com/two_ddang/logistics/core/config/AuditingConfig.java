@@ -1,9 +1,6 @@
-package com.two_ddang.logistics.delivery;
+package com.two_ddang.logistics.core.config;
 
-import kr.sparta.khs.delivery.security.SecurityUserDetails;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -14,6 +11,7 @@ public class AuditingConfig implements AuditorAware<Integer> {
     @Override
     public Optional<Integer> getCurrentAuditor() {
 
+        /*
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || !authentication.isAuthenticated()
@@ -23,7 +21,12 @@ public class AuditingConfig implements AuditorAware<Integer> {
 
         SecurityUserDetails principal = (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return Optional.of(principal.getUser().getId());
+        return Optional.of(principal.getSecurityUserInfo().getId());
+        */
+
+        // TODO UPDATE REAL BUSINESS LOGIC
+        return Optional.of(1);
+
     }
 
 }

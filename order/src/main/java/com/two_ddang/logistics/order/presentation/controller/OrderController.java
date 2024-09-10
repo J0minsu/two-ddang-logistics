@@ -1,6 +1,6 @@
 package com.two_ddang.logistics.order.presentation.controller;
 
-import com.two_ddang.logistics.order.common.utils.ResponseDTO;
+import com.two_ddang.logistics.core.util.ResponseDTO;
 import com.two_ddang.logistics.order.presentation.request.CreateOrderRequest;
 import com.two_ddang.logistics.order.presentation.request.UpdateOrderStatusRequest;
 import com.two_ddang.logistics.order.presentation.response.*;

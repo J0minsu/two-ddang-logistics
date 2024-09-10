@@ -1,10 +1,10 @@
 package com.two_ddang.logistics.company.presentation.controller.product;
 
-import com.two_ddang.logistics.company.common.utils.ResponseDTO;
 import com.two_ddang.logistics.company.presentation.request.product.CreateProductRequest;
 import com.two_ddang.logistics.company.presentation.request.product.RollbackStockRequest;
 import com.two_ddang.logistics.company.presentation.request.product.UpdateProductInfoRequest;
 import com.two_ddang.logistics.company.presentation.response.product.*;
+import com.two_ddang.logistics.core.util.ResponseDTO;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

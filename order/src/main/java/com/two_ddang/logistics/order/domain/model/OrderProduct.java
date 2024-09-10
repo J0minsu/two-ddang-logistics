@@ -28,7 +28,7 @@ public class OrderProduct {
 
 
     @Column(nullable = false)
-    private String name;
+    private String productName;
     @Column(nullable = false)
     private Long price;
     @Column(nullable = false)

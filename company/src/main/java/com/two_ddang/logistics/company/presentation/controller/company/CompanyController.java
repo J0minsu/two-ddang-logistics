@@ -1,6 +1,5 @@
 package com.two_ddang.logistics.company.presentation.controller.company;
 
-import com.two_ddang.logistics.company.common.utils.ResponseDTO;
 import com.two_ddang.logistics.company.presentation.request.company.CreatedCompanyRequest;
 import com.two_ddang.logistics.company.presentation.request.company.RestockRequest;
 import com.two_ddang.logistics.company.presentation.request.company.UpdateCompanyInfoRequest;
@@ -8,6 +7,7 @@ import com.two_ddang.logistics.company.presentation.response.company.CompanyDeta
 import com.two_ddang.logistics.company.presentation.response.company.CompanyResponse;
 import com.two_ddang.logistics.company.presentation.response.company.CreateCompanyResponse;
 import com.two_ddang.logistics.company.presentation.response.company.UpdateCompanyInfoResponse;
+import com.two_ddang.logistics.core.util.ResponseDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;

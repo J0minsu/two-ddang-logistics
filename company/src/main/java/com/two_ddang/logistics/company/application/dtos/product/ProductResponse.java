@@ -1,6 +1,5 @@
-package com.two_ddang.logistics.company.presentation.response.company;
+package com.two_ddang.logistics.company.application.dtos.product;
 
-import com.two_ddang.logistics.company.domain.model.company.CompanyType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -11,14 +10,16 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UpdateCompanyInfoResponse {
+public class ProductResponse {
 
+    private UUID productId;
+    private String productName;
     private UUID companyId;
     private String companyName;
-    private CompanyType companyType;
     private UUID hubId;
     private String hubName;
-    private String address;
-    private String companyManager;
+    private Long price;
+    private Integer stock;
+    private Boolean isSoldOut;
     private LocalDateTime updatedAt;
 }

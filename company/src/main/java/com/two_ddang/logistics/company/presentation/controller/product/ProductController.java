@@ -1,9 +1,9 @@
 package com.two_ddang.logistics.company.presentation.controller.product;
 
-import com.two_ddang.logistics.company.presentation.request.product.CreateProductRequest;
-import com.two_ddang.logistics.company.presentation.request.product.RollbackStockRequest;
-import com.two_ddang.logistics.company.presentation.request.product.UpdateProductInfoRequest;
-import com.two_ddang.logistics.company.presentation.response.product.*;
+import com.two_ddang.logistics.company.application.dtos.product.*;
+import com.two_ddang.logistics.company.presentation.dtos.product.CreateProductRequest;
+import com.two_ddang.logistics.company.presentation.dtos.product.RollbackStockRequest;
+import com.two_ddang.logistics.company.presentation.dtos.product.UpdateProductInfoRequest;
 import com.two_ddang.logistics.core.util.ResponseDTO;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -40,14 +40,6 @@ public class ProductController {
     }
 
 
-    @GetMapping("/companies/{companyId}")
-    public ResponseEntity<?> getCompanyProducts(@PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-                                                @PathVariable UUID companyId,
-                                                @RequestParam("keyword") String keyword) {
-        List<CompanyProductResponse> companyProductResponses = new ArrayList<>();
-        return ResponseEntity.ok(ResponseDTO.okWithData(new PageImpl<CompanyProductResponse>(companyProductResponses)));
-    }
-
 
     @PatchMapping("/{productId}")
     public ResponseEntity<?> updateProductInfo(@PathVariable UUID productId,
@@ -66,5 +58,12 @@ public class ProductController {
     @DeleteMapping("/{productId}")
     public ResponseEntity<?> deleteProduct(@PathVariable UUID productId) {
         return ResponseEntity.ok(ResponseDTO.ok());
+    }
+
+
+    @GetMapping("/companies/{companyId}")
+    public ResponseEntity<?> getCompanyProducts(@PathVariable UUID companyId) {
+        List<CompanyProductResponse> companyProductResponses = new ArrayList<>();
+        return ResponseEntity.ok(ResponseDTO.okWithData(companyProductResponses));
     }
 }

@@ -1,4 +1,4 @@
-package com.two_ddang.logistics.company.presentation.request.company;
+package com.two_ddang.logistics.company.presentation.dtos.company;
 
 import com.two_ddang.logistics.company.domain.model.company.CompanyType;
 import lombok.AllArgsConstructor;
@@ -16,5 +16,5 @@ public class UpdateCompanyInfoRequest {
     private CompanyType companyType;
     private UUID hubId;
     private String address;
-    private String companyManager;
+    private Integer companyManager;
 }

@@ -2,6 +2,8 @@ package com.two_ddang.logistics.company;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication(
 		scanBasePackages = {
@@ -9,6 +11,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 				"com.two_ddang.logistics.core"
 		}
 )
+@EnableFeignClients
+@EnableJpaAuditing
 public class CompanyApplication {
 
 	public static void main(String[] args) {

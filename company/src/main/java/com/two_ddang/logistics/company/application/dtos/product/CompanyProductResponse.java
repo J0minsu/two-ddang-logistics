@@ -1,16 +1,19 @@
-package com.two_ddang.logistics.company.presentation.request.product;
+package com.two_ddang.logistics.company.application.dtos.product;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
+
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-public class UpdateProductInfoRequest {
+@Builder
+public class CompanyProductResponse {
 
+    private UUID productId;
+    private UUID hubId;
     private String productName;
-    private String description;
     private Long price;
     private Integer stock;
     private Boolean isSoldOut;

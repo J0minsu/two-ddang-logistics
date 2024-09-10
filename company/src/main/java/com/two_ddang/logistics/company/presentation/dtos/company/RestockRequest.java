@@ -1,4 +1,4 @@
-package com.two_ddang.logistics.company.presentation.request.company;
+package com.two_ddang.logistics.company.presentation.dtos.company;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

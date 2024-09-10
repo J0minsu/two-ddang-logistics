@@ -67,9 +67,13 @@ public class OrderService {
     }
 
     public OrderDetailResponse getOrder(UUID orderId) {
-        return orderRepository.findById(orderId)
-                .map(OrderDetailResponse::of)
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_FOUND));
+
+        String reqCompanyName = companyService.getCompany(order.getReqCompanyId()).getData().getCompanyName();
+        String resCompanyName = companyService.getCompany(order.getResCompanyId()).getData().getCompanyName();
+
+        return OrderDetailResponse.of(order, reqCompanyName, resCompanyName);
     }
 
 

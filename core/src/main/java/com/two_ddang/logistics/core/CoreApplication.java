@@ -17,7 +17,7 @@ public class CoreApplication {
 
 	@PostConstruct
 	public void test() {
-		log.info("hello world! core module");
+		log.info("common module initialized");
 	}
 
 }

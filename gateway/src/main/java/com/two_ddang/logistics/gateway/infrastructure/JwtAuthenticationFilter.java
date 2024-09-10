@@ -79,11 +79,12 @@ public class JwtAuthenticationFilter implements GlobalFilter {
     }
 
     private PassPort jwtToPassport(Claims claims) {
-        String username = claims.getSubject();
+        Long userId = claims.get("userId", Long.class);
+        String username = claims.get("username", String.class);
         LocalDateTime expirationTime = claims.getExpiration()
                 .toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 
-        return new PassPort(username, expirationTime);
+        return new PassPort(userId, username, expirationTime);
     }
 
 }

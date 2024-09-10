@@ -2,11 +2,8 @@ package com.two_ddang.logistics.delivery.presentation.controller;
 
 
 import com.two_ddang.logistics.core.util.CommonApiResponses;
-import com.two_ddang.logistics.delivery.application.dto.DeliveryRes;
 import com.two_ddang.logistics.delivery.application.dto.TransitRes;
-import com.two_ddang.logistics.delivery.domain.model.TransitStatus;
 import com.two_ddang.logistics.delivery.holder.Result;
-import com.two_ddang.logistics.delivery.presentation.request.DeliverySortStandard;
 import com.two_ddang.logistics.delivery.presentation.request.TransitSortStandard;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
@@ -21,7 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.IntStream;

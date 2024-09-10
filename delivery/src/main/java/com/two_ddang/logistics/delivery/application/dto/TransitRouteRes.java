@@ -1,11 +1,10 @@
 package com.two_ddang.logistics.delivery.application.dto;
 
-import com.two_ddang.logistics.delivery.domain.model.TransitStatus;
+import com.two_ddang.logistics.delivery.domain.model.enums.TransitStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;

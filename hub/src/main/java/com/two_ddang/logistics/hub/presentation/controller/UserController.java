@@ -3,6 +3,7 @@ package com.two_ddang.logistics.hub.presentation.controller;
 import com.two_ddang.logistics.core.util.CommonApiResponses;
 import com.two_ddang.logistics.hub.application.dto.UserRes;
 import com.two_ddang.logistics.hub.holder.Result;
+import com.two_ddang.logistics.hub.presentation.request.UserRegisterRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -32,6 +33,17 @@ import java.util.stream.IntStream;
 @Tag(name = "사용자 관리 API")
 @CommonApiResponses
 public class UserController {
+
+
+    @PostMapping
+    @Operation(summary = "사용자 생성", description = "사용자 생성 API")
+    public ResponseEntity<Result<UserRes>> register(@RequestBody UserRegisterRequest request) {
+
+        UserRes result = UserRes.example();
+
+        return ResponseEntity.ok(Result.success(result));
+
+    }
 
     @GetMapping("/{userId}")
     @Operation(summary = "사용자 단건 조회", description = "사용자 아이디로 조회 API")

@@ -1,6 +1,60 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: auth
+        - uri: lb://auth
+        - predicates:
+            - Path=/auth/**
+
+        - id: users
+        - uri: lb://users
+        - predicates:
+            - Path=/users/**
+
+        - id: hubs
+        - uri: lb://hubs
+        - predicates:
+            - Path=/hubs/**
+
+        - id: orders
+        - uri: lb://orders
+        - predicates:
+            - Path=/orders/**
+
+        - id: deliveries
+        - uri: lb://deliveries
+        - predicates:
+            - Path=/deliveries/**
+
+        - id: transits
+        - uri: lb://transits
+        - predicates:
+            - Path=/transits/**
+
+        - id: companies
+        - uri: lb://companies
+        - predicates:
+            - Path=/companies/**
+
+        - id: products
+        - uri: lb://products
+        - predicates:
+            - Path=/products/**
+
+        - id: ais
+        - uri: lb://ais
+        - predicates:
+            - Path=/ais/**
+
+
+
+
 
   data:
     redis:
@@ -11,3 +65,7 @@ spring:
 
 server:
   port: 19091
+
+  jwt:
+    access-expiration: 3600000
+    secret-key: ${jwt-secret-key}

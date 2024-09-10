@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -19,6 +20,7 @@ import java.time.ZoneId;
 import java.util.Date;
 
 @Slf4j
+@Configuration
 public class JwtAuthenticationFilter implements GlobalFilter {
 
     @Value("${service.jwt.secret-key}")
@@ -41,7 +43,7 @@ public class JwtAuthenticationFilter implements GlobalFilter {
         return chain.filter(exchange);
     }
 
-    private String extractToken(ServerWebExchange exchange) {
+    public String extractToken(ServerWebExchange exchange) {
         String authHeader = exchange.getRequest().getHeaders().getFirst("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);

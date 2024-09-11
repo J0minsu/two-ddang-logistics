@@ -28,7 +28,7 @@ public class AuthService {
         }
 
         return jwtTokenGenerator.createJwtToken(responseDto.userId(), responseDto.email(),
-                responseDto.email(), responseDto.role());
+                responseDto.email(), responseDto.userType());
     }
 
     public void signUp(SignUpRequestDto requestDto) {

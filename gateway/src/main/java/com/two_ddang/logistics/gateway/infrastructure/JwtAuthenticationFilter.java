@@ -11,6 +11,7 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -20,7 +21,7 @@ import java.time.ZoneId;
 import java.util.Date;
 
 @Slf4j
-@Configuration
+@Component
 public class JwtAuthenticationFilter implements GlobalFilter {
 
     @Value("${service.jwt.secret-key}")

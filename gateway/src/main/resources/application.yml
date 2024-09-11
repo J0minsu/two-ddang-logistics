@@ -11,64 +11,14 @@ spring:
       - org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration
       - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 
-
-  cloud:
-    gateway:
-      routes:
-        - id: auth
-        - uri: lb://auth
-        - predicates:
-            - Path=/auth/**
-
-        - id: users
-        - uri: lb://users
-        - predicates:
-            - Path=/users/**
-
-        - id: hubs
-        - uri: lb://hubs
-        - predicates:
-            - Path=/hubs/**
-
-        - id: orders
-        - uri: lb://orders
-        - predicates:
-            - Path=/orders/**
-
-        - id: deliveries
-        - uri: lb://deliveries
-        - predicates:
-            - Path=/deliveries/**
-
-        - id: transits
-        - uri: lb://transits
-        - predicates:
-            - Path=/transits/**
-
-        - id: companies
-        - uri: lb://companies
-        - predicates:
-            - Path=/companies/**
-
-        - id: products
-        - uri: lb://products
-        - predicates:
-            - Path=/products/**
-
-        - id: ais
-        - uri: lb://ais
-        - predicates:
-            - Path=/ais/**
-
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:19090/eureka/
 
-  data:
-    redis:
-      host: ${redis-url}
-      port: ${redis-port}
+  redis:
+    host: ${redis-url}
+    port: ${redis-port}
 
 server:
   port: 19091

@@ -73,4 +73,9 @@ public class HubRoute extends BaseEntity {
             getCreatedAt(), getUpdatedAt(), getDeletedAt(), getCreatedBy(), getUpdatedBy(), getDeletedBy(), isDeleted());
 
     }
+
+    public void modifyRoute(String route, int takeTime) {
+        this.route = route;
+        this.takeTime = takeTime;
+    }
 }

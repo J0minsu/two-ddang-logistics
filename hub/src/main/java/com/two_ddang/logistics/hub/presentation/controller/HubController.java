@@ -5,6 +5,10 @@ import com.two_ddang.logistics.core.util.ResponseDTO;
 import com.two_ddang.logistics.hub.application.dto.HubProductRes;
 import com.two_ddang.logistics.hub.application.dto.HubRes;
 import com.two_ddang.logistics.hub.application.dto.HubRouteRes;
+import com.two_ddang.logistics.hub.application.service.HubService;
+import com.two_ddang.logistics.hub.domain.vo.HubProductVO;
+import com.two_ddang.logistics.hub.domain.vo.HubRouteVO;
+import com.two_ddang.logistics.hub.domain.vo.HubVO;
 import com.two_ddang.logistics.hub.presentation.request.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
@@ -16,17 +20,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.IntStream;
 
 @SecurityRequirement(name = "Bearer Authentication")
 @SecurityScheme( name = "Bearer Authentication", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "Bearer")
@@ -39,11 +39,15 @@ import java.util.stream.IntStream;
 @CommonApiResponses
 public class HubController {
 
+    private final HubService hubService;
+
     @PostMapping
     @Operation(summary = "허브 생성", description = "허브 생성 API")
     public ResponseEntity<ResponseDTO<HubRes>> craete(@RequestBody HubCreateRequest request) {
 
-        HubRes result = HubRes.example();
+        HubVO hubVO = hubService.create(request);
+
+        HubRes result = HubRes.fromVO(hubVO);
 
         return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
@@ -54,33 +58,35 @@ public class HubController {
     public ResponseEntity<ResponseDTO<HubProductRes>> inboundProduct(
             @PathVariable UUID hubId, @RequestBody HubProductInboundRequest request) {
 
-        int remainQuantity = 5000;
+        HubProductVO hubProduct = hubService.inboundProduct(hubId, request);
 
-        HubProductRes result = HubProductRes.fromVO(
-                hubId, request.getProductId(), request.getCompanyId(),
-                request.getProductName(), request.getQuantity() + remainQuantity);
+        HubProductRes result = HubProductRes.fromVO(hubProduct);
 
         return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
     }
 
     @PatchMapping("/{hubId}/products/outbound")
-    @Operation(summary = "허브 물품 출고", description = "허브 수정 API")
-    public ResponseEntity<ResponseDTO<HubRes>> order(
+    @Operation(summary = "허브 물품 출고", description = "허브 물품 출고 API")
+    public ResponseEntity<ResponseDTO<HubProductRes>> order(
             @PathVariable UUID hubId, @RequestBody HubProductOutboundRequest request) {
 
-        HubRes result = HubRes.example();
+        HubProductVO hubProduct = hubService.outboundProduct(hubId, request);
+
+        HubProductRes result = HubProductRes.fromVO(hubProduct);
 
         return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
     }
 
-    @GetMapping("/routes/{departHubId}/to/{arriveHunId}")
+    @GetMapping("/routes/{departHubId}/to/{arriveHubId}")
     @Operation(summary = "허브 간 이동 경로 조회", description = "허브 간 이동 경로 조회 API")
     public ResponseEntity<ResponseDTO<HubRouteRes>> findRouteBetweenRoutes(
-            @PathVariable UUID departHubId, @PathVariable UUID arriveHunId) {
+            @PathVariable UUID departHubId, @PathVariable UUID arriveHubId) {
 
-        HubRouteRes result = HubRouteRes.example();
+        HubRouteVO hubRoute = hubService.findRouteBetweenRoutes(departHubId, arriveHubId);
+
+        HubRouteRes result = HubRouteRes.fromVO(hubRoute);
 
         return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
@@ -101,9 +107,9 @@ public class HubController {
             default -> 10;
         };
 
-        List<HubRes> list = IntStream.range(1, size + 1).mapToObj(i -> HubRes.example()).toList();
+        Page<HubVO> hubs = hubService.searchHub(pageNumber, size, keyword, sort);
 
-        PageImpl result = new PageImpl(list, PageRequest.of(pageNumber + 1, size), 100);
+        Page<HubRes> result = hubs.map(HubRes::fromVO);
 
         return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
@@ -114,7 +120,22 @@ public class HubController {
     @Operation(summary = "허브 상세 조회", description = "허브 상세 조회 API")
     public ResponseEntity<ResponseDTO<HubRes>> findById(@PathVariable UUID hubId) {
 
-        HubRes result = HubRes.example();
+        HubVO hub = hubService.findById(hubId);
+
+        HubRes result = HubRes.fromVO(hub);
+
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
+
+    }
+
+    @PostMapping("/routes")
+    @Operation(summary = "허브 간 이동 경로 갱신", description = "허브 간 이동 경로 갱신 API")
+    public ResponseEntity<ResponseDTO<HubRouteRes>> updateRouteBetweenRoutes(
+            @RequestBody HubRouteModifyRequest request) {
+
+        HubRouteVO route = hubService.updateRouteBetweenRoutes(request);
+
+        HubRouteRes result = HubRouteRes.fromVO(route);
 
         return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
@@ -125,29 +146,21 @@ public class HubController {
     public ResponseEntity<ResponseDTO<HubRes>> modifyHub(
             @PathVariable UUID hubId, @RequestBody HubModifyRequest request) {
 
-        HubRes result = HubRes.example();
+        HubVO hub = hubService.modifyHub(hubId, request);
+
+        HubRes result = HubRes.fromVO(hub);
 
         return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
     }
 
-    @PatchMapping("/routes")
-    @Operation(summary = "허브 간 이동 경로 업데이트", description = "허브 간 이동 경로 업데이트 API")
-    public ResponseEntity<ResponseDTO<HubRouteRes>> modifyRouteBetweenRoutes(
-            @RequestBody HubRouteModifyRequest request) {
-
-        HubRouteRes result = HubRouteRes.example();
-
-        return ResponseEntity.ok(ResponseDTO.okWithData(result));
-
-    }
 
 
     @DeleteMapping("/{hubId}")
     @Operation(summary = "허브 논리적 삭제", description = "하브 논리적 삭제 API")
     public ResponseEntity<ResponseDTO<Void>> softDelete(@PathVariable UUID hubId) {
 
-//        DeliveryRes result = DeliveryRes.example(false);
+        hubService.softDelete(hubId);
 
         return ResponseEntity.ok(ResponseDTO.okWithData(null));
 

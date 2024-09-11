@@ -1,7 +1,7 @@
 package com.two_ddang.logistics.delivery.domain.model;
 
-import com.two_ddang.logistics.delivery.domain.model.enums.AgentType;
-import com.two_ddang.logistics.delivery.domain.model.enums.DriveStatus;
+import com.two_ddang.logistics.core.entity.DriverAgentType;
+import com.two_ddang.logistics.core.entity.DriveStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -34,7 +34,7 @@ public class DeliveryAgent {
 
     @Column(nullable = false)
     @Comment("배송 담당자 타입")
-    private AgentType type;
+    private DriverAgentType type;
 
     @Column(nullable = false)
     @Comment("슬랙 ID")
@@ -48,7 +48,7 @@ public class DeliveryAgent {
     @Comment("현재 정차 허브 ID")
     private UUID stayHubId;
 
-    private DeliveryAgent(Integer userId, UUID registeredHubId, AgentType type, UUID slackId, DriveStatus driveStatus, UUID stayHubId) {
+    private DeliveryAgent(Integer userId, UUID registeredHubId, DriverAgentType type, UUID slackId, DriveStatus driveStatus, UUID stayHubId) {
         this.userId = userId;
         this.registeredHubId = registeredHubId;
         this.type = type;
@@ -65,7 +65,7 @@ public class DeliveryAgent {
      * @desciption 배송 담당자 생성
      */
     public static DeliveryAgent ofDeliveryAgent(Integer userId, UUID registeredHubId, UUID slackId) {
-        return new DeliveryAgent(userId, registeredHubId, AgentType.DELIVERY, slackId, DriveStatus.WAITING, null);
+        return new DeliveryAgent(userId, registeredHubId, DriverAgentType.DELIVERY, slackId, DriveStatus.WAITING, null);
     }
 
     /**
@@ -76,7 +76,7 @@ public class DeliveryAgent {
      * @desciption 운송 담당자 생성
      */
     public static DeliveryAgent ofTransitAgent(Integer userId, UUID slackId, UUID stayHubId) {
-        return new DeliveryAgent(userId, null, AgentType.TRANSIT, slackId, DriveStatus.WAITING, stayHubId);
+        return new DeliveryAgent(userId, null, DriverAgentType.TRANSIT, slackId, DriveStatus.WAITING, stayHubId);
     }
 
     /**

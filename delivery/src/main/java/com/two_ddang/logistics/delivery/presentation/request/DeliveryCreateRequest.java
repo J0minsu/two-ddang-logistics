@@ -1,6 +1,6 @@
 package com.two_ddang.logistics.delivery.presentation.request;
 
-import com.two_ddang.logistics.delivery.domain.model.enums.DeliveryStatus;
+import com.two_ddang.logistics.core.entity.DeliveryStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;

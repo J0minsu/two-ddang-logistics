@@ -1,6 +1,6 @@
 package com.two_ddang.logistics.hub.presentation.request;
 
-import com.two_ddang.logistics.hub.domain.model.UserType;
+import com.two_ddang.logistics.core.entity.UserType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;

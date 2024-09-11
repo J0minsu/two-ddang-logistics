@@ -1,4 +1,4 @@
-package com.two_ddang.logistics.hub.domain.model;
+package com.two_ddang.logistics.core.entity;
 
 import lombok.Getter;
 

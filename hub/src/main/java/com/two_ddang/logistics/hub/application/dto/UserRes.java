@@ -1,12 +1,10 @@
 package com.two_ddang.logistics.hub.application.dto;
 
-import com.two_ddang.logistics.hub.domain.model.UserType;
+import com.two_ddang.logistics.core.entity.UserType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 import java.util.UUID;
 

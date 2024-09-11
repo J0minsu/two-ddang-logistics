@@ -3,6 +3,7 @@ package com.two_ddang.logistics.auth.service;
 import com.two_ddang.logistics.auth.exception.PasswordNotMatchException;
 import com.two_ddang.logistics.auth.user.UserService;
 import com.two_ddang.logistics.auth.user.dto.SignInRequestDto;
+import com.two_ddang.logistics.auth.user.dto.SignUpRequestDto;
 import com.two_ddang.logistics.auth.user.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +29,10 @@ public class AuthService {
 
         return jwtTokenGenerator.createJwtToken(responseDto.userId(), responseDto.email(),
                 responseDto.email(), responseDto.role());
+    }
+
+    public void signUp(SignUpRequestDto requestDto) {
+        userService.createUser(requestDto);
     }
 
 }

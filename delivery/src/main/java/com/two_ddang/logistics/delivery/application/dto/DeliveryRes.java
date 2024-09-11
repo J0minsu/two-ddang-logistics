@@ -1,7 +1,7 @@
 package com.two_ddang.logistics.delivery.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.two_ddang.logistics.delivery.domain.model.enums.DeliveryStatus;
+import com.two_ddang.logistics.core.entity.DeliveryStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 

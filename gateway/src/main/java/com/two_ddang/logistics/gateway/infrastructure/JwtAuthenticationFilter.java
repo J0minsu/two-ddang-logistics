@@ -7,10 +7,11 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import javax.crypto.SecretKey;
@@ -19,13 +20,14 @@ import java.time.ZoneId;
 import java.util.Date;
 
 @Slf4j
-public class JwtAuthenticationFilter implements GlobalFilter {
+@Component
+public class JwtAuthenticationFilter implements WebFilter {
 
     @Value("${service.jwt.secret-key}")
     private String secretKey;
 
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
 
         String path = exchange.getRequest().getURI().getPath();
         if (path.equals("/auth/sign-in") || path.equals("/auth/sign-up")) {
@@ -35,13 +37,13 @@ public class JwtAuthenticationFilter implements GlobalFilter {
         String token = extractToken(exchange);
         if (token == null || !validateTokenAndToPassport(token, exchange)) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return chain.filter(exchange);
+            return exchange.getResponse().setComplete();
         }
 
         return chain.filter(exchange);
     }
 
-    private String extractToken(ServerWebExchange exchange) {
+    public String extractToken(ServerWebExchange exchange) {
         String authHeader = exchange.getRequest().getHeaders().getFirst("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);

@@ -1,12 +1,14 @@
 package com.two_ddang.logistics.company.application.service.product;
 
 import com.two_ddang.logistics.company.application.dtos.product.*;
+import com.two_ddang.logistics.company.application.exception.BusinessException;
 import com.two_ddang.logistics.company.domain.model.company.Company;
 import com.two_ddang.logistics.company.domain.model.product.Product;
 import com.two_ddang.logistics.company.domain.repository.company.CompanyRepository;
 import com.two_ddang.logistics.company.domain.repository.product.ProductRepository;
 import com.two_ddang.logistics.company.infrastrucuture.HubService;
 import com.two_ddang.logistics.company.presentation.dtos.product.CreateProductRequest;
+import com.two_ddang.logistics.company.presentation.dtos.product.RollbackStockRequest;
 import com.two_ddang.logistics.company.presentation.dtos.product.UpdateProductInfoRequest;
 import com.two_ddang.logistics.core.exception.ApplicationException;
 import com.two_ddang.logistics.core.exception.ErrorCode;
@@ -17,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -43,10 +44,10 @@ public class ProductService {
 
     public ProductDetailResponse getProduct(UUID productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
 
         Company company = companyRepository.findById(product.getCompanyId())
-                .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
 
         String hubName = hubService.getHubInfo(product.getHubId()).getData().getName();
 
@@ -56,7 +57,7 @@ public class ProductService {
     @Transactional
     public UpdateProductInfoResponse updateProductInfo(UUID productId, UpdateProductInfoRequest updateProductInfoRequest) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
 
         product.updateInfo(updateProductInfoRequest);
 
@@ -64,15 +65,24 @@ public class ProductService {
     }
 
 
+    @Transactional
     public void deleteProduct(UUID productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
 //        product.delete();
     }
 
-    public List<CompanyProductResponse> getCompanyProducts(UUID companyId) {
+    @Transactional
+    public void rollbackStock(UUID productId, RollbackStockRequest rollbackStockRequest) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
+        product.rollbackStock(rollbackStockRequest);
+    }
 
-        Optional<Product> byId = productRepository.findByCompanyId(companyId);
-        return null;
+    public List<CompanyProductResponse> getCompanyProducts(UUID companyId) {
+        return productRepository.findAllByCompanyId(companyId)
+                .stream()
+                .map(CompanyProductResponse::of)
+                .toList();
     }
 }

@@ -14,8 +14,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -60,7 +58,7 @@ public class ProductController {
     @PostMapping("/{productId}/rollback")
     public ResponseEntity<?> rollbackStock(@PathVariable UUID productId,
                                            @RequestBody RollbackStockRequest rollbackStockRequest) {
-
+        productService.rollbackStock(productId, rollbackStockRequest);
         return ResponseEntity.ok(ResponseDTO.ok());
     }
 
@@ -74,8 +72,6 @@ public class ProductController {
 
     @GetMapping("/companies/{companyId}")
     public ResponseEntity<?> getCompanyProducts(@PathVariable UUID companyId) {
-
-        List<CompanyProductResponse> companyProductResponses = productService.getCompanyProducts(companyId);
-        return ResponseEntity.ok(ResponseDTO.okWithData(companyProductResponses));
+        return ResponseEntity.ok(ResponseDTO.okWithData(productService.getCompanyProducts(companyId)));
     }
 }

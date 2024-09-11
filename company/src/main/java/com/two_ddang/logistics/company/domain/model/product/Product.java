@@ -1,6 +1,7 @@
 package com.two_ddang.logistics.company.domain.model.product;
 
 import com.two_ddang.logistics.company.presentation.dtos.product.CreateProductRequest;
+import com.two_ddang.logistics.company.presentation.dtos.product.RollbackStockRequest;
 import com.two_ddang.logistics.company.presentation.dtos.product.UpdateProductInfoRequest;
 import com.two_ddang.logistics.core.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -45,5 +46,9 @@ public class Product extends BaseEntity {
         this.description = updateProductInfoRequest.getDescription();
         this.price = updateProductInfoRequest.getPrice();
         this.isSoldOut = updateProductInfoRequest.getIsSoldOut();
+    }
+
+    public void rollbackStock(RollbackStockRequest rollbackStockRequest) {
+//        this.stock += rollbackStockRequest.getRollbackQuantity();
     }
 }

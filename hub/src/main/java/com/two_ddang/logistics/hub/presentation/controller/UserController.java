@@ -42,8 +42,6 @@ import java.util.stream.IntStream;
 public class UserController {
 
     private final UserService userService;
-    private final HubService hubService;
-    private final UserRepository userRepository;
 
     @PostMapping
     @Operation(summary = "사용자 생성", description = "사용자 생성 API")

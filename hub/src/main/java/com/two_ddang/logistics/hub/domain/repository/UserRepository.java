@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-    Optional<User> findByIdAndDeletedFalse(int id);
+    Optional<User> findByIdAndIsDeletedIsFalse(int id);
 
 
     Page<User> findByRole(@Param("role") UserType userType, PageRequest of);

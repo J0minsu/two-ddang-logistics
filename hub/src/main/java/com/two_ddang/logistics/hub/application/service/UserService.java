@@ -42,7 +42,7 @@ public class UserService {
 
     public UserVO findById(int userId) {
 
-        User user = userRepository.findByIdAndDeletedFalse(userId)
+        User user = userRepository.findByIdAndIsDeletedIsFalse(userId)
                 .orElseThrow(NoSuchElementApplicationException::new);
 
         return user.toVO();
@@ -61,7 +61,7 @@ public class UserService {
     @Transactional
     public UserVO modify(int userId, UserModifyRequest request) {
 
-        User user = userRepository.findByIdAndDeletedFalse(userId)
+        User user = userRepository.findByIdAndIsDeletedIsFalse(userId)
                 .orElseThrow(NoSuchElementApplicationException::new);
 
         user.modifyUserInfo(request.getEmail(), request.getContact());
@@ -73,7 +73,7 @@ public class UserService {
     @Transactional
     public void delete(int userId) {
 
-        User user = userRepository.findByIdAndDeletedFalse(userId)
+        User user = userRepository.findByIdAndIsDeletedIsFalse(userId)
                 .orElseThrow(NoSuchElementApplicationException::new);
 
         user.delete(1);

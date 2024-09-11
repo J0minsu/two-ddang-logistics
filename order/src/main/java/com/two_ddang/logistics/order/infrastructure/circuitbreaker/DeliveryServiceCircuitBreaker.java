@@ -7,21 +7,18 @@ import com.two_ddang.logistics.order.infrastructure.dtos.CompanyDetailResponse;
 import com.two_ddang.logistics.order.infrastructure.dtos.DeliveryCreateRequest;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class DeliveryServiceCircuitBreaker {
 
     private final DeliveryService deliveryService;
 
     @Retry(name = "deliveryService", fallbackMethod = "deliveryFallback")
     public UUID createDelivery(Order order, UUID reqCompanyId, CompanyDetailResponse resCompany) {
-        log.info("DeliveryServiceCircuitBreaker");
         return deliveryService
                 .create(DeliveryCreateRequest.of(order.getId(), reqCompanyId, resCompany))
                 .getData()

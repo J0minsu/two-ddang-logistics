@@ -1,6 +1,7 @@
 package com.two_ddang.logistics.order.domain.model;
 
 import com.two_ddang.logistics.core.entity.BaseEntity;
+import com.two_ddang.logistics.core.entity.OrderStatus;
 import com.two_ddang.logistics.order.presentation.dtos.CreateOrderRequest;
 import jakarta.persistence.*;
 import lombok.*;

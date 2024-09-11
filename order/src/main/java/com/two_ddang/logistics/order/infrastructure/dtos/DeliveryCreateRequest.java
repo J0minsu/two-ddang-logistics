@@ -16,6 +16,10 @@ public class DeliveryCreateRequest {
     private String deliveryAddress;
     private UUID receiveCompanyId;
 
+    public DeliveryCreateRequest(UUID deliveryId) {
+
+    }
+
     public static DeliveryCreateRequest of(UUID orderId, UUID reqCompanyId, CompanyDetailResponse resCompanyResponse) {
         return DeliveryCreateRequest.builder()
                 .orderId(orderId)

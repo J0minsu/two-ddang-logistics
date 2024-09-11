@@ -1,6 +1,7 @@
 package com.two_ddang.logistics.order.infrastructure.dtos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.two_ddang.logistics.core.entity.DeliveryStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,4 +24,7 @@ public class DeliveryRes {
     private DeliveryStatus deliveryStatus;
     private LocalDateTime createdAt;
 
+    public DeliveryRes(UUID deliveryId) {
+        this.deliveryId = deliveryId;
+    }
 }

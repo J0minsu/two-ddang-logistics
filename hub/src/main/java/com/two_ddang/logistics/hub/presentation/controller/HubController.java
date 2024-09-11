@@ -49,15 +49,27 @@ public class HubController {
 
     }
 
-    @PostMapping("/products")
+    @PostMapping("/{hubId}/products/inbound")
     @Operation(summary = "허브 물품 입고", description = "허브 물품 입고 API")
-    public ResponseEntity<Result<HubProductRes>> inboundProduct(@RequestBody HubProductInboundRequest request) {
+    public ResponseEntity<Result<HubProductRes>> inboundProduct(
+            @PathVariable UUID hubId, @RequestBody HubProductInboundRequest request) {
 
         int remainQuantity = 5000;
 
         HubProductRes result = HubProductRes.fromVO(
-                request.getHubId(), request.getProductId(), request.getCompanyId(),
+                hubId, request.getProductId(), request.getCompanyId(),
                 request.getProductName(), request.getQuantity() + remainQuantity);
+
+        return ResponseEntity.ok(Result.success(result));
+
+    }
+
+    @PatchMapping("/{hubId}/products/outbound")
+    @Operation(summary = "허브 물품 출고", description = "허브 수정 API")
+    public ResponseEntity<Result<HubRes>> order(
+            @PathVariable UUID hubId, @RequestBody HubProductOutboundRequest request) {
+
+        HubRes result = HubRes.example();
 
         return ResponseEntity.ok(Result.success(result));
 

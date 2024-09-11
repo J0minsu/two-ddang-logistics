@@ -1,13 +1,9 @@
 package com.two_ddang.logistics.delivery.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.two_ddang.logistics.delivery.domain.model.DeliveryStatus;
+import com.two_ddang.logistics.delivery.domain.model.enums.DeliveryStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.*;
-import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

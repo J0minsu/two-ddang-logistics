@@ -1,5 +1,6 @@
 package com.two_ddang.logistics.auth.user;
 
+import com.two_ddang.logistics.auth.user.dto.SignUpRequestDto;
 import com.two_ddang.logistics.auth.user.dto.UserResponseDto;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,14 @@ public class UserFallback implements UserFeignClient {
         }
 
         return null;
+    }
+
+    @Override
+    public void createUser(SignUpRequestDto requestDto) {
+        if(cause instanceof FeignException.BadRequest) {
+            log.info("UserFallback 메소드에서 오류가 발생했습니다.");
+            throw new RegisterFailException();
+        }
     }
 
 }

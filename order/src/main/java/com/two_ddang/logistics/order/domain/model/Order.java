@@ -52,6 +52,7 @@ public class Order extends BaseEntity {
     }
 
     public void addDeliveryId(UUID deliveryId) {
+        this.orderStatus = OrderStatus.SHIPPED;
         this.deliveryId = deliveryId;
     }
 

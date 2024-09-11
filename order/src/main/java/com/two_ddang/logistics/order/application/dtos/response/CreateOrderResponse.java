@@ -3,15 +3,13 @@ package com.two_ddang.logistics.order.application.dtos.response;
 import com.two_ddang.logistics.core.entity.OrderStatus;
 import com.two_ddang.logistics.order.domain.model.Order;
 import com.two_ddang.logistics.order.domain.model.OrderProduct;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
@@ -41,8 +39,11 @@ public class CreateOrderResponse {
                 .build();
     }
 
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @Builder(access = AccessLevel.PRIVATE)
-    private static class CreateOrderProductResponse {
+    public static class CreateOrderProductResponse {
         private UUID productId;
         private Integer quantity;
 

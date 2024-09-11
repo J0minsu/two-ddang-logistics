@@ -1,5 +1,6 @@
 package com.two_ddang.logistics.order.application.service;
 
+import com.two_ddang.logistics.core.entity.OrderStatus;
 import com.two_ddang.logistics.core.exception.ErrorCode;
 import com.two_ddang.logistics.order.application.dtos.response.*;
 import com.two_ddang.logistics.order.application.exception.BusinessException;
@@ -7,9 +8,8 @@ import com.two_ddang.logistics.order.domain.model.Order;
 import com.two_ddang.logistics.order.domain.model.OrderProduct;
 import com.two_ddang.logistics.order.domain.repository.OrderRepository;
 import com.two_ddang.logistics.order.infrastructure.CompanyService;
-import com.two_ddang.logistics.order.infrastructure.DeliveryService;
+import com.two_ddang.logistics.order.infrastructure.circuitbreaker.DeliveryServiceCircuitBreaker;
 import com.two_ddang.logistics.order.infrastructure.dtos.CompanyDetailResponse;
-import com.two_ddang.logistics.order.infrastructure.dtos.DeliveryCreateRequest;
 import com.two_ddang.logistics.order.presentation.dtos.CreateOrderRequest;
 import com.two_ddang.logistics.order.presentation.dtos.UpdateOrderStatusRequest;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final CompanyService companyService;
-    private final DeliveryService deliveryService;
+    private final DeliveryServiceCircuitBreaker deliveryServiceCircuitBreaker;
 
     @Transactional
     public CreateOrderResponse createOrder(CreateOrderRequest createOrderRequest) {
@@ -39,20 +39,18 @@ public class OrderService {
         UUID resCompanyId = createOrderRequest.getResCompanyId();
         CompanyDetailResponse resCompany = companyService.getCompany(resCompanyId).getData();
 
-
         List<OrderProduct> orderProducts = validAndCreateOrderProduct(createOrderRequest);
-
 
         Order order = orderRepository.save(Order.create(createOrderRequest, orderProducts));
 
-        // delivery 생성 호출
-        UUID deliveryId = deliveryService
-                .create(DeliveryCreateRequest.of(order.getId(), reqCompanyId, resCompany))
-                .getData()
-                .getDeliveryId();
+        order.updateStatus(OrderStatus.PENDING);
 
+        UUID deliveryId = deliveryServiceCircuitBreaker
+                .createDelivery(order, reqCompanyId, resCompany);
 
-        order.addDeliveryId(deliveryId);
+        if (deliveryId != null) {
+            order.addDeliveryId(deliveryId);
+        }
 
         return CreateOrderResponse.of(order);
     }
@@ -61,6 +59,7 @@ public class OrderService {
     public Page<OrderResponse> getOrders(Pageable pageable, String keyword) {
         return orderRepository.findAll(pageable).map(OrderResponse::of);
     }
+
 
     public OrderDetailResponse getOrder(UUID orderId) {
         Order order = orderRepository.findById(orderId)
@@ -97,8 +96,6 @@ public class OrderService {
         //유저 정보 받아 오는 방법 ??
 //        order.delete();
     }
-
-
 
 
     private List<OrderProduct> validAndCreateOrderProduct(CreateOrderRequest createOrderRequest) {

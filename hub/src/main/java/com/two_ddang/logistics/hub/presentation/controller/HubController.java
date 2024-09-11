@@ -1,10 +1,10 @@
 package com.two_ddang.logistics.hub.presentation.controller;
 
 import com.two_ddang.logistics.core.util.CommonApiResponses;
+import com.two_ddang.logistics.core.util.ResponseDTO;
 import com.two_ddang.logistics.hub.application.dto.HubProductRes;
 import com.two_ddang.logistics.hub.application.dto.HubRes;
 import com.two_ddang.logistics.hub.application.dto.HubRouteRes;
-import com.two_ddang.logistics.hub.holder.Result;
 import com.two_ddang.logistics.hub.presentation.request.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
@@ -41,17 +41,17 @@ public class HubController {
 
     @PostMapping
     @Operation(summary = "허브 생성", description = "허브 생성 API")
-    public ResponseEntity<Result<HubRes>> craete(@RequestBody HubCreateRequest request) {
+    public ResponseEntity<ResponseDTO<HubRes>> craete(@RequestBody HubCreateRequest request) {
 
         HubRes result = HubRes.example();
 
-        return ResponseEntity.ok(Result.success(result));
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
     }
 
     @PostMapping("/{hubId}/products/inbound")
     @Operation(summary = "허브 물품 입고", description = "허브 물품 입고 API")
-    public ResponseEntity<Result<HubProductRes>> inboundProduct(
+    public ResponseEntity<ResponseDTO<HubProductRes>> inboundProduct(
             @PathVariable UUID hubId, @RequestBody HubProductInboundRequest request) {
 
         int remainQuantity = 5000;
@@ -60,35 +60,35 @@ public class HubController {
                 hubId, request.getProductId(), request.getCompanyId(),
                 request.getProductName(), request.getQuantity() + remainQuantity);
 
-        return ResponseEntity.ok(Result.success(result));
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
     }
 
     @PatchMapping("/{hubId}/products/outbound")
     @Operation(summary = "허브 물품 출고", description = "허브 수정 API")
-    public ResponseEntity<Result<HubRes>> order(
+    public ResponseEntity<ResponseDTO<HubRes>> order(
             @PathVariable UUID hubId, @RequestBody HubProductOutboundRequest request) {
 
         HubRes result = HubRes.example();
 
-        return ResponseEntity.ok(Result.success(result));
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
     }
 
     @GetMapping("/routes/{departHubId}/to/{arriveHunId}")
     @Operation(summary = "허브 간 이동 경로 조회", description = "허브 간 이동 경로 조회 API")
-    public ResponseEntity<Result<HubRouteRes>> findRouteBetweenRoutes(
+    public ResponseEntity<ResponseDTO<HubRouteRes>> findRouteBetweenRoutes(
             @PathVariable UUID departHubId, @PathVariable UUID arriveHunId) {
 
         HubRouteRes result = HubRouteRes.example();
 
-        return ResponseEntity.ok(Result.success(result));
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
     }
 
     @GetMapping
     @Operation(summary = "허브 검색", description = "허브 검색 API")
-    public ResponseEntity<Result<Page<HubRes>>> search(
+    public ResponseEntity<ResponseDTO<Page<HubRes>>> search(
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "") String keyword,
@@ -105,51 +105,51 @@ public class HubController {
 
         PageImpl result = new PageImpl(list, PageRequest.of(pageNumber + 1, size), 100);
 
-        return ResponseEntity.ok(Result.success(result));
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
     }
 
 
     @GetMapping("/{hubId}")
     @Operation(summary = "허브 상세 조회", description = "허브 상세 조회 API")
-    public ResponseEntity<Result<HubRes>> findById(@PathVariable UUID hubId) {
+    public ResponseEntity<ResponseDTO<HubRes>> findById(@PathVariable UUID hubId) {
 
         HubRes result = HubRes.example();
 
-        return ResponseEntity.ok(Result.success(result));
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
     }
 
     @PatchMapping("/{hubId}")
     @Operation(summary = "허브 수정", description = "허브 수정 API")
-    public ResponseEntity<Result<HubRes>> modifyHub(
+    public ResponseEntity<ResponseDTO<HubRes>> modifyHub(
             @PathVariable UUID hubId, @RequestBody HubModifyRequest request) {
 
         HubRes result = HubRes.example();
 
-        return ResponseEntity.ok(Result.success(result));
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
     }
 
     @PatchMapping("/routes")
     @Operation(summary = "허브 간 이동 경로 업데이트", description = "허브 간 이동 경로 업데이트 API")
-    public ResponseEntity<Result<HubRouteRes>> modifyRouteBetweenRoutes(
+    public ResponseEntity<ResponseDTO<HubRouteRes>> modifyRouteBetweenRoutes(
             @RequestBody HubRouteModifyRequest request) {
 
         HubRouteRes result = HubRouteRes.example();
 
-        return ResponseEntity.ok(Result.success(result));
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
     }
 
 
     @DeleteMapping("/{hubId}")
     @Operation(summary = "허브 논리적 삭제", description = "하브 논리적 삭제 API")
-    public ResponseEntity<Result<Void>> softDelete(@PathVariable UUID hubId) {
+    public ResponseEntity<ResponseDTO<Void>> softDelete(@PathVariable UUID hubId) {
 
 //        DeliveryRes result = DeliveryRes.example(false);
 
-        return ResponseEntity.ok(Result.success(null));
+        return ResponseEntity.ok(ResponseDTO.okWithData(null));
 
     }
 

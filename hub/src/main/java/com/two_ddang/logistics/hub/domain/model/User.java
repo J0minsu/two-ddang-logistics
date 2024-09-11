@@ -2,6 +2,7 @@ package com.two_ddang.logistics.hub.domain.model;
 
 import com.two_ddang.logistics.core.entity.BaseEntity;
 import com.two_ddang.logistics.core.entity.UserType;
+import com.two_ddang.logistics.hub.domain.vo.UserVO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -61,6 +62,10 @@ public class User extends BaseEntity {
         this.slackId = slackId;
     }
 
+    public static User emptyObject() {
+        return new User();
+    }
+
     public static User of(String username, String password, String name, String email, String contact, UserType role) {
         return new User(username, password, name, email, contact, role, UUID.randomUUID());
     }
@@ -69,10 +74,15 @@ public class User extends BaseEntity {
         this.password = password;
     }
 
-    public void modifyUserInfo(String username, String email, String contact) {
-        this.username = username;
+    public void modifyUserInfo(String email, String contact) {
         this.email = email;
         this.contact = contact;
     }
 
+    public UserVO toVO() {
+
+        return new UserVO(id, username, null, name, email, contact, role, slackId,
+                getCreatedAt(), getUpdatedAt(), getDeletedAt(), getCreatedBy(), getUpdatedBy(), getDeletedBy(), isDeleted());
+
+    }
 }

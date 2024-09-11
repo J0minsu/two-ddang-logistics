@@ -1,6 +1,6 @@
 package com.two_ddang.logistics.auth.service;
 
-import com.two_ddang.logistics.auth.user.UserRole;
+import com.two_ddang.logistics.core.entity.UserType;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -25,12 +25,12 @@ public class JwtTokenGenerator {
     }
 
     public String createJwtToken(Long userId, String email,
-                                 String username, UserRole role) {
+                                 String username, UserType userType) {
         return Jwts.builder()
                 .claim("userId", userId)
                 .claim("email", email)
                 .claim("username", username)
-                .claim("role", role)
+                .claim("userType", userType)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis()+expirationTime))
                 .signWith(key)

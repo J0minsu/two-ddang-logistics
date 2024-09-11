@@ -1,6 +1,6 @@
 package com.two_ddang.logistics.auth.user.dto;
 
-import com.two_ddang.logistics.auth.user.UserRole;
+import com.two_ddang.logistics.core.entity.UserType;
 
 public record UserResponseDto(
 
@@ -8,7 +8,7 @@ public record UserResponseDto(
         String username,
         String password,
         String email,
-        UserRole role
+        UserType userType
 ) {
 
 }

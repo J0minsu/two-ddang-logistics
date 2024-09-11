@@ -1,4 +1,4 @@
-package com.two_ddang.logistics.order.presentation.request;
+package com.two_ddang.logistics.order.presentation.dtos;
 
 import com.two_ddang.logistics.order.domain.model.OrderStatus;
 import lombok.AllArgsConstructor;

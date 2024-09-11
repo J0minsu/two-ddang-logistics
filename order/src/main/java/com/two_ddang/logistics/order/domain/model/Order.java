@@ -1,12 +1,10 @@
 package com.two_ddang.logistics.order.domain.model;
 
 import com.two_ddang.logistics.core.entity.BaseEntity;
-import com.two_ddang.logistics.order.presentation.request.CreateOrderRequest;
+import com.two_ddang.logistics.order.presentation.dtos.CreateOrderRequest;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +15,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder(access = AccessLevel.PRIVATE)
+@Getter
+@SQLRestriction("is_deleted = false")
 public class Order extends BaseEntity {
 
     @Id
@@ -29,18 +29,36 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private UUID resCompanyId;
 
-    @Column(nullable = false)
     private UUID deliveryId;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
-    @Column(nullable = false)
     private Long totalPrice;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(nullable = false)
     private OrderStatus orderStatus;
 
 
+    public static Order create(CreateOrderRequest createOrderRequest, List<OrderProduct> orderProducts) {
+        return Order.builder()
+                .reqCompanyId(createOrderRequest.getReqCompanyId())
+                .resCompanyId(createOrderRequest.getResCompanyId())
+                .orderStatus(OrderStatus.CREATED)
+                .orderProducts(orderProducts)
+                .totalPrice(orderProducts.stream().mapToLong(OrderProduct::sumPrice).sum())
+                .build();
+    }
+
+    public void addDeliveryId(UUID deliveryId) {
+        this.deliveryId = deliveryId;
+    }
+
+    public void updateStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public void cancel() {
+        this.orderStatus = OrderStatus.CANCELLED;
+    }
 }

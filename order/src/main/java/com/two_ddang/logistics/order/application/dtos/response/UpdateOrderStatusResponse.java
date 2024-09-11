@@ -1,5 +1,6 @@
-package com.two_ddang.logistics.order.presentation.response;
+package com.two_ddang.logistics.order.application.dtos.response;
 
+import com.two_ddang.logistics.order.domain.model.Order;
 import com.two_ddang.logistics.order.domain.model.OrderStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,4 +16,12 @@ public class UpdateOrderStatusResponse {
 
     private UUID orderId;
     private OrderStatus orderStatus;
+
+    public static UpdateOrderStatusResponse of(Order order) {
+        return UpdateOrderStatusResponse.builder()
+                .orderId(order.getId())
+                .orderStatus(order.getOrderStatus())
+                .build();
+    }
+
 }

@@ -1,12 +1,11 @@
 package com.two_ddang.logistics.hub.domain.model;
 
 import com.two_ddang.logistics.core.entity.BaseEntity;
+import com.two_ddang.logistics.core.entity.UserType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicUpdate;
 

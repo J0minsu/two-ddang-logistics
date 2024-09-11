@@ -1,7 +1,7 @@
 package com.two_ddang.logistics.delivery.domain.model;
 
 import com.two_ddang.logistics.core.entity.BaseEntity;
-import com.two_ddang.logistics.delivery.domain.model.enums.DeliveryStatus;
+import com.two_ddang.logistics.core.entity.DeliveryStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -10,7 +10,6 @@ import lombok.ToString;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity(name = "p_deliveries")

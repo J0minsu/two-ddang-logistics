@@ -12,6 +12,7 @@ public class UpdateProductInfoRequest {
     private String productName;
     private String description;
     private Long price;
-    private Integer stock;
     private Boolean isSoldOut;
+
+
 }

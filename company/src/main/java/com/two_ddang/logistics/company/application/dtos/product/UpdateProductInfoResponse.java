@@ -1,5 +1,6 @@
 package com.two_ddang.logistics.company.application.dtos.product;
 
+import com.two_ddang.logistics.company.domain.model.product.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,15 @@ public class UpdateProductInfoResponse {
     private String productName;
     private String description;
     private Long price;
-    private Integer stock;
     private Boolean isSoldOut;
 
+    public static UpdateProductInfoResponse of(Product product) {
+        return UpdateProductInfoResponse.builder()
+                .productId(product.getId())
+                .productName(product.getProductName())
+                .description(product.getDescription())
+                .price(product.getPrice())
+                .isSoldOut(product.getIsSoldOut())
+                .build();
+    }
 }

@@ -38,8 +38,8 @@ public class CompanyService {
     @Transactional
     public CreateCompanyResponse createCompany(CreatedCompanyRequest createdCompanyRequestDto) {
         Company company = Company.create(createdCompanyRequestDto);
-        Company saveCompany = companyRepository.save(company);
-        return CreateCompanyResponse.of(saveCompany);
+        companyRepository.save(company);
+        return CreateCompanyResponse.of(company);
     }
 
     public Page<CompanyResponse> getCompanies(Pageable pageable, String keyword) {

@@ -15,6 +15,5 @@ public class CompanyProductResponse {
     private UUID hubId;
     private String productName;
     private Long price;
-    private Integer stock;
     private Boolean isSoldOut;
 }

@@ -1,5 +1,6 @@
 package com.two_ddang.logistics.company.application.dtos.product;
 
+import com.two_ddang.logistics.company.domain.model.product.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -20,8 +21,24 @@ public class ProductDetailResponse {
     private UUID hubId;
     private String hubName;
     private Long price;
-    private Integer stock;
     private Boolean isSoldOut;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public static ProductDetailResponse of(Product product, String hubName, String companyName) {
+
+        return ProductDetailResponse.builder()
+                .productId(product.getId())
+                .productName(product.getProductName())
+                .description(product.getDescription())
+                .companyId(product.getCompanyId())
+                .companyName(companyName)
+                .hubId(product.getHubId())
+                .hubName(hubName)
+                .price(product.getPrice())
+                .isSoldOut(product.getIsSoldOut())
+                .createdAt(product.getCreatedAt())
+                .updatedAt(product.getUpdatedAt())
+                .build();
+    }
 }

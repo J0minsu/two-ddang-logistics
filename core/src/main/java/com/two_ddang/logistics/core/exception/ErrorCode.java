@@ -6,6 +6,9 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
 
+    //User
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
+
     // COMMON
     NOT_FOUND(HttpStatus.NOT_FOUND, "경로가 올바르지 않습니다");
 

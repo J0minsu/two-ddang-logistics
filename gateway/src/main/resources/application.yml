@@ -3,6 +3,14 @@ spring:
     import: optional:file:.env[.properties]
   application:
     name: gateway
+  main:
+    web-application-type: reactive
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
 
   cloud:
     gateway:
@@ -52,16 +60,15 @@ spring:
         - predicates:
             - Path=/ais/**
 
-
-
-
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:19090/eureka/
 
   data:
     redis:
       host: ${redis-url}
       port: ${redis-port}
-      username: ${redis-username}
-      password: ${redis-password}
 
 server:
   port: 19091

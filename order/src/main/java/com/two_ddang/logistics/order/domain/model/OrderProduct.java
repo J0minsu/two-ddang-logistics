@@ -4,6 +4,7 @@ package com.two_ddang.logistics.order.domain.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.UUID;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
 public class OrderProduct {
 
     @Id
@@ -24,7 +26,7 @@ public class OrderProduct {
     private Order order;
 
     @Column(nullable = false)
-    private UUID hubProductId;
+    private UUID productId;
 
 
     @Column(nullable = false)
@@ -33,5 +35,9 @@ public class OrderProduct {
     private Long price;
     @Column(nullable = false)
     private Integer quantity;
+
+    public Long sumPrice() {
+        return price * quantity;
+    }
 
 }

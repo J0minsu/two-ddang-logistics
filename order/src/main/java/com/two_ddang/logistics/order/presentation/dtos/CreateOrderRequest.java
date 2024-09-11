@@ -1,4 +1,4 @@
-package com.two_ddang.logistics.order.presentation.request;
+package com.two_ddang.logistics.order.presentation.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,17 +14,17 @@ public class CreateOrderRequest {
 
     private UUID reqCompanyId;
     private UUID resCompanyId;
-    private List<CreateOrderProductRequestDto> orderProducts;
+    private List<CreateOrderProductRequest> orderProducts;
 
 
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class CreateOrderProductRequestDto {
+    public static class CreateOrderProductRequest {
         private UUID productId;
-        private String productName;
         private Integer quantity;
-        private Long price;
     }
+
+
 }
 

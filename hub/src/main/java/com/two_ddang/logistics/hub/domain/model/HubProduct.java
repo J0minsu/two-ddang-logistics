@@ -1,6 +1,11 @@
 package com.two_ddang.logistics.hub.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.two_ddang.logistics.core.entity.BaseEntity;
+import com.two_ddang.logistics.hub.domain.vo.HubAgentVO;
+import com.two_ddang.logistics.hub.domain.vo.HubProductVO;
+import com.two_ddang.logistics.hub.domain.vo.HubRouteVO;
+import com.two_ddang.logistics.hub.domain.vo.HubVO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,6 +14,9 @@ import lombok.ToString;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Entity(name = "p_hub_products")
@@ -42,6 +50,7 @@ public class HubProduct extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false
             , foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
+    @JsonIgnore
     private Hub hub;
 
     private HubProduct(String productName, UUID productId, UUID companyId, int stock, Hub hub) {
@@ -50,6 +59,10 @@ public class HubProduct extends BaseEntity {
         this.companyId = companyId;
         this.stock = stock;
         this.hub = hub;
+    }
+
+    public static HubProduct emptyObject() {
+        return new HubProduct();
     }
 
     public static HubProduct of(String productName, UUID productId, UUID companyId, int stock, Hub hub) {
@@ -66,6 +79,12 @@ public class HubProduct extends BaseEntity {
 
     public void outbound(int quantity) {
         stock -= quantity;
+    }
+
+    public HubProductVO toVO() {
+
+        return new HubProductVO(id, productName, productId, companyId, stock, hub.toVO(),
+                getCreatedAt(), getUpdatedAt(), getDeletedAt(), getCreatedBy(), getUpdatedBy(), getDeletedBy(), isDeleted());
     }
 
 }

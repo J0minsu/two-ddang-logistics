@@ -1,6 +1,7 @@
 package com.two_ddang.logistics.hub.application.dto;
 
 import com.two_ddang.logistics.core.entity.UserType;
+import com.two_ddang.logistics.hub.domain.vo.UserVO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -17,14 +18,11 @@ public class UserRes {
     private String username;
     private String email;
     private UserType role;
-    private String nickname;
+    private String name;
     private UUID slackId;
 
-    public static UserRes fromVO(
-            Integer userId, String username,
-            String email, UserType role, String nickname, UUID slackId
-    ) {
-        return new UserRes(userId, username, email, role, nickname, slackId);
+    public static UserRes fromVO(UserVO user) {
+        return new UserRes(user.getId(), user.getUsername(), user.getEmail(), user.getRole(), user.getName(), user.getSlackId());
     }
 
     public static UserRes example() {

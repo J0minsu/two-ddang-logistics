@@ -1,6 +1,10 @@
 package com.two_ddang.logistics.hub.domain.model;
 
 import com.two_ddang.logistics.core.entity.BaseEntity;
+import com.two_ddang.logistics.hub.domain.vo.HubAgentVO;
+import com.two_ddang.logistics.hub.domain.vo.HubProductVO;
+import com.two_ddang.logistics.hub.domain.vo.HubRouteVO;
+import com.two_ddang.logistics.hub.domain.vo.HubVO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,6 +16,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Entity(name = "p_hubs")
@@ -73,6 +78,26 @@ public class Hub extends BaseEntity {
 
     public void changeName(String name) {
         this.name = name;
+    }
+
+    public static Hub emptyObject() {
+        return new Hub();
+    }
+
+    public HubVO toVO() {
+
+        List<HubAgentVO> hubAgentsForVO = Optional.ofNullable(hubAgents).orElse(new ArrayList<>())
+                .stream().map(HubAgent::toVO).toList();
+        List<HubProductVO> hubProducesForVO = Optional.ofNullable(hubProducts).orElse(new ArrayList<>())
+                .stream().map(HubProduct::toVO).toList();
+        List<HubRouteVO> arriveRoutesForVO = Optional.ofNullable(arriveRoutes).orElse(new ArrayList<>())
+                .stream().map(HubRoute::toVO).toList();
+        List<HubRouteVO> departmentRoutesForVO = Optional.ofNullable(departmentRoutes).orElse(new ArrayList<>())
+                .stream().map(HubRoute::toVO).toList();
+
+        return new HubVO(id, name, address, latitude, longitude,
+                hubAgentsForVO, hubProducesForVO, arriveRoutesForVO, departmentRoutesForVO,
+                getCreatedAt(), getUpdatedAt(), getDeletedAt(), getCreatedBy(), getUpdatedBy(), getDeletedBy(), isDeleted());
     }
 
 }

@@ -1,6 +1,8 @@
 package com.two_ddang.logistics.hub.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.two_ddang.logistics.core.entity.BaseEntity;
+import com.two_ddang.logistics.hub.domain.vo.*;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,6 +11,9 @@ import lombok.ToString;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Entity
@@ -32,6 +37,7 @@ public class HubAgent extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hub_id", nullable = false
             , foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
+    @JsonIgnore
     private Hub hub;
 
     private HubAgent(User user, Hub hub) {
@@ -41,6 +47,18 @@ public class HubAgent extends BaseEntity {
 
     public static HubAgent of(User user, Hub hub) {
         return new HubAgent(user, hub);
+    }
+
+    public static HubAgent emptyObject() {
+        return new HubAgent();
+    }
+
+    public HubAgentVO toVO() {
+
+        UserVO userVO = Optional.ofNullable(user).orElse(User.emptyObject()).toVO();
+
+        return new HubAgentVO(id, userVO, hub.toVO(),
+            getCreatedAt(), getUpdatedAt(), getDeletedAt(), getCreatedBy(), getUpdatedBy(), getDeletedBy(), isDeleted());
     }
 
 }

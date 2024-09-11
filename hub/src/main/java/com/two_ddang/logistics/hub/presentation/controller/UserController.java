@@ -1,10 +1,15 @@
 package com.two_ddang.logistics.hub.presentation.controller;
 
+import com.two_ddang.logistics.core.entity.UserType;
 import com.two_ddang.logistics.core.util.CommonApiResponses;
 import com.two_ddang.logistics.core.util.ResponseDTO;
 import com.two_ddang.logistics.hub.application.dto.UserRes;
 import com.two_ddang.logistics.hub.application.service.HubService;
 import com.two_ddang.logistics.hub.application.service.UserService;
+import com.two_ddang.logistics.hub.domain.repository.UserRepository;
+import com.two_ddang.logistics.hub.domain.vo.UserVO;
+import com.two_ddang.logistics.hub.presentation.request.HubSortStandard;
+import com.two_ddang.logistics.hub.presentation.request.UserModifyRequest;
 import com.two_ddang.logistics.hub.presentation.request.UserRegisterRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
@@ -38,14 +43,15 @@ public class UserController {
 
     private final UserService userService;
     private final HubService hubService;
+    private final UserRepository userRepository;
 
     @PostMapping
     @Operation(summary = "사용자 생성", description = "사용자 생성 API")
     public ResponseEntity<ResponseDTO<UserRes>> register(@RequestBody UserRegisterRequest request) {
 
-//        UserVO user = userService.register(request);
+        UserVO user = userService.register(request);
 
-        UserRes result = UserRes.example();
+        UserRes result = UserRes.fromVO(user);
 
         return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
@@ -55,19 +61,25 @@ public class UserController {
     @Operation(summary = "사용자 단건 조회", description = "사용자 아이디로 조회 API")
     public ResponseEntity<ResponseDTO<UserRes>> findById(@PathVariable int userId) {
 
-        UserRes result = UserRes.example();
+        UserVO user = userService.findById(userId);
+
+        UserRes result = UserRes.fromVO(user);
 
         return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
     }
 
-    @GetMapping("/hubs/{hubId}")
-    @Operation(summary = "허브 소속 사용자 조회", description = "허브 사용자 조회 API")
-    public ResponseEntity<ResponseDTO<Page<UserRes>>> findByHub(@PathVariable int hubId) {
+    @GetMapping("")
+    @Operation(summary = "사용자 검색", description = "사용자 조회 API")
+    public ResponseEntity<ResponseDTO<Page<UserRes>>> search(
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "HUB") UserType userType,
+            @RequestParam(defaultValue = "CREATED_DESC") HubSortStandard standard) {
 
-        List<UserRes> list = IntStream.range(1, 11).mapToObj(i -> UserRes.example()).toList();
+        Page<UserVO> users = userService.findByUserType(pageNumber, size, userType, standard);
 
-        PageImpl result = new PageImpl(list, PageRequest.of(1, 10), 100);
+        Page<UserRes> result = users.map(UserRes::fromVO);
 
         return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
@@ -76,9 +88,13 @@ public class UserController {
 
     @PatchMapping("/{userId}")
     @Operation(summary = "사용자 수정", description = "사용자 수정 API")
-    public ResponseEntity<ResponseDTO<UserRes>> startDelivery(@PathVariable int userId) {
+    public ResponseEntity<ResponseDTO<UserRes>> modify(
+            @PathVariable int userId,
+            @RequestBody UserModifyRequest request) {
 
-        UserRes result = UserRes.example();
+        UserVO user = userService.modify(userId, request);
+
+        UserRes result = UserRes.fromVO(user);
 
         return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
@@ -88,7 +104,11 @@ public class UserController {
     @Operation(summary = "사용자 논리적 삭제", description = "사용자 논리적 삭제 API")
     public ResponseEntity<ResponseDTO<Void>> softDelete(@PathVariable int userId) {
 
-//        DeliveryRes result = DeliveryRes.example(false);
+        /**
+         * @TODO Passport check
+         */
+
+        userService.delete(userId);
 
         return ResponseEntity.ok(ResponseDTO.ok());
 

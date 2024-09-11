@@ -23,6 +23,9 @@ public class AuthController {
     public ResponseEntity<ResponseDTO<Void>> signIn(@RequestBody SignInRequestDto requestDto,
                                                     HttpServletResponse response) {
 
+        String token = authService.signIn(requestDto);
+
+        response.setHeader("Authorization", token);
         return ResponseEntity.ok(ResponseDTO.ok());
 
     }

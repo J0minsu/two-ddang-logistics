@@ -2,6 +2,7 @@ package com.two_ddang.logistics.auth;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication(
 		scanBasePackages = {
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 				"com.two-ddang.logistics.core"
 		}
 )
+@EnableFeignClients
 public class AuthApplication {
 
 	public static void main(String[] args) {

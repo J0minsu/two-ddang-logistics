@@ -3,65 +3,24 @@ spring:
     import: optional:file:.env[.properties]
   application:
     name: gateway
-
-  cloud:
-    gateway:
-      routes:
-        - id: auth
-        - uri: lb://auth
-        - predicates:
-            - Path=/auth/**
-
-        - id: users
-        - uri: lb://users
-        - predicates:
-            - Path=/users/**
-
-        - id: hubs
-        - uri: lb://hubs
-        - predicates:
-            - Path=/hubs/**
-
-        - id: orders
-        - uri: lb://orders
-        - predicates:
-            - Path=/orders/**
-
-        - id: deliveries
-        - uri: lb://deliveries
-        - predicates:
-            - Path=/deliveries/**
-
-        - id: transits
-        - uri: lb://transits
-        - predicates:
-            - Path=/transits/**
-
-        - id: companies
-        - uri: lb://companies
-        - predicates:
-            - Path=/companies/**
-
-        - id: products
-        - uri: lb://products
-        - predicates:
-            - Path=/products/**
-
-        - id: ais
-        - uri: lb://ais
-        - predicates:
-            - Path=/ais/**
-
-
-
-
+  main:
+    web-application-type: reactive
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 
   data:
     redis:
       host: ${redis-url}
       port: ${redis-port}
-      username: ${redis-username}
-      password: ${redis-password}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:19090/eureka/
+
 
 server:
   port: 19091

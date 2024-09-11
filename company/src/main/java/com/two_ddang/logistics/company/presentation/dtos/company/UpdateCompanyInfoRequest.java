@@ -1,6 +1,6 @@
 package com.two_ddang.logistics.company.presentation.dtos.company;
 
-import com.two_ddang.logistics.company.domain.model.company.CompanyType;
+import com.two_ddang.logistics.core.entity.CompanyType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

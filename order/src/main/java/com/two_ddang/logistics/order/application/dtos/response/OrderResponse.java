@@ -1,8 +1,8 @@
 package com.two_ddang.logistics.order.application.dtos.response;
 
+import com.two_ddang.logistics.core.entity.OrderStatus;
 import com.two_ddang.logistics.order.domain.model.Order;
 import com.two_ddang.logistics.order.domain.model.OrderProduct;
-import com.two_ddang.logistics.order.domain.model.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;

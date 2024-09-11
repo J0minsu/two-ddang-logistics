@@ -2,7 +2,7 @@ package com.two_ddang.logistics.company.application.dtos.company;
 
 
 import com.two_ddang.logistics.company.domain.model.company.Company;
-import com.two_ddang.logistics.company.domain.model.company.CompanyType;
+import com.two_ddang.logistics.core.entity.CompanyType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;

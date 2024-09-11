@@ -1,6 +1,7 @@
 package com.two_ddang.logistics.order.infrastructure.dtos;
 
 
+import com.two_ddang.logistics.core.entity.CompanyType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,4 +25,7 @@ public class CompanyDetailResponse {
     private String companyManager;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public CompanyDetailResponse(String companyName, String address, String phone) {
+    }
 }

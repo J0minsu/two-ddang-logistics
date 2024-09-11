@@ -1,14 +1,13 @@
 package com.two_ddang.logistics.order.application.service;
 
-import com.two_ddang.logistics.core.exception.ApplicationException;
 import com.two_ddang.logistics.core.exception.ErrorCode;
 import com.two_ddang.logistics.order.application.dtos.response.*;
+import com.two_ddang.logistics.order.application.exception.BusinessException;
 import com.two_ddang.logistics.order.domain.model.Order;
 import com.two_ddang.logistics.order.domain.model.OrderProduct;
 import com.two_ddang.logistics.order.domain.repository.OrderRepository;
 import com.two_ddang.logistics.order.infrastructure.CompanyService;
 import com.two_ddang.logistics.order.infrastructure.DeliveryService;
-import com.two_ddang.logistics.order.infrastructure.ProductService;
 import com.two_ddang.logistics.order.infrastructure.dtos.CompanyDetailResponse;
 import com.two_ddang.logistics.order.infrastructure.dtos.DeliveryCreateRequest;
 import com.two_ddang.logistics.order.presentation.dtos.CreateOrderRequest;
@@ -21,10 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-import static com.two_ddang.logistics.order.presentation.dtos.CreateOrderRequest.*;
+import static com.two_ddang.logistics.order.presentation.dtos.CreateOrderRequest.CreateOrderProductRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +31,6 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final CompanyService companyService;
-    private final ProductService productService;
     private final DeliveryService deliveryService;
 
     @Transactional
@@ -67,7 +64,7 @@ public class OrderService {
 
     public OrderDetailResponse getOrder(UUID orderId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
 
         String reqCompanyName = companyService.getCompany(order.getReqCompanyId()).getData().getCompanyName();
         String resCompanyName = companyService.getCompany(order.getResCompanyId()).getData().getCompanyName();
@@ -79,7 +76,7 @@ public class OrderService {
     @Transactional
     public UpdateOrderStatusResponse updateOrderStatus(UUID orderId, UpdateOrderStatusRequest updateOrderStatusRequestDto) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
         order.updateStatus(updateOrderStatusRequestDto.getOrderStatus());
         return UpdateOrderStatusResponse.of(order);
     }
@@ -87,7 +84,7 @@ public class OrderService {
     @Transactional
     public CancelOrderResponse cancelOrder(UUID orderId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
         order.cancel();
         return CancelOrderResponse.of(order);
     }
@@ -96,7 +93,7 @@ public class OrderService {
     @Transactional
     public void deleteOrder(UUID orderId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
         //유저 정보 받아 오는 방법 ??
 //        order.delete();
     }

@@ -12,7 +12,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 		}
 )
 @EnableFeignClients
-@EnableJpaAuditing
 public class CompanyApplication {
 
 	public static void main(String[] args) {

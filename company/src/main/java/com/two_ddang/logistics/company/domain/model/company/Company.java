@@ -3,6 +3,7 @@ package com.two_ddang.logistics.company.domain.model.company;
 import com.two_ddang.logistics.company.presentation.dtos.company.CreatedCompanyRequest;
 import com.two_ddang.logistics.company.presentation.dtos.company.UpdateCompanyInfoRequest;
 import com.two_ddang.logistics.core.entity.BaseEntity;
+import com.two_ddang.logistics.core.entity.CompanyType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;

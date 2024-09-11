@@ -2,8 +2,8 @@ package com.two_ddang.logistics.delivery.presentation.controller;
 
 
 import com.two_ddang.logistics.core.util.CommonApiResponses;
+import com.two_ddang.logistics.core.util.ResponseDTO;
 import com.two_ddang.logistics.delivery.application.dto.DeliveryRes;
-import com.two_ddang.logistics.delivery.holder.Result;
 import com.two_ddang.logistics.delivery.presentation.request.DeliveryCreateRequest;
 import com.two_ddang.logistics.delivery.presentation.request.DeliverySortStandard;
 import com.two_ddang.logistics.delivery.presentation.request.DeliveryStartRequest;
@@ -43,7 +43,7 @@ public class DeliveryController {
 
     @PostMapping
     @Operation(summary = "배송 생성", description = "배송건 생성 API")
-    public ResponseEntity<Result<DeliveryRes>> craete(@RequestBody DeliveryCreateRequest request) {
+    public ResponseEntity<ResponseDTO<DeliveryRes>> craete(@RequestBody DeliveryCreateRequest request) {
 
         DeliveryRes result = DeliveryRes.fromVO(
                 UUID.randomUUID(),
@@ -57,24 +57,24 @@ public class DeliveryController {
                 LocalDateTime.now()
         );
 
-        return ResponseEntity.ok(Result.success(result));
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
     }
 
     @GetMapping("/{deliveryId}")
     @Operation(summary = "배송 단건 조회", description = "배송 단건 조회 API")
-    public ResponseEntity<Result<DeliveryRes>> findById(@PathVariable UUID deliveryId) {
+    public ResponseEntity<ResponseDTO<DeliveryRes>> findById(@PathVariable UUID deliveryId) {
 
         DeliveryRes result = DeliveryRes.example(false);
 
-        return ResponseEntity.ok(Result.success(result));
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
     }
 
 
     @GetMapping
     @Operation(summary = "배송 검색", description = "배송 검색 API")
-    public ResponseEntity<Result<Page<DeliveryRes>>> search(
+    public ResponseEntity<ResponseDTO<Page<DeliveryRes>>> search(
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "") String keyword,
@@ -91,28 +91,28 @@ public class DeliveryController {
 
         PageImpl result = new PageImpl(list, PageRequest.of(pageNumber + 1, size), 100);
 
-        return ResponseEntity.ok(Result.success(result));
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
     }
 
 
     @PatchMapping("/{deliveryId}/delivery")
     @Operation(summary = "배송 시작", description = "배송건 시작 API")
-    public ResponseEntity<Result<DeliveryRes>> startDelivery() {
+    public ResponseEntity<ResponseDTO<DeliveryRes>> startDelivery() {
 
         DeliveryRes result = DeliveryRes.example(false);
 
-        return ResponseEntity.ok(Result.success(result));
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
     }
 
     @DeleteMapping("/{deliveryId}")
     @Operation(summary = "배송 논리적 삭제", description = "배송 논리적 삭제 API")
-    public ResponseEntity<Result<Void>> softDelete(@PathVariable UUID deliveryId) {
+    public ResponseEntity<ResponseDTO<Void>> softDelete(@PathVariable UUID deliveryId) {
 
 //        DeliveryRes result = DeliveryRes.example(false);
 
-        return ResponseEntity.ok(Result.success(null));
+        return ResponseEntity.ok(ResponseDTO.ok());
 
     }
 

@@ -2,11 +2,8 @@ package com.two_ddang.logistics.delivery.presentation.controller;
 
 
 import com.two_ddang.logistics.core.util.CommonApiResponses;
-import com.two_ddang.logistics.delivery.application.dto.DeliveryRes;
+import com.two_ddang.logistics.core.util.ResponseDTO;
 import com.two_ddang.logistics.delivery.application.dto.TransitRes;
-import com.two_ddang.logistics.delivery.domain.model.TransitStatus;
-import com.two_ddang.logistics.delivery.holder.Result;
-import com.two_ddang.logistics.delivery.presentation.request.DeliverySortStandard;
 import com.two_ddang.logistics.delivery.presentation.request.TransitSortStandard;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
@@ -21,7 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.IntStream;
@@ -39,39 +35,39 @@ public class TransitController {
 
     @PostMapping("/hubs/{hubId}")
     @Operation(summary = "허브에서 운송 요청", description = "허브에서 운송 요청 API")
-    public ResponseEntity<Result<TransitRes>> craete(@PathVariable UUID hubId) {
+    public ResponseEntity<ResponseDTO<TransitRes>> craete(@PathVariable UUID hubId) {
 
         TransitRes result = TransitRes.example(10);
 
-        return ResponseEntity.ok(Result.success(result));
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
     }
 
     @GetMapping("/{transitId}")
     @Operation(summary = "허브에서 운송 요청", description = "허브에서 운송 요청 API")
-    public ResponseEntity<Result<TransitRes>> findById(@PathVariable UUID transitId) {
+    public ResponseEntity<ResponseDTO<TransitRes>> findById(@PathVariable UUID transitId) {
 
         TransitRes result = TransitRes.example(10);
 
-        return ResponseEntity.ok(Result.success(result));
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
     }
 
 
     @GetMapping("/routes/{routeId}")
     @Operation(summary = "운송 경로 단건 조회", description = "운송 경로 단건 조회 API")
-    public ResponseEntity<Result<TransitRes>> findRouteById(@PathVariable UUID routeId) {
+    public ResponseEntity<ResponseDTO<TransitRes>> findRouteById(@PathVariable UUID routeId) {
 
         TransitRes result = TransitRes.example(10);
 
-        return ResponseEntity.ok(Result.success(result));
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
     }
 
 
     @GetMapping
     @Operation(summary = "운송 검색", description = "운송 검색 API")
-    public ResponseEntity<Result<Page<TransitRes>>> search(
+    public ResponseEntity<ResponseDTO<Page<TransitRes>>> search(
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "") String keyword,
@@ -88,38 +84,38 @@ public class TransitController {
 
         PageImpl result = new PageImpl(list, PageRequest.of(pageNumber + 1, size), 100);
 
-        return ResponseEntity.ok(Result.success(result));
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
     }
 
 
     @PatchMapping("/routes/{routeId}/transit")
     @Operation(summary = "운송 시작", description = "운송 시작 API")
-    public ResponseEntity<Result<TransitRes>> startTransit() {
+    public ResponseEntity<ResponseDTO<TransitRes>> startTransit() {
 
         TransitRes result = TransitRes.example(7);
 
-        return ResponseEntity.ok(Result.success(result));
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
     }
 
     @PatchMapping("/routes/{routeId}/arrive")
     @Operation(summary = "경유 허브 도착", description = "경유 허브 도착 API")
-    public ResponseEntity<Result<TransitRes>> arriveTransit(@PathVariable UUID routeId) {
+    public ResponseEntity<ResponseDTO<TransitRes>> arriveTransit(@PathVariable UUID routeId) {
 
         TransitRes result = TransitRes.example(7);
 
-        return ResponseEntity.ok(Result.success(result));
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
     }
 
     @DeleteMapping("/{transitId}")
     @Operation(summary = "운송 논리적 삭제", description = "운송 논리적 삭제 API")
-    public ResponseEntity<Result<Void>> softDelete(@PathVariable UUID transitId) {
+    public ResponseEntity<ResponseDTO<Void>> softDelete(@PathVariable UUID transitId) {
 
 //        DeliveryRes result = DeliveryRes.example(false);
 
-        return ResponseEntity.ok(Result.success(null));
+        return ResponseEntity.ok(ResponseDTO.okWithData(null));
 
     }
 

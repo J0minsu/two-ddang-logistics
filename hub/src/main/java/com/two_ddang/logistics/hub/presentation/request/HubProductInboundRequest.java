@@ -14,7 +14,6 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class HubProductInboundRequest {
 
-    private UUID hubId;
     private UUID productId;
     private UUID companyId;
     private String productName;

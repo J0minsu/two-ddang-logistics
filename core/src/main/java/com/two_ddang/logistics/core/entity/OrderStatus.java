@@ -1,4 +1,4 @@
-package com.two_ddang.logistics.order.domain.model;
+package com.two_ddang.logistics.core.entity;
 
 public enum OrderStatus {
 

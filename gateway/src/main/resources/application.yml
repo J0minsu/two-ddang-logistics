@@ -11,14 +11,16 @@ spring:
       - org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration
       - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 
+  data:
+    redis:
+      host: ${redis-url}
+      port: ${redis-port}
+
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:19090/eureka/
 
-  redis:
-    host: ${redis-url}
-    port: ${redis-port}
 
 server:
   port: 19091

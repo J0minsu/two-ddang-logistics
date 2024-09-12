@@ -1,5 +1,6 @@
 package com.two_ddang.logistics.gateway.infrastructure;
 
+import com.two_ddang.logistics.core.entity.UserType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -83,10 +84,12 @@ public class JwtAuthenticationFilter implements WebFilter {
     private PassPort jwtToPassport(Claims claims) {
         Long userId = claims.get("userId", Long.class);
         String username = claims.get("username", String.class);
+        String userType = claims.get("userType", String.class);
+
         LocalDateTime expirationTime = claims.getExpiration()
                 .toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 
-        return new PassPort(userId, username, expirationTime);
+        return new PassPort(userId, username, expirationTime, UserType.valueOf(userType));
     }
 
 }

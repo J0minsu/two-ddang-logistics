@@ -11,7 +11,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 				"com.two_ddang.logistics.core"
 		}
 )
-@EnableJpaAuditing
 @EnableFeignClients
 public class OrderApplication{
 

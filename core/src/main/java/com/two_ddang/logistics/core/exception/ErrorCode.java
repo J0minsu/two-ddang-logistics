@@ -19,7 +19,13 @@ public enum ErrorCode {
 
 
     FAILED_DELIVERY_REQ(HttpStatus.BAD_REQUEST,"배송 요청이 실패 했습니다." ),
-    FAILED_CREATE_ORDER(HttpStatus.BAD_REQUEST, "주문 생성 실패");
+    FAILED_CREATE_ORDER(HttpStatus.BAD_REQUEST, "주문 생성 실패"),
+    COMPANY_NOT_FOUND(HttpStatus.NOT_FOUND,"업체가 존재하지 않습니다."),
+
+    SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"서버 오류가 발생했습니다. 잠시후 다시 시도해 주세요."),
+
+    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 상품이 존재 하지 않습니다."),
+    COMPANY_PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "업체 상품이 존재 하지 않습니다." );
 
     private final HttpStatus httpStatus;
     private final String message;

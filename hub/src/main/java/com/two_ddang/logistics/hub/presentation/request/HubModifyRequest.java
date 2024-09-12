@@ -12,8 +12,5 @@ import lombok.NoArgsConstructor;
 public class HubModifyRequest {
 
     private String name;
-    private String address;
-    private String latitude;
-    private String longitude;
 
 }

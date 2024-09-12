@@ -17,5 +17,6 @@ public class HubCreateRequest {
     private String address;
     private String latitude;
     private String longitude;
+    private int managerId;
 
 }

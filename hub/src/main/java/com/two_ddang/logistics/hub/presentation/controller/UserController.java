@@ -75,6 +75,12 @@ public class UserController {
             @RequestParam(defaultValue = "HUB") UserType userType,
             @RequestParam(defaultValue = "CREATED_DESC") HubSortStandard standard) {
 
+        size = switch (size) {
+            case 30 -> 30;
+            case 50 -> 50;
+            default -> 10;
+        };
+
         Page<UserVO> users = userService.findByUserType(pageNumber, size, userType, standard);
 
         Page<UserRes> result = users.map(UserRes::fromVO);

@@ -1,5 +1,6 @@
 package com.two_ddang.logistics.hub.application.dto;
 
+import com.two_ddang.logistics.hub.domain.vo.HubRouteVO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,11 +21,9 @@ public class HubRouteRes {
     private int takeTime;
     private String route;
 
-    public static HubRouteRes fromVO(
-            UUID departmentHubId, UUID arriveHubId,
-            int takeTime, String route) {
+    public static HubRouteRes fromVO(HubRouteVO hubRoute) {
 
-        return new HubRouteRes(departmentHubId, arriveHubId, takeTime, route);
+        return new HubRouteRes(hubRoute.getDepartmentHub().getId(), hubRoute.getArriveHub().getId(), hubRoute.getTakeTime(), hubRoute.getRoute());
 
     }
 

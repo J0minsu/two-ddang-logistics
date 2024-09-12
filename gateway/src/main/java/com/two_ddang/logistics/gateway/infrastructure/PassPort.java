@@ -1,5 +1,6 @@
 package com.two_ddang.logistics.gateway.infrastructure;
 
+import com.two_ddang.logistics.core.entity.UserType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,12 +20,15 @@ public class PassPort {
 
     @Getter
     private LocalDateTime expirationTime;
+    private UserType userType;
 
-    public PassPort(Long userId, String userName, LocalDateTime expirationTime) {
+    public PassPort(Long userId, String userName, LocalDateTime expirationTime,
+                    UserType userType) {
         this.id = UUID.randomUUID().toString();
         this.userId = userId;
         this.userName = userName;
         this.expirationTime = expirationTime;
+        this.userType=userType;
     }
 
 }

@@ -5,8 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication(
 		scanBasePackages = {
-		"com.two-ddang.logistics.gateway",
-		"com.two-ddang.logistics.core"
+		"com.two_ddang.logistics.gateway",
+		"com.two_ddang.logistics.core"
 		}
 )
 public class GatewayApplication {

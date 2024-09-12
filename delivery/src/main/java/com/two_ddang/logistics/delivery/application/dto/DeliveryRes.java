@@ -2,6 +2,8 @@ package com.two_ddang.logistics.delivery.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.two_ddang.logistics.core.entity.DeliveryStatus;
+import com.two_ddang.logistics.delivery.domain.model.Delivery;
+import com.two_ddang.logistics.delivery.domain.vo.DeliveryVO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -24,13 +26,11 @@ public class DeliveryRes {
     private DeliveryStatus deliveryStatus;
     private LocalDateTime createdAt;
 
-    public static DeliveryRes fromVO(
-            UUID deliveryId, UUID deliveryAgentId, UUID orderId, UUID departHubId, UUID arrivedHubId,
-            String deliveryAddress, UUID receiveCompanyId, DeliveryStatus deliveryStatus, LocalDateTime createdAt) {
+    public static DeliveryRes fromVO(DeliveryVO delivery) {
 
         return new DeliveryRes(
-                deliveryId, deliveryAgentId, orderId, departHubId, arrivedHubId,
-                deliveryAddress, receiveCompanyId, deliveryStatus, createdAt);
+                delivery.getId(), delivery.getDeliveryAgent().getId(), delivery.getOrderId(), delivery.getDepartmentHubId(), delivery.getArriveHubId(),
+                delivery.getDeliveryAddress(), delivery.getReceiveCompanyId(), delivery.getDeliveryStatus(), delivery.getCreatedAt());
 
     }
 

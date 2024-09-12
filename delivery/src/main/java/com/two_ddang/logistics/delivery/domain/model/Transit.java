@@ -2,6 +2,7 @@ package com.two_ddang.logistics.delivery.domain.model;
 
 import com.two_ddang.logistics.core.entity.BaseEntity;
 import com.two_ddang.logistics.core.entity.TransitStatus;
+import com.two_ddang.logistics.delivery.infrastructrure.exception.NoSuchElementApplicationException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Entity(name = "p_transits")
@@ -57,6 +59,17 @@ public class Transit extends BaseEntity {
         this.transitStatus = transitStatus;
     }
 
+    public static Transit of(DeliveryAgent transitAgent, int totalEstimateDistance, TransitStatus transitStatus, List<Delivery> deliveries) {
+
+        Transit transit = new Transit(transitAgent, totalEstimateDistance, TransitStatus.WAIT);
+
+        /**
+         * TODO TransitRoute
+         */
+
+        return transit;
+
+    }
 
     public void arriveHub(UUID arrivedHubId) {
 
@@ -69,6 +82,22 @@ public class Transit extends BaseEntity {
         else {
             this.transitAgent.stayHub(arrivedHubId);
         }
+
+    }
+
+    public Optional<TransitRoute> getSpecificRoute(UUID routeId) {
+
+        return transitRoutes.stream().filter(i -> i.equals(routeId)).findFirst();
+
+    }
+
+    public void startTransitRoute(UUID routeId) {
+        TransitRoute transitRoute = transitRoutes.stream()
+                .filter(i -> i.equals(routeId))
+                .findFirst()
+                .orElseThrow(NoSuchElementApplicationException::new);
+
+        transitRoute.startTransit();
 
     }
 }

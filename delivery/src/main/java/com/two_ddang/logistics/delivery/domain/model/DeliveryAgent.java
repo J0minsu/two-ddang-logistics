@@ -1,5 +1,6 @@
 package com.two_ddang.logistics.delivery.domain.model;
 
+import com.two_ddang.logistics.core.entity.BaseEntity;
 import com.two_ddang.logistics.core.entity.DriverAgentType;
 import com.two_ddang.logistics.core.entity.DriveStatus;
 import jakarta.persistence.*;
@@ -16,9 +17,9 @@ import java.util.UUID;
 @Getter
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(exclude = "delivery")
+@ToString
 @Comment("베(운)송 담당자 테이블")
-public class DeliveryAgent {
+public class DeliveryAgent extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -77,6 +78,10 @@ public class DeliveryAgent {
      */
     public static DeliveryAgent ofTransitAgent(Integer userId, UUID slackId, UUID stayHubId) {
         return new DeliveryAgent(userId, null, DriverAgentType.TRANSIT, slackId, DriveStatus.WAITING, stayHubId);
+    }
+
+    public static DeliveryAgent empty() {
+        return new DeliveryAgent();
     }
 
     /**

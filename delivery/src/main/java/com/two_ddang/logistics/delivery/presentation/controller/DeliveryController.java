@@ -1,12 +1,15 @@
 package com.two_ddang.logistics.delivery.presentation.controller;
 
 
+import com.two_ddang.logistics.core.entity.DeliveryStatus;
 import com.two_ddang.logistics.core.util.CommonApiResponses;
 import com.two_ddang.logistics.core.util.ResponseDTO;
 import com.two_ddang.logistics.delivery.application.dto.DeliveryRes;
+import com.two_ddang.logistics.delivery.application.service.DeliveryService;
+import com.two_ddang.logistics.delivery.domain.model.Delivery;
+import com.two_ddang.logistics.delivery.domain.vo.DeliveryVO;
 import com.two_ddang.logistics.delivery.presentation.request.DeliveryCreateRequest;
 import com.two_ddang.logistics.delivery.presentation.request.DeliverySortStandard;
-import com.two_ddang.logistics.delivery.presentation.request.DeliveryStartRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -27,7 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 
@@ -41,21 +43,18 @@ import java.util.stream.IntStream;
 @CommonApiResponses
 public class DeliveryController {
 
+    private final DeliveryService deliveryService;
+
     @PostMapping
     @Operation(summary = "배송 생성", description = "배송건 생성 API")
     public ResponseEntity<ResponseDTO<DeliveryRes>> craete(@RequestBody DeliveryCreateRequest request) {
 
-        DeliveryRes result = DeliveryRes.fromVO(
-                UUID.randomUUID(),
-                null,
-                request.getOrderId(),
-                request.getDepartHubId(),
-                request.getArrivedHubId(),
-                request.getDeliveryAddress(),
-                request.getReceiveCompanyId(),
-                request.getDeliveryStatus(),
-                LocalDateTime.now()
-        );
+
+        DeliveryVO delivery = deliveryService.createDelivery(request);
+
+        System.out.println("delivery = " + delivery);
+
+        DeliveryRes result = DeliveryRes.fromVO(delivery);
 
         return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
@@ -65,7 +64,9 @@ public class DeliveryController {
     @Operation(summary = "배송 단건 조회", description = "배송 단건 조회 API")
     public ResponseEntity<ResponseDTO<DeliveryRes>> findById(@PathVariable UUID deliveryId) {
 
-        DeliveryRes result = DeliveryRes.example(false);
+        DeliveryVO delivery = deliveryService.findById(deliveryId);
+
+        DeliveryRes result = DeliveryRes.fromVO(delivery);
 
         return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
@@ -77,7 +78,7 @@ public class DeliveryController {
     public ResponseEntity<ResponseDTO<Page<DeliveryRes>>> search(
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "") String keyword,
+            @RequestParam(defaultValue = "") DeliveryStatus status,
             @RequestParam(defaultValue = "CREATED_DESC") DeliverySortStandard sort
     ) {
 
@@ -87,9 +88,9 @@ public class DeliveryController {
             default -> 10;
         };
 
-        List<DeliveryRes> list = IntStream.range(1, size + 1).mapToObj(i -> DeliveryRes.example(true)).toList();
+        Page<DeliveryVO> deliveries = deliveryService.search(status, PageRequest.of(pageNumber, size, sort.getSort()));
 
-        PageImpl result = new PageImpl(list, PageRequest.of(pageNumber + 1, size), 100);
+        Page<DeliveryRes> result = deliveries.map(DeliveryRes::fromVO);
 
         return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
@@ -98,9 +99,33 @@ public class DeliveryController {
 
     @PatchMapping("/{deliveryId}/delivery")
     @Operation(summary = "배송 시작", description = "배송건 시작 API")
-    public ResponseEntity<ResponseDTO<DeliveryRes>> startDelivery() {
+    public ResponseEntity<ResponseDTO<DeliveryRes>> startDelivery(@PathVariable UUID deliveryId) {
 
-        DeliveryRes result = DeliveryRes.example(false);
+        /**
+         * TODO Passport 에서 사용자 정보
+         */
+        Integer userId = 1;
+
+        DeliveryVO delivery = deliveryService.startDelivery(userId, deliveryId);
+
+        DeliveryRes result = DeliveryRes.fromVO(delivery);
+
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
+
+    }
+
+    @PatchMapping("/{deliveryId}/finish")
+    @Operation(summary = "배송 종료", description = "배송건 종료 API")
+    public ResponseEntity<ResponseDTO<DeliveryRes>> finishDelivery(@PathVariable UUID deliveryId) {
+
+        /**
+         * TODO Passport 에서 사용자 정보
+         */
+        Integer userId = 1;
+
+        DeliveryVO delivery = deliveryService.finishDelivery(deliveryId);
+
+        DeliveryRes result = DeliveryRes.fromVO(delivery);
 
         return ResponseEntity.ok(ResponseDTO.okWithData(result));
 
@@ -111,6 +136,8 @@ public class DeliveryController {
     public ResponseEntity<ResponseDTO<Void>> softDelete(@PathVariable UUID deliveryId) {
 
 //        DeliveryRes result = DeliveryRes.example(false);
+
+        deliveryService.softDelete(deliveryId);
 
         return ResponseEntity.ok(ResponseDTO.ok());
 

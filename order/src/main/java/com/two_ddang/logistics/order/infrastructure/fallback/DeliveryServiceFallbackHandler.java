@@ -1,4 +1,4 @@
-package com.two_ddang.logistics.order.infrastructure.circuitbreaker;
+package com.two_ddang.logistics.order.infrastructure.fallback;
 
 import com.two_ddang.logistics.core.entity.OrderStatus;
 import com.two_ddang.logistics.core.exception.ErrorCode;

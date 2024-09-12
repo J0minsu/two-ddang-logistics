@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
-public class DeliveryServiceCircuitBreaker {
+public class DeliveryServiceFallbackHandler {
 
     private final DeliveryService deliveryService;
     private final CircuitBreakerRegistry circuitBreakerRegistry;

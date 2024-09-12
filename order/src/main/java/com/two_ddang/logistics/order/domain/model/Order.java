@@ -42,13 +42,17 @@ public class Order extends BaseEntity {
 
 
     public static Order create(CreateOrderRequest createOrderRequest, List<OrderProduct> orderProducts) {
-        return Order.builder()
+
+        Order order = Order.builder()
                 .reqCompanyId(createOrderRequest.getReqCompanyId())
                 .resCompanyId(createOrderRequest.getResCompanyId())
                 .orderStatus(OrderStatus.CREATED)
                 .orderProducts(orderProducts)
                 .totalPrice(orderProducts.stream().mapToLong(OrderProduct::sumPrice).sum())
                 .build();
+
+        orderProducts.forEach(orderProduct -> orderProduct.addOrder(order));
+        return order;
     }
 
     public void addDeliveryId(UUID deliveryId) {

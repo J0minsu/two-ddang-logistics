@@ -8,8 +8,11 @@ import com.two_ddang.logistics.order.domain.model.Order;
 import com.two_ddang.logistics.order.domain.model.OrderProduct;
 import com.two_ddang.logistics.order.domain.repository.OrderRepository;
 import com.two_ddang.logistics.order.infrastructure.CompanyService;
-import com.two_ddang.logistics.order.infrastructure.circuitbreaker.DeliveryServiceCircuitBreaker;
+import com.two_ddang.logistics.order.infrastructure.HubService;
+import com.two_ddang.logistics.order.infrastructure.fallback.DeliveryServiceFallbackHandler;
 import com.two_ddang.logistics.order.infrastructure.dtos.CompanyDetailResponse;
+import com.two_ddang.logistics.order.infrastructure.dtos.CompanyProductResponse;
+import com.two_ddang.logistics.order.infrastructure.dtos.HubProductOutboundRequest;
 import com.two_ddang.logistics.order.presentation.dtos.CreateOrderRequest;
 import com.two_ddang.logistics.order.presentation.dtos.UpdateOrderStatusRequest;
 import lombok.RequiredArgsConstructor;
@@ -29,17 +32,19 @@ import static com.two_ddang.logistics.order.presentation.dtos.CreateOrderRequest
 @Transactional(readOnly = true)
 public class OrderService {
 
+    private final HubService hubService;
     private final OrderRepository orderRepository;
     private final CompanyService companyService;
-    private final DeliveryServiceCircuitBreaker deliveryServiceCircuitBreaker;
+    private final DeliveryServiceFallbackHandler deliveryServiceCircuitBreaker;
 
     @Transactional
     public CreateOrderResponse createOrder(CreateOrderRequest createOrderRequest) {
         UUID reqCompanyId = createOrderRequest.getReqCompanyId();
+        CompanyDetailResponse reqCompany = companyService.getCompany(reqCompanyId).getData();
         UUID resCompanyId = createOrderRequest.getResCompanyId();
         CompanyDetailResponse resCompany = companyService.getCompany(resCompanyId).getData();
 
-        List<OrderProduct> orderProducts = validAndCreateOrderProduct(createOrderRequest);
+        List<OrderProduct> orderProducts = validAndCreateOrderProduct(reqCompanyId,createOrderRequest);
 
         Order order = orderRepository.save(Order.create(createOrderRequest, orderProducts));
 
@@ -98,11 +103,34 @@ public class OrderService {
     }
 
 
-    private List<OrderProduct> validAndCreateOrderProduct(CreateOrderRequest createOrderRequest) {
-        List<CreateOrderProductRequest> orderProducts = createOrderRequest.getOrderProducts();
-        // 상품 존재 여부 검증 매서드 공급업체 상품 조회 해서 검증
-        // 허브에서 검증해야하는데 hub_product_id 를 모른다.
-        //존재 하는 상품 가져오고 재고 차감  -> orderProduct 반환
-        return new ArrayList<>();
+
+    private List<OrderProduct> validAndCreateOrderProduct(UUID hubId, CreateOrderRequest createOrderRequest) {
+        List<CreateOrderProductRequest> orderProductsReq = createOrderRequest.getOrderProducts();
+        List<CompanyProductResponse> companyProducts =
+                companyService.getCompanyProducts(createOrderRequest.getReqCompanyId()).getData();
+
+        List<OrderProduct> orderProducts = new ArrayList<>();
+
+        for (CreateOrderProductRequest orderProduct : orderProductsReq) {
+
+            companyProducts.stream()
+                    .filter(prod -> prod.getProductId().equals(orderProduct.getProductId()))
+                    .findFirst()
+                    .ifPresentOrElse(
+                            product -> {
+                                orderProducts.add(OrderProduct.create(product, orderProduct.getQuantity()));
+                                hubService.order(hubId, HubProductOutboundRequest.of(
+                                        product.getProductId(),
+                                        createOrderRequest.getReqCompanyId(),
+                                        orderProduct.getQuantity()
+                                ));
+                            },
+                            () -> {
+                                  throw new BusinessException(ErrorCode.COMPANY_PRODUCT_NOT_FOUND);
+                            }
+                    );
+        }
+
+        return orderProducts;
     }
 }

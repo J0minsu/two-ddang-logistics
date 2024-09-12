@@ -38,6 +38,11 @@ management:
         alphanumeric-ids:
           enabled: true
 
+service:
+  jwt:
+    access-expiration: ${expiration-time}
+    secret-key: ${jwt-secret-key}
+
 resilience4j:
   circuitbreaker:
     configs:
@@ -51,7 +56,3 @@ resilience4j:
         failureRateThreshold: 50
         permittedNumberOfCallsInHalfOpenState: 3
         waitDurationInOpenState: 20s
-service:
-  jwt:
-    access-expiration: ${expiration-time}
-    secret-key: ${jwt-secret-key}

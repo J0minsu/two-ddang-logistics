@@ -1,6 +1,7 @@
 package com.two_ddang.logistics.hub.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.two_ddang.logistics.hub.domain.vo.HubVO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -26,11 +27,8 @@ public class HubRes {
     private LocalDateTime createdAt;
 
 
-    public static HubRes fromEntity(
-            UUID hubId, String name, String address,
-            String latitude, String longitude, LocalDateTime createdAt) {
-
-        return new HubRes(hubId, name, address, latitude, longitude, createdAt);
+    public static HubRes fromVO(HubVO hub) {
+        return new HubRes(hub.getId(), hub.getName(), hub.getAddress(), hub.getLatitude(), hub.getLongitude(), hub.getCreatedAt());
 
     }
 

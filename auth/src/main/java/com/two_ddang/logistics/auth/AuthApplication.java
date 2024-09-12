@@ -6,8 +6,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication(
 		scanBasePackages = {
-				"com.two-ddang.logistics.auth",
-				"com.two-ddang.logistics.core"
+				"com.two_ddang.logistics.auth",
+				"com.two_ddang.logistics.core"
 		}
 )
 @EnableFeignClients

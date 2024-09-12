@@ -14,7 +14,12 @@ public enum ErrorCode {
     // COMMON
     NOT_FOUND(HttpStatus.NOT_FOUND, "경로가 올바르지 않습니다"),
     CAN_NOT_ACTION_ROLE(HttpStatus.BAD_REQUEST, "해당 요청애 대한 권한이 없습니다."),
-    NOT_ENOUGH_STOCK(HttpStatus.BAD_REQUEST, "재고가 부족합니다.");
+    NOT_ENOUGH_STOCK(HttpStatus.BAD_REQUEST, "재고가 부족합니다."),
+
+
+
+    FAILED_DELIVERY_REQ(HttpStatus.BAD_REQUEST,"배송 요청이 실패 했습니다." ),
+    FAILED_CREATE_ORDER(HttpStatus.BAD_REQUEST, "주문 생성 실패");
 
     private final HttpStatus httpStatus;
     private final String message;

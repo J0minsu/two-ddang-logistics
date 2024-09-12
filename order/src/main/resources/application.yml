@@ -4,9 +4,9 @@ spring:
   application:
     name: order
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://${url}/ddang_logistics
+    username: ${username}
+    password: ${password}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -17,10 +17,10 @@ spring:
         format_sql: true
   data:
     redis:
-      host: ${REDIS_URL}
-      port: ${REDIS_PORT}
-      username: ${REDIS_USERNAME}
-      password: ${REDIS_PASSWORD}
+      host: ${redis-url}
+      port: ${redis-port}
+      username: ${redis-username}
+      password: ${redis-password}
 
 
   cloud:
@@ -46,14 +46,18 @@ resilience4j:
     instances:
       deliveryService:
         base-config: default
+      companyService:
+        base-config: default
+    circuit-breaker-aspect-order: 1
   retry:
     configs:
       default:
-        max-attempts: 3
-        wait-duration: 1000ms
+        max-attempts: 3 # 3번 재시도
+        wait-duration: 1000ms # 재시도 간격 1초
     instances:
-      deliveryService:
+      deliveryServiceRetry:
         base-config: default
+    retry-aspect-order: 2
 
 
 

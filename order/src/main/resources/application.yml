@@ -47,7 +47,9 @@ resilience4j:
       deliveryService:
         base-config: default
       companyService:
-        base-config: default
+        base-config: default # 여기서 커스텀 가능
+      hubService:
+        base-config: default # 커스텀 가능
     circuit-breaker-aspect-order: 1
   retry:
     configs:

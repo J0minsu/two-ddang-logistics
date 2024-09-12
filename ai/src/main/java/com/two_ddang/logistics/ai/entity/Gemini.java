@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.UUID;
@@ -19,22 +20,28 @@ public class Gemini extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Getter
     private UUID id;
 
     @Column
+    @Getter
     private Long userId;
 
     @Enumerated(EnumType.STRING)
     @Column
+    @Getter
     private AiType aiType;
 
     @Column
+    @Getter
     private UUID referenceId;
 
     @Column
+    @Getter
     private String prompt;
 
     @Column
+    @Getter
     private String content;
 
 }

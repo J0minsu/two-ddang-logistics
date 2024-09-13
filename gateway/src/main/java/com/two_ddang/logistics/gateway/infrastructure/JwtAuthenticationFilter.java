@@ -1,6 +1,7 @@
 package com.two_ddang.logistics.gateway.infrastructure;
 
 import com.two_ddang.logistics.core.entity.UserType;
+import com.two_ddang.logistics.core.util.PassPort;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -82,7 +83,7 @@ public class JwtAuthenticationFilter implements WebFilter {
     }
 
     private PassPort jwtToPassport(Claims claims) {
-        Long userId = claims.get("userId", Long.class);
+        Integer userId = claims.get("userId", Integer.class);
         String username = claims.get("username", String.class);
         String userType = claims.get("userType", String.class);
 

@@ -33,10 +33,7 @@ public interface CompanyFeignClient extends CompanyService {
     default ResponseDTO<CompanyDetailResponse> companyFallback(UUID companyId, Throwable e) {
         if (e instanceof FeignException.NotFound) {
             log.error(e.getMessage());
-            throw new BusinessException(
-                    ErrorCode.COMPANY_NOT_FOUND,
-                    companyId.toString() + " " + ErrorCode.COMPANY_NOT_FOUND.getMessage()
-            );
+            throw new BusinessException(ErrorCode.COMPANY_NOT_FOUND);
         }
         log.error(e.getMessage());
         throw new BusinessException(ErrorCode.SERVER_ERROR);

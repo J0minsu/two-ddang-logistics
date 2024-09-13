@@ -1,4 +1,4 @@
-package com.two_ddang.logistics.gateway.infrastructure;
+package com.two_ddang.logistics.core.util;
 
 import com.two_ddang.logistics.core.entity.UserType;
 import lombok.AccessLevel;

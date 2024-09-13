@@ -14,34 +14,29 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+@Getter
 @Entity(name = "p_ai")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Gemini extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Getter
     private UUID id;
 
     @Column
-    @Getter
     private Long userId;
 
     @Enumerated(EnumType.STRING)
     @Column
-    @Getter
     private AiType aiType;
 
     @Column
-    @Getter
     private UUID referenceId;
 
     @Column
-    @Getter
     private String prompt;
 
     @Column
-    @Getter
     private String content;
 
 }

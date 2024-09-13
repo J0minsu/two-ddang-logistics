@@ -1,6 +1,7 @@
 package com.two_ddang.logistics.gateway.infrastructure;
 
 import com.two_ddang.logistics.core.entity.UserType;
+import com.two_ddang.logistics.core.util.PassPort;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;

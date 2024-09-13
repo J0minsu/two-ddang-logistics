@@ -9,20 +9,19 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class PassPort {
 
     private String id;
 
-    private Long userId;
+    private Integer userId;
 
-    @Getter
     private String userName;
 
-    @Getter
     private LocalDateTime expirationTime;
     private UserType userType;
 
-    public PassPort(Long userId, String userName, LocalDateTime expirationTime,
+    public PassPort(Integer userId, String userName, LocalDateTime expirationTime,
                     UserType userType) {
         this.id = UUID.randomUUID().toString();
         this.userId = userId;

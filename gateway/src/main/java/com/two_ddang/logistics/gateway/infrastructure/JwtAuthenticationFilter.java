@@ -82,7 +82,7 @@ public class JwtAuthenticationFilter implements WebFilter {
     }
 
     private PassPort jwtToPassport(Claims claims) {
-        Long userId = claims.get("userId", Long.class);
+        Integer userId = claims.get("userId", Integer.class);
         String username = claims.get("username", String.class);
         String userType = claims.get("userType", String.class);
 

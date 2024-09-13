@@ -22,7 +22,7 @@ public class Delivery extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    public UUID id;
+    private UUID id;
     
     @Column(nullable = false)
     @Comment("주문 ID")
@@ -55,6 +55,10 @@ public class Delivery extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "delivery")
     private TransitRoute transitRoute;
 
+    public static DeliveryAgent empty() {
+        return new DeliveryAgent();
+    }
+
     public void assignmentAgent(DeliveryAgent deliveryAgent) {
         this.deliveryAgent = deliveryAgent;
     }
@@ -69,10 +73,20 @@ public class Delivery extends BaseEntity {
     }
 
     public static Delivery of(UUID orderId, UUID departmentHubId, UUID arriveHubId, String deliveryAddress, UUID receiveCompanyId) {
-        return new Delivery(orderId, DeliveryStatus.WAITING, departmentHubId, arriveHubId, deliveryAddress, receiveCompanyId);
+
+        DeliveryStatus status = departmentHubId.equals(arriveHubId) ? DeliveryStatus.ARRIVE_HUB : DeliveryStatus.BEFORE_TRANSIT;
+
+        return new Delivery(orderId, status, departmentHubId, arriveHubId, deliveryAddress, receiveCompanyId);
+
     }
 
-    public void startDelivery() {
+    public void startTransit() {
+        this.deliveryStatus = DeliveryStatus.TRANSITING;
+    }
+
+
+    public void startDelivery(DeliveryAgent deliveryAgent) {
+        this.deliveryAgent = deliveryAgent;
         this.deliveryStatus = DeliveryStatus.DELIVERING;
         this.deliveryAgent.startDelivery();
     }

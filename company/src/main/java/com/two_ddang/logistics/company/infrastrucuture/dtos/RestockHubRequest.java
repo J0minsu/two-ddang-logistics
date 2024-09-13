@@ -13,7 +13,6 @@ import java.util.UUID;
 @Builder
 public class RestockHubRequest {
 
-    private UUID hubId;
     private UUID productId;
     private UUID companyId;
     private String productName;
@@ -22,7 +21,6 @@ public class RestockHubRequest {
 
     public static RestockHubRequest create(Product product, RestockRequest restockRequest) {
         return RestockHubRequest.builder()
-                .hubId(product.getHubId())
                 .productId(product.getCompanyId())
                 .companyId(product.getCompanyId())
                 .productName(product.getProductName())

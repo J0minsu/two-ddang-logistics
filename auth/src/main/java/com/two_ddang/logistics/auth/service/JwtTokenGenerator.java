@@ -2,12 +2,12 @@ package com.two_ddang.logistics.auth.service;
 
 import com.two_ddang.logistics.core.entity.UserType;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
@@ -19,8 +19,7 @@ public class JwtTokenGenerator {
 
     public JwtTokenGenerator(@Value("${sever.jwt.secret-key}") String key,
                              @Value("${sever.jwt.access-expiration}") Long expirationTime) {
-        this.key = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8),
-                Jwts.SIG.HS256.key().build().getAlgorithm());
+        this.key = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(key));
         this.expirationTime = expirationTime;
     }
 

@@ -15,8 +15,6 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Slf4j
@@ -34,8 +32,7 @@ public class JwtAuthenticationFilter implements WebFilter {
                                    @Value("${server.jwt.internal-secret-key}") String internalKey) {
         this.externalSecretKey = externalSecretKey;
         this.expirationTime = expirationTime;
-        this.internalKey = new SecretKeySpec(internalKey.getBytes(StandardCharsets.UTF_8),
-                Jwts.SIG.HS256.key().build().getAlgorithm());
+        this.internalKey = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(internalKey));
     }
 
     @Override
@@ -84,7 +81,7 @@ public class JwtAuthenticationFilter implements WebFilter {
             String internalToken = createInternalToken(claims);
 
             exchange.getRequest().mutate()
-                    .header("InternalToken", "Bearer" + internalToken)
+                    .header("InternalToken", "Bearer " + internalToken)
                     .build();
 
             return true;

@@ -50,9 +50,15 @@ public class TokenUtils {
         if (claims.get("username", String.class) == null) {
             throw new ClaimsNullException(ErrorCode.USERNAME_IS_NULL);
         }
-
-        if (claims.get("userType", UserType.class) == null) {
+        String userType = claims.get("userType", String.class);
+        if (userType == null) {
             throw new ClaimsNullException(ErrorCode.USERTYPE_IS_NULL);
+        }
+
+        try {
+            UserType.valueOf(userType);
+        } catch (IllegalArgumentException e) {
+            throw new ClaimsNullException(ErrorCode.INVALID_USERTYPE);
         }
     }
 

@@ -2,6 +2,8 @@ package com.two_ddang.logistics.delivery.application.service;
 
 import com.two_ddang.logistics.core.entity.DeliveryStatus;
 import com.two_ddang.logistics.core.entity.TransitStatus;
+import com.two_ddang.logistics.delivery.application.service.feign.hub.HubService;
+import com.two_ddang.logistics.delivery.application.service.feign.hub.dto.req.HubRouteModifyRequest;
 import com.two_ddang.logistics.delivery.domain.model.Delivery;
 import com.two_ddang.logistics.delivery.domain.model.DeliveryAgent;
 import com.two_ddang.logistics.delivery.domain.model.Transit;
@@ -18,10 +20,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +37,8 @@ public class TransitService {
     private final TransitRepository transitRepository;
     private final DeliveryRepository deliveryRepository;
     private final DeliveryAgentRepository deliveryAgentRepository;
+
+    private final HubService hubService;
 
     @Transactional
     public TransitVO create(Integer userId, UUID hubId) {
@@ -51,16 +57,17 @@ public class TransitService {
          * AI Service Route 조회
          */
 
-        /**
-         * Hub Service 경로 업데이트 post
-         */
+
+        List<HubRouteModifyRequest> request = deliveries.stream()
+                .map(i -> new HubRouteModifyRequest(
+                        i.getDepartmentHubId(), i.getArriveHubId(),
+                        1, "route",
+                        transitAgent.getId())).toList();
+
+        CompletableFuture.runAsync(() -> hubService.modifyRoutes(request));
 
         /**
-         * Route 이동거리 700km 까지만 수행
-         */
-
-        /**
-         * TODO sequence
+         * TODO sequence from passport
          */
         Transit transit = Transit.of(transitAgent, arriveSet.size(), TransitStatus.WAIT, deliveries);
 
@@ -120,9 +127,7 @@ public class TransitService {
         TransitRoute transitRoute = transit.getSpecificRoute(routeId)
                 .orElseThrow(NoSuchElementApplicationException::new);
 
-        /**
-         * hub-service 에 경로 update
-         */
+        transitRoute.arriveTransit(request.getActualDistance(), request.getActualTime());
 
         transit.arriveHub(routeId);
 

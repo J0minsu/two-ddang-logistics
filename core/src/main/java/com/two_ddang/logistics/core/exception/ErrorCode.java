@@ -26,7 +26,7 @@ public enum ErrorCode {
     SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"서버 오류가 발생했습니다. 잠시후 다시 시도해 주세요."),
 
     PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 상품이 존재 하지 않습니다."),
-    COMPANY_PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "업체 상품이 존재 하지 않습니다." );
+    COMPANY_PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "업체 상품이 존재 하지 않습니다." ),
 
     // Delivery
     ALREADY_WORK_OUT(HttpStatus.BAD_REQUEST, "업무 중이지 않습니다."),

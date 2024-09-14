@@ -49,6 +49,15 @@ public class UserService {
 
     }
 
+    public UserVO findByUsername(String username) {
+
+        User user = userRepository.findByUsernameAndIsDeletedIsFalse(username)
+                .orElseThrow(NoSuchElementApplicationException::new);
+
+        return user.toVO();
+
+    }
+
     public Page<UserVO> findByUserType(int pageNumber, int size, UserType userType, HubSortStandard standard) {
 
         Page<User> users = userRepository.findByRole(userType, PageRequest.of(pageNumber + 1, size, standard.getSort()));

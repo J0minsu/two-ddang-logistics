@@ -25,6 +25,6 @@ public class HubApplication {
 
 	@PostConstruct
 	public void test() {
-		log.info("hello world! hub module");
+		log.info("hello world! transit module");
 	}
 }

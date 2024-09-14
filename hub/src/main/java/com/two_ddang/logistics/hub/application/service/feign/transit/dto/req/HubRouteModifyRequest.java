@@ -1,5 +1,4 @@
-package com.two_ddang.logistics.hub.presentation.request;
-
+package com.two_ddang.logistics.hub.application.service.feign.transit.dto.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;

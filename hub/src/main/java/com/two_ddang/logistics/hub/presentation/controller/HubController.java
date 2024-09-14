@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @SecurityRequirement(name = "Bearer Authentication")
@@ -130,14 +131,14 @@ public class HubController {
 
     @PostMapping("/routes")
     @Operation(summary = "허브 간 이동 경로 갱신", description = "허브 간 이동 경로 갱신 API")
-    public ResponseEntity<ResponseDTO<HubRouteRes>> updateRouteBetweenRoutes(
-            @RequestBody HubRouteModifyRequest request) {
+    public ResponseEntity<ResponseDTO<Void>> updateRouteBetweenRoutes(
+            @RequestBody List<HubRouteModifyRequest> request) {
 
-        HubRouteVO route = hubService.updateRouteBetweenRoutes(request);
+        hubService.updateRouteBetweenRoutes(request);
 
-        HubRouteRes result = HubRouteRes.fromVO(route);
+//        HubRouteRes result = HubRouteRes.fromVO(route);
 
-        return ResponseEntity.ok(ResponseDTO.okWithData(result));
+        return ResponseEntity.ok(ResponseDTO.ok());
 
     }
 

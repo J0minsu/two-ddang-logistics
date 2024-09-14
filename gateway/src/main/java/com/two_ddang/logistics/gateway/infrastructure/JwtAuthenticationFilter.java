@@ -23,15 +23,17 @@ import java.util.Date;
 @Component
 public class JwtAuthenticationFilter implements WebFilter {
 
-    @Value("${server.jwt.secret-key}")
-    private String externalSecretKey;
+    private final String externalSecretKey;
 
-    @Value("${server.jwt.access-expiration}")
-    private Long expirationTime;
+    private final Long expirationTime;
 
     private final SecretKey internalKey;
 
-    public JwtAuthenticationFilter(@Value("${server.jwt}") String internalKey) {
+    public JwtAuthenticationFilter(@Value("${server.jwt.secret-key}") String externalSecretKey,
+                                   @Value("${server.jwt.access-expiration}") Long expirationTime,
+                                   @Value("${server.jwt.internal-secret-key}") String internalKey) {
+        this.externalSecretKey = externalSecretKey;
+        this.expirationTime = expirationTime;
         this.internalKey = new SecretKeySpec(internalKey.getBytes(StandardCharsets.UTF_8),
                 Jwts.SIG.HS256.key().build().getAlgorithm());
     }
@@ -100,7 +102,7 @@ public class JwtAuthenticationFilter implements WebFilter {
                 .claim("username", claims.get("username"))
                 .claim("userType", claims.get("userType"))
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis()+expirationTime))
+                .expiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(internalKey)
                 .compact();
     }

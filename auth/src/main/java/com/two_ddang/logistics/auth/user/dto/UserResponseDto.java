@@ -2,13 +2,16 @@ package com.two_ddang.logistics.auth.user.dto;
 
 import com.two_ddang.logistics.core.entity.UserType;
 
+import java.util.UUID;
+
 public record UserResponseDto(
 
-        Long userId,
+        Integer userId,
         String username,
-        String password,
         String email,
-        UserType userType
+        UserType role,
+        String name,
+        UUID slackId
 ) {
 
 }

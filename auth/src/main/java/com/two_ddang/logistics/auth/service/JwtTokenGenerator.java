@@ -24,7 +24,7 @@ public class JwtTokenGenerator {
         this.expirationTime = expirationTime;
     }
 
-    public String createJwtToken(Long userId, String email,
+    public String createJwtToken(Integer userId, String email,
                                  String username, UserType userType) {
         return Jwts.builder()
                 .claim("userId", userId)

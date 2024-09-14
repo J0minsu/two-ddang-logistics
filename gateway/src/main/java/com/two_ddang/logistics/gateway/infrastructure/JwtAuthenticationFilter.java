@@ -1,7 +1,5 @@
 package com.two_ddang.logistics.gateway.infrastructure;
 
-import com.two_ddang.logistics.core.entity.UserType;
-import com.two_ddang.logistics.core.util.PassPort;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -17,8 +15,8 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import javax.crypto.SecretKey;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Slf4j
@@ -26,7 +24,17 @@ import java.util.Date;
 public class JwtAuthenticationFilter implements WebFilter {
 
     @Value("${server.jwt.secret-key}")
-    private String secretKey;
+    private String externalSecretKey;
+
+    @Value("${server.jwt.access-expiration}")
+    private Long expirationTime;
+
+    private final SecretKey internalKey;
+
+    public JwtAuthenticationFilter(@Value("${server.jwt}") String internalKey) {
+        this.internalKey = new SecretKeySpec(internalKey.getBytes(StandardCharsets.UTF_8),
+                Jwts.SIG.HS256.key().build().getAlgorithm());
+    }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
@@ -37,7 +45,7 @@ public class JwtAuthenticationFilter implements WebFilter {
         }
 
         String token = extractToken(exchange);
-        if (token == null || !validateTokenAndToPassport(token, exchange)) {
+        if (token == null || !validateExternalToken(token, exchange)) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
@@ -45,7 +53,7 @@ public class JwtAuthenticationFilter implements WebFilter {
         return chain.filter(exchange);
     }
 
-    public String extractToken(ServerWebExchange exchange) {
+    private String extractToken(ServerWebExchange exchange) {
         String authHeader = exchange.getRequest().getHeaders().getFirst("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);
@@ -55,10 +63,10 @@ public class JwtAuthenticationFilter implements WebFilter {
         return null;
     }
 
-    private boolean validateTokenAndToPassport(String token, ServerWebExchange exchange) {
+    private boolean validateExternalToken(String token, ServerWebExchange exchange) {
 
         try {
-            SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(secretKey));
+            SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(externalSecretKey));
             Jws<Claims> claimsJws = Jwts.parser()
                     .verifyWith(key)
                     .build().parseSignedClaims(token);
@@ -71,8 +79,11 @@ public class JwtAuthenticationFilter implements WebFilter {
                 return false;
             }
 
-            PassPort passPort = jwtToPassport(claims);
-            exchange.getAttributes().put("passport", passPort);
+            String internalToken = createInternalToken(claims);
+
+            exchange.getRequest().mutate()
+                    .header("InternalToken", "Bearer" + internalToken)
+                    .build();
 
             return true;
 
@@ -82,15 +93,16 @@ public class JwtAuthenticationFilter implements WebFilter {
         }
     }
 
-    private PassPort jwtToPassport(Claims claims) {
-        Integer userId = claims.get("userId", Integer.class);
-        String username = claims.get("username", String.class);
-        String userType = claims.get("userType", String.class);
-
-        LocalDateTime expirationTime = claims.getExpiration()
-                .toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-
-        return new PassPort(userId, username, expirationTime, UserType.valueOf(userType));
+    private String createInternalToken(Claims claims) {
+        return Jwts.builder()
+                .claim("userId", claims.get("userId"))
+                .claim("email", claims.get("email"))
+                .claim("username", claims.get("username"))
+                .claim("userType", claims.get("userType"))
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis()+expirationTime))
+                .signWith(internalKey)
+                .compact();
     }
 
 }

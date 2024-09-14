@@ -57,7 +57,7 @@ public class TokenUtils {
 
         try {
             UserType.valueOf(userType);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             throw new ClaimsNullException(ErrorCode.INVALID_USERTYPE);
         }
     }

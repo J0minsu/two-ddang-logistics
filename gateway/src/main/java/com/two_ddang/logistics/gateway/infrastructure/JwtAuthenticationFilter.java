@@ -25,7 +25,7 @@ import java.util.Date;
 @Component
 public class JwtAuthenticationFilter implements WebFilter {
 
-    @Value("${service.jwt.secret-key}")
+    @Value("${server.jwt.secret-key}")
     private String secretKey;
 
     @Override

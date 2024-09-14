@@ -6,13 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class PassPort {
-
-    private String id;
 
     private Integer userId;
 
@@ -23,7 +20,6 @@ public class PassPort {
 
     public PassPort(Integer userId, String userName, LocalDateTime expirationTime,
                     UserType userType) {
-        this.id = UUID.randomUUID().toString();
         this.userId = userId;
         this.userName = userName;
         this.expirationTime = expirationTime;

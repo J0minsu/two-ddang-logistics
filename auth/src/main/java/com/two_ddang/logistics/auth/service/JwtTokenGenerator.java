@@ -17,8 +17,8 @@ public class JwtTokenGenerator {
 
     private final Long expirationTime;
 
-    public JwtTokenGenerator(@Value("${service.jwt.secret-key}") String key,
-                             @Value("${service.jwt.access-expiration}") Long expirationTime) {
+    public JwtTokenGenerator(@Value("${sever.jwt.secret-key}") String key,
+                             @Value("${sever.jwt.access-expiration}") Long expirationTime) {
         this.key = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8),
                 Jwts.SIG.HS256.key().build().getAlgorithm());
         this.expirationTime = expirationTime;

@@ -3,6 +3,7 @@ package com.two_ddang.logistics.company.application.dtos.product;
 import com.two_ddang.logistics.company.domain.model.product.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
 public class ProductResponse {
 
     private UUID productId;

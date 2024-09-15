@@ -81,10 +81,5 @@ public class HubProduct extends BaseEntity {
         stock -= quantity;
     }
 
-    public HubProductVO toVO() {
-
-        return new HubProductVO(id, productName, productId, companyId, stock, hub.toVO(),
-                getCreatedAt(), getUpdatedAt(), getDeletedAt(), getCreatedBy(), getUpdatedBy(), getDeletedBy(), isDeleted());
-    }
 
 }

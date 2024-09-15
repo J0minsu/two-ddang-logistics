@@ -2,6 +2,7 @@ package com.two_ddang.logistics.delivery.application.dto;
 
 
 import com.two_ddang.logistics.core.entity.TransitStatus;
+import com.two_ddang.logistics.delivery.domain.model.Delivery;
 import com.two_ddang.logistics.delivery.domain.vo.DeliveryAgentVO;
 import com.two_ddang.logistics.delivery.domain.vo.TransitRouteVO;
 import com.two_ddang.logistics.delivery.domain.vo.TransitVO;
@@ -12,6 +13,7 @@ import lombok.Data;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;

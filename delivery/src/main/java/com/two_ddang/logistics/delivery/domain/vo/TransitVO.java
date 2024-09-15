@@ -11,6 +11,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -34,6 +35,9 @@ public class TransitVO {
     private final boolean isDeleted;
 
     public static TransitVO fromEntity(Transit transit) {
+
+        transit = Objects.isNull(transit) ? Transit.empty() : transit;
+
         return new TransitVO(
                 transit.getId(), DeliveryAgentVO.fromEntity(transit.getTransitAgent()), transit.getTotalEstimateDistance(),
                 transit.getTransitStatus(), transit.getTransitRoutes().stream().map(TransitRouteVO::fromEntity).toList(),

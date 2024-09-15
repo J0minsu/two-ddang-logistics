@@ -1,12 +1,15 @@
 package com.two_ddang.logistics.hub.domain.vo;
 
+import com.two_ddang.logistics.hub.domain.model.Hub;
+import com.two_ddang.logistics.hub.domain.model.HubAgent;
+import com.two_ddang.logistics.hub.domain.model.HubProduct;
+import com.two_ddang.logistics.hub.domain.model.HubRoute;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @AllArgsConstructor
@@ -31,6 +34,29 @@ public class HubVO {
     private final Integer deletedBy;
 
     private final boolean isDeleted;
+
+    public static HubVO fromEntity(Hub hub) {
+
+        hub = Objects.isNull(hub) ? Hub.emptyObject() : hub;
+
+        List<HubAgentVO> hubAgentsForVO = hub.getHubAgents()
+                .stream().map(HubAgentVO::fromEntity).toList();
+
+        List<HubProductVO> hubProducesForVO = hub.getHubProducts()
+                .stream().map(HubProductVO::fromEntity).toList();
+
+        List<HubRouteVO> arriveRoutesForVO = hub.getArriveRoutes()
+                .stream().map(HubRouteVO::fromEntity).toList();
+
+        List<HubRouteVO> departmentRoutesForVO = hub.getDepartmentRoutes()
+                .stream().map(HubRouteVO::fromEntity).toList();
+
+        return new HubVO(hub.getId(), hub.getName(), hub.getAddress(), hub.getLatitude(), hub.getLongitude(),
+                hubAgentsForVO, hubProducesForVO, arriveRoutesForVO, departmentRoutesForVO,
+                hub.getCreatedAt(), hub.getUpdatedAt(), hub.getDeletedAt(), hub.getCreatedBy(), hub.getUpdatedBy(), hub.getDeletedBy(), hub.isDeleted());
+
+    }
+
 
 
 }

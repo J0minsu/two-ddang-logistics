@@ -1,12 +1,16 @@
 package com.two_ddang.logistics.delivery.domain.vo;
 
 import com.two_ddang.logistics.core.entity.TransitStatus;
+import com.two_ddang.logistics.delivery.domain.model.Delivery;
+import com.two_ddang.logistics.delivery.domain.model.DeliveryAgent;
+import com.two_ddang.logistics.delivery.domain.model.Transit;
 import com.two_ddang.logistics.delivery.domain.model.TransitRoute;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -15,8 +19,8 @@ public class TransitRouteVO {
 
 
     private final UUID id;
-    private final DeliveryVO delivery;
-    private final TransitVO transit;
+    private final UUID deliveryId;
+    private final UUID transitId;
     private final DeliveryAgentVO transitAgent;
     private final int sequence;
     private final TransitStatus transitStatus;
@@ -41,9 +45,14 @@ public class TransitRouteVO {
 
     public static TransitRouteVO fromEntity(TransitRoute transitRoute) {
 
+        transitRoute = Objects.isNull(transitRoute) ? TransitRoute.empty() : transitRoute;
+        Delivery delivery = Objects.isNull(transitRoute.getDelivery()) ? Delivery.empty() : transitRoute.getDelivery();
+        Transit transit = Objects.isNull(transitRoute.getTransit()) ? Transit.empty() : transitRoute.getTransit();
+        DeliveryAgent agent = Objects.isNull(transitRoute.getTransitAgent()) ? DeliveryAgent.empty() : transitRoute.getTransitAgent();
+
         return new TransitRouteVO(
-                transitRoute.getId(), DeliveryVO.fromEntity(transitRoute.getDelivery()), TransitVO.fromEntity(transitRoute.getTransit()),
-                DeliveryAgentVO.fromEntity(transitRoute.getTransitAgent()), transitRoute.getSequence(), transitRoute.getTransitStatus(),
+                transitRoute.getId(), delivery.getId(), transit.getId(),
+                DeliveryAgentVO.fromEntity(agent), transitRoute.getSequence(), transitRoute.getTransitStatus(),
                 transitRoute.getDepartmentHubId(), transitRoute.getArriveHubId(), transitRoute.getRoute(),
                 transitRoute.getEstimateDistance(), transitRoute.getEstimateTime(), transitRoute.getActualDistance(), transitRoute.getActualTime(),
                 transitRoute.getDepartmentAt(), transitRoute.getArriveAt(),

@@ -55,7 +55,19 @@ public class UserController {
 
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/{username}")
+    @Operation(summary = "사용자 로그인 아이디로 조회", description = "사용자 로그인 아이디로 조회 API")
+    public ResponseEntity<ResponseDTO<UserRes>> findByUsername(@PathVariable String username) {
+
+        UserVO user = userService.findByUsername(username);
+
+        UserRes result = UserRes.fromVO(user);
+
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
+
+    }
+
+    @GetMapping("/id/{userId}")
     @Operation(summary = "사용자 단건 조회", description = "사용자 아이디로 조회 API")
     public ResponseEntity<ResponseDTO<UserRes>> findById(@PathVariable int userId) {
 

@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.util.Map;
 import java.util.UUID;
 
-@FeignClient(name = "hub")
+@FeignClient(name = "transit")
 public interface HubFeignClient extends HubService {
 
     Logger log = LoggerFactory.getLogger(HubFeignClient.class);

@@ -3,6 +3,7 @@ package com.two_ddang.logistics.delivery.domain.model;
 import com.two_ddang.logistics.core.entity.BaseEntity;
 import com.two_ddang.logistics.core.entity.TransitStatus;
 import com.two_ddang.logistics.delivery.infrastructrure.exception.NoSuchElementApplicationException;
+import com.two_ddang.logistics.delivery.presentation.request.TransitRouteArriveRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

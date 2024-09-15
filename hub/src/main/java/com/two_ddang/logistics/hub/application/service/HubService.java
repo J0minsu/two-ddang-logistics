@@ -1,6 +1,8 @@
 package com.two_ddang.logistics.hub.application.service;
 
 import com.two_ddang.logistics.core.entity.UserType;
+import com.two_ddang.logistics.hub.application.service.feign.company.CompanyService;
+import com.two_ddang.logistics.hub.application.service.feign.company.dto.req.RestockRequest;
 import com.two_ddang.logistics.hub.domain.model.Hub;
 import com.two_ddang.logistics.hub.domain.model.HubProduct;
 import com.two_ddang.logistics.hub.domain.model.HubRoute;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -30,6 +33,8 @@ public class HubService {
 
     private final HubRepository hubRepository;
     private final UserRepository userRepository;
+
+    private final CompanyService companyService;
 
     @Transactional
     public HubVO create(HubCreateRequest request) {
@@ -68,9 +73,9 @@ public class HubService {
         HubProduct hubProduct = hub.findHubProductById(request.getProductId());
 
         if(hubProduct.isEnoughStock(request.getQuantity())) {
-            /**
-             * TODO request to company-service, inbound
-             */
+            companyService.restock(
+                    hubProduct.getCompanyId(), new RestockRequest(hubProduct.getProductId(), request.getQuantity())
+            );
         }
         HubProduct afterHubProduct = hub.outbound(request.getProductId(), request.getCompanyId(), request.getQuantity());
 
@@ -120,21 +125,19 @@ public class HubService {
     }
 
     @Transactional
-    public HubRouteVO updateRouteBetweenRoutes(HubRouteModifyRequest request) {
+    public void updateRouteBetweenRoutes(List<HubRouteModifyRequest> request) {
 
-        Hub departmentHub = hubRepository.findByIdAndIsDeletedIsFalse(request.getDepartmentHubId())
-                        .orElseThrow(NoSuchElementApplicationException::new);
+        request.forEach(o -> {
+            Hub departmentHub = hubRepository.findByIdAndIsDeletedIsFalse(o.getDepartmentHubId())
+                            .orElseThrow(NoSuchElementApplicationException::new);
 
-        Hub arriveHub = hubRepository.findByIdAndIsDeletedIsFalse(request.getArriveHubId())
-                        .orElseThrow(NoSuchElementApplicationException::new);
+            Hub arriveHub = hubRepository.findByIdAndIsDeletedIsFalse(o.getArriveHubId())
+                            .orElseThrow(NoSuchElementApplicationException::new);
 
+            HubRoute route = departmentHub.updateRouteBetweenRoutes(
+                    arriveHub, o.getRoute(), o.getTakeTime());
+        });
 
-
-        HubRoute route = departmentHub.updateRouteBetweenRoutes(
-                arriveHub, request.getRoute(), request.getTakeTime()
-        );
-
-        return route.toVO();
     }
 
     @Transactional

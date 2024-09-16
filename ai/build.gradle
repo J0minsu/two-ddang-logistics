@@ -32,7 +32,8 @@ ext {
 
 dependencies {
 
-
+	//slack
+	implementation("com.slack.api:slack-api-client:1.42.1")
 
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt:0.12.6'

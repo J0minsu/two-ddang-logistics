@@ -1,6 +1,7 @@
 package com.two_ddang.logistics.delivery.application.dto;
 
 import com.two_ddang.logistics.core.entity.TransitStatus;
+import com.two_ddang.logistics.delivery.domain.vo.TransitRouteVO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,10 +13,11 @@ import java.util.UUID;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Schema(title = " DTO")
+@Schema(title = "운송 경로 응답 DTO")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TransitRouteRes {
 
+    private int sequence;
     private UUID transitRouteId;
     private UUID deliveryId;
     private UUID orderId;
@@ -25,13 +27,14 @@ public class TransitRouteRes {
     private TransitStatus transitStatus;
     private LocalDateTime arriveTime;
 
+    public static TransitRouteRes fromEntity(TransitRouteVO route) {
 
-    public static TransitRouteRes example() {
-
-        UUID uuid = UUID.randomUUID();
-
-        return new TransitRouteRes(uuid, uuid, uuid, uuid, uuid, "고속도로", TransitStatus.WAIT, LocalDateTime.now());
+        return new TransitRouteRes(
+                route.getSequence(),
+                route.getId(), route.getDelivery().getId(), route.getDelivery().getOrderId(),
+                route.getDepartmentHubId(), route.getArriveHubId(),
+                route.getRoute(), route.getTransitStatus(), route.getArriveAt()
+        );
     }
-
 
 }

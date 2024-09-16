@@ -11,6 +11,7 @@ import com.two_ddang.logistics.company.domain.model.product.Product;
 import com.two_ddang.logistics.company.domain.repository.company.CompanyRepository;
 import com.two_ddang.logistics.company.domain.repository.product.ProductRepository;
 import com.two_ddang.logistics.company.infrastrucuture.HubService;
+import com.two_ddang.logistics.company.infrastrucuture.dtos.HubProductRes;
 import com.two_ddang.logistics.company.infrastrucuture.dtos.RestockHubRequest;
 import com.two_ddang.logistics.company.presentation.dtos.company.CreatedCompanyRequest;
 import com.two_ddang.logistics.company.presentation.dtos.company.RestockRequest;
@@ -83,6 +84,6 @@ public class CompanyService {
 
         RestockHubRequest request = RestockHubRequest.create(product, restockRequest);
 
-        ResponseDTO<Void> restock = hubService.restock(request);
+        ResponseDTO<HubProductRes> hubProductResResponseDTO = hubService.inboundProduct(product.getHubId(), request);
     }
 }

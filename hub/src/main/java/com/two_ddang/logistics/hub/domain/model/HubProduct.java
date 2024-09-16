@@ -23,7 +23,7 @@ import java.util.UUID;
 @Getter
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(exclude = "hub")
+@ToString(exclude = "transit")
 @Comment("허브 상품")
 public class HubProduct extends BaseEntity {
 

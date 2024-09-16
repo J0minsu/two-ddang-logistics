@@ -55,7 +55,19 @@ public class UserController {
 
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/{username}")
+    @Operation(summary = "사용자 로그인 아이디로 조회", description = "사용자 로그인 아이디로 조회 API")
+    public ResponseEntity<ResponseDTO<UserRes>> findByUsername(@PathVariable String username) {
+
+        UserVO user = userService.findByUsername(username);
+
+        UserRes result = UserRes.fromVO(user);
+
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
+
+    }
+
+    @GetMapping("/id/{userId}")
     @Operation(summary = "사용자 단건 조회", description = "사용자 아이디로 조회 API")
     public ResponseEntity<ResponseDTO<UserRes>> findById(@PathVariable int userId) {
 
@@ -74,6 +86,12 @@ public class UserController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "HUB") UserType userType,
             @RequestParam(defaultValue = "CREATED_DESC") HubSortStandard standard) {
+
+        size = switch (size) {
+            case 30 -> 30;
+            case 50 -> 50;
+            default -> 10;
+        };
 
         Page<UserVO> users = userService.findByUserType(pageNumber, size, userType, standard);
 

@@ -1,10 +1,12 @@
 spring:
+  config:
+    import: optional:classpath:.env[.properties]
   application:
     name: order
   datasource:
-    url: ${DB_URL}
-    username: ${USERNAME}
-    password: ${PASSWORD}
+    url: jdbc:postgresql://${url}/ddang_logistics
+    username: ${username}
+    password: ${password}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -15,10 +17,53 @@ spring:
         format_sql: true
   data:
     redis:
-      host: ${REDIS_URL}
-      port: ${REDIS_PORT}
-      username: ${REDIS_USERNAME}
-      password: ${REDIS_PASSWORD}
+      host: ${redis-url}
+      port: ${redis-port}
+      username: ${redis-username}
+      password: ${redis-password}
+
+
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+        alphanumeric-ids:
+          enabled: true
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        register-health-indicator: true  # 서킷 브레이커 헬스체크 활성화
+        sliding-window-type: COUNT_BASED  # 슬라이딩 윈도우 타입 (카운트 기반)
+        sliding-window-size: 5            # 슬라이딩 윈도우 크기 (5번의 호출)
+        minimum-number-of-calls: 5         # 서킷을 열기 위한 최소 호출 수
+        slow-call-rate-threshold: 100     # 느린 호출을 실패로 간주할 비율 (100%)
+        slow-call-duration-threshold: 60s # 느린 호출의 기준 시간 (60초)
+        failure-rate-threshold: 50        # 서킷을 열기 위한 실패율 (50%)
+        permitted-number-of-calls-in-half-open-state: 3  # Half-Open 상태에서 허용할 호출 수
+        wait-duration-in-open-state: 20s  # 서킷이 열린 상태로 유지될 시간 (20초)
+    instances:
+      deliveryService:
+        base-config: default
+      companyService:
+        base-config: default # 여기서 커스텀 가능
+      hubService:
+        base-config: default # 커스텀 가능
+    circuit-breaker-aspect-order: 1
+  retry:
+    configs:
+      default:
+        max-attempts: 3 # 3번 재시도
+        wait-duration: 1000ms # 재시도 간격 1초
+    instances:
+      deliveryServiceRetry:
+        base-config: default
+    retry-aspect-order: 2
+
+
+
+
 
 server:
   port: 19095

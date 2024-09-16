@@ -16,11 +16,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "p_hub_agents")
 @Getter
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(exclude = "hub")
+@ToString(exclude = "transit")
 @Comment("허브 담당자")
 public class HubAgent extends BaseEntity {
 

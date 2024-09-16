@@ -40,7 +40,6 @@ public enum ErrorCode {
     USERTYPE_IS_NULL(HttpStatus.BAD_REQUEST, "UserType이 Null 입니다."),
     INVALID_USERTYPE(HttpStatus.BAD_REQUEST, "유효하지 않은 유저타입입니다."),
 
-
     ;
     private final HttpStatus httpStatus;
     private final String message;

@@ -1,5 +1,6 @@
 package com.two_ddang.logistics.hub.application.dto;
 
+import com.two_ddang.logistics.hub.domain.vo.HubProductVO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,11 +21,9 @@ public class HubProductRes {
     private String productName;
     private int quantity;
 
-    public static HubProductRes fromVO(
-            UUID hubId, UUID productId, UUID companyId,
-            String productName, int quantity
-    ) {
-        return new HubProductRes(hubId, productId, companyId, productName, quantity);
+    public static HubProductRes fromVO(HubProductVO hubProduct) {
+        return new HubProductRes(hubProduct.getHub().getId(), hubProduct.getProductId(), hubProduct.getCompanyId(),
+                hubProduct.getProductName(), hubProduct.getStock());
     }
 
     public static HubProductRes example() {

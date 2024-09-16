@@ -10,9 +10,10 @@ import lombok.ToString;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "p_transit_route")
 @Getter
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -75,6 +76,14 @@ public class TransitRoute extends BaseEntity {
     @Comment("실제 소요 시간(분)")
     private int actualTime;
 
+    @Column
+    @Comment("출발 시간")
+    private LocalDateTime departmentAt;
+
+    @Column
+    @Comment("도착 시간")
+    private LocalDateTime arriveAt;
+
     protected TransitRoute(
             Delivery delivery, Transit transit, int sequence, TransitStatus transitStatus,
             UUID arriveHubId, String route, UUID departmentHubId, int estimateDistance, int estimateTime) {
@@ -98,9 +107,13 @@ public class TransitRoute extends BaseEntity {
 
     }
 
+    public static TransitRoute empty() {
+        return new TransitRoute();
+    }
+
     public void startTransit() {
         this.transitStatus = TransitStatus.TRANSITING;
-
+        this.departmentAt = LocalDateTime.now();
     }
 
     public void arriveTransit(int actualDistance, int actualTime) {
@@ -109,6 +122,7 @@ public class TransitRoute extends BaseEntity {
         this.actualDistance = actualDistance;
         this.actualTime = actualTime;
         this.transit.arriveHub(arriveHubId);
+        this.arriveAt = LocalDateTime.now();
     }
 
 }

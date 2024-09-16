@@ -1,6 +1,7 @@
 package com.two_ddang.logistics.order.domain.model;
 
 
+import com.two_ddang.logistics.order.infrastructure.dtos.CompanyProductResponse;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,8 +37,21 @@ public class OrderProduct {
     @Column(nullable = false)
     private Integer quantity;
 
+    public static OrderProduct create(CompanyProductResponse product, Integer quantity) {
+        return OrderProduct.builder()
+                .productId(product.getProductId())
+                .productName(product.getProductName())
+                .price(product.getPrice())
+                .quantity(quantity)
+                .build();
+    }
+
     public Long sumPrice() {
         return price * quantity;
     }
 
+
+    public void addOrder(Order order) {
+        this.order = order;
+    }
 }

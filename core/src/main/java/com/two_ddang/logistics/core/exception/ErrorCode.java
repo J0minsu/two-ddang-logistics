@@ -31,6 +31,14 @@ public enum ErrorCode {
     // Delivery
     ALREADY_WORK_OUT(HttpStatus.BAD_REQUEST, "업무 중이지 않습니다."),
 
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),
+
+    // Claims
+    USERID_IS_NULL(HttpStatus.BAD_REQUEST, "userId가 Null 입니다."),
+    USERNAME_IS_NULL(HttpStatus.BAD_REQUEST, "username이 Null 입니다."),
+    EMAIL_IS_NULL(HttpStatus.BAD_REQUEST, "email이 Null 입니다."),
+    USERTYPE_IS_NULL(HttpStatus.BAD_REQUEST, "UserType이 Null 입니다."),
+    INVALID_USERTYPE(HttpStatus.BAD_REQUEST, "유효하지 않은 유저타입입니다."),
 
     ;
     private final HttpStatus httpStatus;

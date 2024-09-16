@@ -4,13 +4,13 @@ import com.two_ddang.logistics.core.entity.UserType;
 
 import java.util.UUID;
 
-public record SignUpRequestDto(
+public record UserRes(
+
+        Integer userId,
         String username,
-        String password,
-        String name,
-        String contact,
         String email,
         UserType role,
+        String name,
         UUID slackId
 ) {
 

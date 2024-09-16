@@ -40,4 +40,11 @@ public class Gemini extends BaseEntity {
     @Column
     private String content;
 
+    public Gemini(Long userId, String prompt, AiType aiType, String content) {
+        this.userId = userId;
+        this.prompt = prompt;
+        this.aiType = aiType;
+        this.content = content;
+    }
+
 }

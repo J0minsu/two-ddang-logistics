@@ -3,10 +3,12 @@ package com.two_ddang.logistics.order.application.dtos.response;
 import com.two_ddang.logistics.order.domain.model.OrderProduct;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

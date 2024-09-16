@@ -1,4 +1,4 @@
-package com.two_ddang.logistics.ai.controller;
+package com.two_ddang.logistics.ai.presentation.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

@@ -1,9 +1,9 @@
-package com.two_ddang.logistics.ai.service;
+package com.two_ddang.logistics.ai.application.service;
 
-import com.two_ddang.logistics.ai.entity.Gemini;
-import com.two_ddang.logistics.ai.exception.AINotFoundException;
-import com.two_ddang.logistics.ai.repository.GeminiRepository;
-import com.two_ddang.logistics.ai.service.dto.GeminiReadResponseDto;
+import com.two_ddang.logistics.ai.domain.model.Gemini;
+import com.two_ddang.logistics.ai.infrastructure.exception.AINotFoundException;
+import com.two_ddang.logistics.ai.domain.repository.GeminiRepository;
+import com.two_ddang.logistics.ai.application.dto.GeminiReadResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

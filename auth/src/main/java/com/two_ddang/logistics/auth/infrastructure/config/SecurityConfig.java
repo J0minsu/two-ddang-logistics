@@ -1,4 +1,4 @@
-package com.two_ddang.logistics.auth.config;
+package com.two_ddang.logistics.auth.infrastructure.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

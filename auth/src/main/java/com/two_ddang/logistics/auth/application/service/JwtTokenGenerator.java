@@ -1,4 +1,4 @@
-package com.two_ddang.logistics.auth.service;
+package com.two_ddang.logistics.auth.application.service;
 
 import com.two_ddang.logistics.core.entity.UserType;
 import io.jsonwebtoken.Jwts;

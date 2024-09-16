@@ -34,8 +34,9 @@ public class TokenUtils {
     public Passport toPassport(String internalToken, String internalSecretKey) {
         Claims claims = getClaimsByInternalToken(internalToken, internalSecretKey);
         validateClaims(claims);
+
         return new Passport(claims.get("userId", Integer.class), claims.get("email", String.class),
-                claims.get("username", String.class), claims.getExpiration(), claims.get("userType", UserType.class));
+                claims.get("username", String.class), claims.getExpiration(), UserType.valueOf(claims.get("userType", String.class)));
     }
 
     private void validateClaims(Claims claims) {

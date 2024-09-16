@@ -1,6 +1,6 @@
-package com.two_ddang.logistics.ai.repository;
+package com.two_ddang.logistics.ai.domain.repository;
 
-import com.two_ddang.logistics.ai.entity.Gemini;
+import com.two_ddang.logistics.ai.domain.model.Gemini;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

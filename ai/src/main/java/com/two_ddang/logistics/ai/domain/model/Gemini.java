@@ -1,5 +1,6 @@
-package com.two_ddang.logistics.ai.entity;
+package com.two_ddang.logistics.ai.domain.model;
 
+import com.two_ddang.logistics.ai.domain.AiType;
 import com.two_ddang.logistics.core.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

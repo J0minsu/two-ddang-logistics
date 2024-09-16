@@ -4,7 +4,7 @@ import com.two_ddang.logistics.core.entity.UserType;
 
 import java.util.UUID;
 
-public record UserResponseDto(
+public record UserRes(
 
         Integer userId,
         String username,

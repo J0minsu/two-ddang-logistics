@@ -1,4 +1,4 @@
-package com.two_ddang.logistics.ai.entity;
+package com.two_ddang.logistics.ai.domain;
 
 public enum AiType {
     COMPANY,

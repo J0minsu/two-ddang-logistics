@@ -1,7 +1,7 @@
-package com.two_ddang.logistics.ai.service.dto;
+package com.two_ddang.logistics.ai.application.dto;
 
-import com.two_ddang.logistics.ai.entity.AiType;
-import com.two_ddang.logistics.ai.entity.Gemini;
+import com.two_ddang.logistics.ai.domain.AiType;
+import com.two_ddang.logistics.ai.domain.model.Gemini;
 
 import java.util.UUID;
 

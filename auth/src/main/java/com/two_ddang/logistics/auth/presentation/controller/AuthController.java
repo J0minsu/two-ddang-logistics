@@ -1,6 +1,6 @@
-package com.two_ddang.logistics.auth.controller;
+package com.two_ddang.logistics.auth.presentation.controller;
 
-import com.two_ddang.logistics.auth.service.AuthService;
+import com.two_ddang.logistics.auth.application.service.AuthService;
 import com.two_ddang.logistics.auth.user.dto.SignInRequestDto;
 import com.two_ddang.logistics.auth.user.dto.SignUpRequestDto;
 import com.two_ddang.logistics.core.util.ResponseDTO;

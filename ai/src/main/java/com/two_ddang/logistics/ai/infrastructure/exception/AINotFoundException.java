@@ -1,4 +1,4 @@
-package com.two_ddang.logistics.ai.exception;
+package com.two_ddang.logistics.ai.infrastructure.exception;
 
 import com.two_ddang.logistics.core.exception.ApplicationException;
 import com.two_ddang.logistics.core.exception.ErrorCode;

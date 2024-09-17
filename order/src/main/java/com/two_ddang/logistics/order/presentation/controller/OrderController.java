@@ -1,7 +1,9 @@
 package com.two_ddang.logistics.order.presentation.controller;
 
+import com.two_ddang.logistics.core.entity.UserType;
 import com.two_ddang.logistics.core.util.CurrentPassport;
 import com.two_ddang.logistics.core.util.Passport;
+import com.two_ddang.logistics.core.util.PassportRoleCheck;
 import com.two_ddang.logistics.core.util.ResponseDTO;
 import com.two_ddang.logistics.order.application.dtos.response.*;
 import com.two_ddang.logistics.order.application.service.OrderService;
@@ -29,10 +31,6 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<ResponseDTO<CreateOrderResponse>> createOrder(@RequestBody CreateOrderRequest createOrderRequestDto,
                                                                         @CurrentPassport Passport passPort) {
-
-
-
-
         Integer id = passPort.getUserId();
         String userName = passPort.getUserName();
         log.info("########### id : {}, username: {} ###########", id, userName);
@@ -76,8 +74,9 @@ public class OrderController {
 
 
     @DeleteMapping("/{orderId}")
-    public ResponseEntity<ResponseDTO<Void>> deleteOrder(@PathVariable("orderId") UUID orderId) {
-        orderService.deleteOrder(orderId);
+    public ResponseEntity<ResponseDTO<Void>> deleteOrder(@PathVariable("orderId") UUID orderId,
+                                                         @CurrentPassport Passport passport) {
+        orderService.deleteOrder(orderId, passport.getUserId());
         return ResponseEntity.ok(ResponseDTO.ok());
     }
 

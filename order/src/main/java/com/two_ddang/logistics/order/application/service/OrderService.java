@@ -1,7 +1,9 @@
 package com.two_ddang.logistics.order.application.service;
 
 import com.two_ddang.logistics.core.entity.OrderStatus;
+import com.two_ddang.logistics.core.entity.UserType;
 import com.two_ddang.logistics.core.exception.ErrorCode;
+import com.two_ddang.logistics.core.util.Passport;
 import com.two_ddang.logistics.order.application.dtos.response.*;
 import com.two_ddang.logistics.order.application.exception.BusinessException;
 import com.two_ddang.logistics.order.domain.model.Order;
@@ -9,10 +11,10 @@ import com.two_ddang.logistics.order.domain.model.OrderProduct;
 import com.two_ddang.logistics.order.domain.repository.OrderRepository;
 import com.two_ddang.logistics.order.infrastructure.CompanyService;
 import com.two_ddang.logistics.order.infrastructure.HubService;
-import com.two_ddang.logistics.order.infrastructure.fallback.DeliveryServiceFallbackHandler;
 import com.two_ddang.logistics.order.infrastructure.dtos.CompanyDetailResponse;
 import com.two_ddang.logistics.order.infrastructure.dtos.CompanyProductResponse;
 import com.two_ddang.logistics.order.infrastructure.dtos.HubProductOutboundRequest;
+import com.two_ddang.logistics.order.infrastructure.fallback.DeliveryServiceFallbackHandler;
 import com.two_ddang.logistics.order.presentation.dtos.CreateOrderRequest;
 import com.two_ddang.logistics.order.presentation.dtos.UpdateOrderStatusRequest;
 import lombok.RequiredArgsConstructor;
@@ -95,11 +97,10 @@ public class OrderService {
 
 
     @Transactional
-    public void deleteOrder(UUID orderId) {
+    public void deleteOrder(UUID orderId, Integer userId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
-        //유저 정보 받아 오는 방법 ??
-//        order.delete();
+        order.delete(userId);
     }
 
 

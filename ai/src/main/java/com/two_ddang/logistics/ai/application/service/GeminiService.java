@@ -27,7 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -38,17 +40,19 @@ public class GeminiService {
     private final GeminiRepository geminiRepository;
     private final VertexAiGeminiChatModel vertexAiGeminiChatModel;
     private final DeliveryService deliveryService;
-
     private final String geoCodingApiKey;
+    private final WeatherService weatherService;
 
     public GeminiService(GeminiRepository geminiRepository,
                          VertexAiGeminiChatModel vertexAiGeminiChatModel,
                          DeliveryService deliveryService,
-                         @Value("${google.maps.api.key}")String geoCodingApiKey) {
+                         @Value("${google.maps.api.key}")String geoCodingApiKey,
+                         WeatherService weatherService) {
         this.geminiRepository = geminiRepository;
         this.vertexAiGeminiChatModel = vertexAiGeminiChatModel;
         this.deliveryService = deliveryService;
         this.geoCodingApiKey = geoCodingApiKey;
+        this.weatherService = weatherService;
     }
 
 
@@ -95,13 +99,20 @@ public class GeminiService {
         List<DeliveryRes> responses = deliveryService.getTransitAddressAndSlackId(DriverAgentType.TRANSIT,
                 DeliveryStatus.BEFORE_TRANSIT);
 
-        List<LatLngRequestDto> requestDto = ToLanLng(responses);
+        Set<LatLngRequestDto> request = ToLanLng(responses);
+        List<String> weatherInfos = new ArrayList<>();
+
+        request.forEach(requestDto -> {
+            weatherInfos.add(weatherService.getWeatherInfo(requestDto.latitude(), requestDto.longitude()));
+        });
+
+
 
 
     }
 
-    private List<LatLngRequestDto> ToLanLng(List<DeliveryRes> responses) {
-        List<LatLngRequestDto> requestToGemini = new ArrayList<>();
+    private Set<LatLngRequestDto> ToLanLng(List<DeliveryRes> responses) {
+        Set<LatLngRequestDto> requestToGemini = new HashSet<>();
 
         responses.forEach(response -> {
             String address = response.address();

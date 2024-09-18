@@ -1,9 +1,11 @@
 package com.two_ddang.logistics.hub.domain.vo;
 
 import com.two_ddang.logistics.core.entity.UserType;
+import com.two_ddang.logistics.hub.domain.model.User;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -28,5 +30,14 @@ public class UserVO {
     private final Integer deletedBy;
 
     private final boolean isDeleted;
+
+    public static UserVO fromEntity(User user) {
+
+        user = Objects.isNull(user) ? User.emptyObject() : user;
+
+        return new UserVO(user.getId(), user.getUsername(), null, user.getName(), user.getEmail(), user.getContact(), user.getRole(), user.getSlackId(),
+                user.getCreatedAt(), user.getUpdatedAt(), user.getDeletedAt(), user.getCreatedBy(), user.getUpdatedBy(), user.getDeletedBy(), user.isDeleted());
+
+    }
 
 }

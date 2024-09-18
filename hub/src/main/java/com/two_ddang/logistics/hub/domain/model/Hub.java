@@ -137,22 +137,6 @@ public class Hub extends BaseEntity {
         }
     }
 
-    public HubVO toVO() {
-
-        List<HubAgentVO> hubAgentsForVO = Optional.ofNullable(hubAgents).orElse(new ArrayList<>())
-                .stream().map(HubAgent::toVO).toList();
-        List<HubProductVO> hubProducesForVO = Optional.ofNullable(hubProducts).orElse(new ArrayList<>())
-                .stream().map(HubProduct::toVO).toList();
-        List<HubRouteVO> arriveRoutesForVO = Optional.ofNullable(arriveRoutes).orElse(new ArrayList<>())
-                .stream().map(HubRoute::toVO).toList();
-        List<HubRouteVO> departmentRoutesForVO = Optional.ofNullable(departmentRoutes).orElse(new ArrayList<>())
-                .stream().map(HubRoute::toVO).toList();
-
-        return new HubVO(id, name, address, latitude, longitude,
-                hubAgentsForVO, hubProducesForVO, arriveRoutesForVO, departmentRoutesForVO,
-                getCreatedAt(), getUpdatedAt(), getDeletedAt(), getCreatedBy(), getUpdatedBy(), getDeletedBy(), isDeleted());
-    }
-
     public Optional<HubRoute> findRouteToHub(UUID arriveHubId) {
 
         return arriveRoutes.stream()

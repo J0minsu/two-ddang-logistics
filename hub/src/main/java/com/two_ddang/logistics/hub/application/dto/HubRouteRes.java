@@ -5,9 +5,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import org.springframework.util.RouteMatcher;
 
 import java.util.UUID;
 
@@ -23,7 +20,7 @@ public class HubRouteRes {
 
     public static HubRouteRes fromVO(HubRouteVO hubRoute) {
 
-        return new HubRouteRes(hubRoute.getDepartmentHub().getId(), hubRoute.getArriveHub().getId(), hubRoute.getTakeTime(), hubRoute.getRoute());
+        return new HubRouteRes(hubRoute.getDepartmentHubId(), hubRoute.getArriveHubId(), hubRoute.getTakeTime(), hubRoute.getRoute());
 
     }
 

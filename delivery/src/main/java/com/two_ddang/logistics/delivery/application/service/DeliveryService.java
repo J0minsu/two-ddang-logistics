@@ -36,6 +36,8 @@ public class DeliveryService {
 
         Delivery savedDelivery = deliveryRepository.save(delivery);
 
+        log.info("savedDelivery :: {}", savedDelivery);
+
         return DeliveryVO.fromEntity(savedDelivery);
 
     }

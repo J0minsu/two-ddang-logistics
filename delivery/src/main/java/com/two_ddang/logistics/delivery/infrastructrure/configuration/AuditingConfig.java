@@ -20,7 +20,7 @@ public class AuditingConfig implements AuditorAware<Integer> {
 
         SecurityUserDetails principal = (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();*/
 
-        return Optional.of(null);
+        return Optional.of(1);
     }
 
 }

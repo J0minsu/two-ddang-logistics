@@ -2,6 +2,7 @@ package com.two_ddang.logistics.hub.domain.model;
 
 import com.two_ddang.logistics.core.entity.BaseEntity;
 import com.two_ddang.logistics.hub.domain.vo.HubRouteVO;
+import com.two_ddang.logistics.hub.domain.vo.HubVO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -65,13 +66,6 @@ public class HubRoute extends BaseEntity {
 
     public static HubRoute of(String departmentAddress, Hub departmentHub, String arriveAddress, Hub arriveHub, int takeTime, String route) {
         return new HubRoute(departmentAddress, departmentHub, arriveAddress, arriveHub, takeTime, route);
-    }
-
-    public HubRouteVO toVO() {
-
-        return new HubRouteVO(id, departmentAddress, departmentHub.toVO(), arriveAddress, arriveHub.toVO(), takeTime, route,
-            getCreatedAt(), getUpdatedAt(), getDeletedAt(), getCreatedBy(), getUpdatedBy(), getDeletedBy(), isDeleted());
-
     }
 
     public void modifyRoute(String route, int takeTime) {

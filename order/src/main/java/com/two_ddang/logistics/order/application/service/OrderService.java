@@ -37,7 +37,7 @@ public class OrderService {
     private final HubService hubService;
     private final OrderRepository orderRepository;
     private final CompanyService companyService;
-    private final DeliveryServiceFallbackHandler deliveryServiceCircuitBreaker;
+    private final DeliveryServiceFallbackHandler deliveryServiceFallbackHandler;
 
     @Transactional
     public CreateOrderResponse createOrder(CreateOrderRequest createOrderRequest) {
@@ -46,13 +46,13 @@ public class OrderService {
         UUID resCompanyId = createOrderRequest.getResCompanyId();
         CompanyDetailResponse resCompany = companyService.getCompany(resCompanyId).getData();
 
-        List<OrderProduct> orderProducts = validAndCreateOrderProduct(reqCompanyId,createOrderRequest);
+        List<OrderProduct> orderProducts = validAndCreateOrderProduct(reqCompanyId, createOrderRequest);
 
-        Order order = orderRepository.save(Order.create(createOrderRequest, orderProducts));
+        Order order = orderRepository.save(Order.create(reqCompany, resCompany, orderProducts));
 
         order.updateStatus(OrderStatus.PENDING);
 
-        UUID deliveryId = deliveryServiceCircuitBreaker
+        UUID deliveryId = deliveryServiceFallbackHandler
                 .createDelivery(order, reqCompanyId, resCompany);
 
         if (deliveryId != null) {
@@ -63,8 +63,22 @@ public class OrderService {
     }
 
 
-    public Page<OrderResponse> getOrders(Pageable pageable, String keyword) {
+    public Page<OrderResponse> getOrders(Pageable pageable, String keyword, Passport passport) {
+        UserType userType = passport.getUserType();
+        if (userType == UserType.DELIVERY) {
+            throw new BusinessException(ErrorCode.CAN_NOT_ACTION_ROLE);
+        }
+        if (userType == UserType.COMPANY) {
+            return orderRepository.findAllByCreatedBy(pageable, passport.getUserId()).map(OrderResponse::of);
+        }
+
+        if (userType == UserType.HUB) {
+            UUID hubId = hubService.getHubIdByUserId(passport.getUserId());
+            return orderRepository.findAllByReqHubIdOrResHubId(pageable, hubId, hubId).map(OrderResponse::of);
+        }
+
         return orderRepository.findAll(pageable).map(OrderResponse::of);
+
     }
 
 
@@ -80,29 +94,36 @@ public class OrderService {
 
 
     @Transactional
-    public UpdateOrderStatusResponse updateOrderStatus(UUID orderId, UpdateOrderStatusRequest updateOrderStatusRequestDto) {
+    public UpdateOrderStatusResponse updateOrderStatus(UUID orderId, UpdateOrderStatusRequest updateOrderStatusRequestDto, Passport passport) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
+
+        checkRole(passport, order);
+
         order.updateStatus(updateOrderStatusRequestDto.getOrderStatus());
         return UpdateOrderStatusResponse.of(order);
     }
 
     @Transactional
-    public CancelOrderResponse cancelOrder(UUID orderId) {
+    public CancelOrderResponse cancelOrder(UUID orderId, Passport passport) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
+
+        checkRole(passport, order);
         order.cancel();
         return CancelOrderResponse.of(order);
     }
 
 
     @Transactional
-    public void deleteOrder(UUID orderId, Integer userId) {
+    public void deleteOrder(UUID orderId, Passport passport) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
-        order.delete(userId);
-    }
 
+        checkRole(passport, order);
+
+        order.delete(passport.getUserId());
+    }
 
 
     private List<OrderProduct> validAndCreateOrderProduct(UUID hubId, CreateOrderRequest createOrderRequest) {
@@ -120,18 +141,40 @@ public class OrderService {
                     .ifPresentOrElse(
                             product -> {
                                 orderProducts.add(OrderProduct.create(product, orderProduct.getQuantity()));
-                                hubService.order(hubId, HubProductOutboundRequest.of(
+                                hubService.outbound(hubId, HubProductOutboundRequest.of(
                                         product.getProductId(),
                                         createOrderRequest.getReqCompanyId(),
                                         orderProduct.getQuantity()
                                 ));
                             },
                             () -> {
-                                  throw new BusinessException(ErrorCode.COMPANY_PRODUCT_NOT_FOUND);
+                                throw new BusinessException(ErrorCode.COMPANY_PRODUCT_NOT_FOUND);
                             }
                     );
         }
 
         return orderProducts;
+    }
+
+    private void checkRole(Passport passport, Order order) {
+        UserType userType = passport.getUserType();
+        Integer userId = passport.getUserId();
+
+        if (userType == UserType.DELIVERY) {
+            throw new BusinessException(ErrorCode.CAN_NOT_ACTION_ROLE);
+        }
+
+        if (userType == UserType.COMPANY) {
+            if (!order.getCreatedBy().equals(userId)) {
+                throw new BusinessException(ErrorCode.CAN_NOT_ACTION_ROLE);
+            }
+        }
+
+        if (userType == UserType.HUB) {
+            UUID hubId = hubService.getHubIdByUserId(userId);
+            if (!order.getReqHubId().equals(hubId) || !order.getResHubId().equals(hubId)) {
+                throw new BusinessException(ErrorCode.CAN_NOT_ACTION_ROLE);
+            }
+        }
     }
 }

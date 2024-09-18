@@ -14,4 +14,8 @@ public interface OrderRepository extends JpaRepository<Order, UUID>, CustomOrder
     Order save(Order order);
 
     Page<Order> findAll(Pageable pageable);
+
+    Page<Order> findAllByReqHubIdOrResHubId(Pageable pageable, UUID reqHubId, UUID resHubId);
+
+    Page<Order> findAllByCreatedBy(Pageable pageable, Integer userId);
 }

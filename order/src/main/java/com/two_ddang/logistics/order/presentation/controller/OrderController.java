@@ -29,14 +29,9 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<ResponseDTO<CreateOrderResponse>> createOrder(@RequestBody CreateOrderRequest createOrderRequestDto,
-                                                                        @CurrentPassport Passport passPort) {
-        Integer id = passPort.getUserId();
-        String userName = passPort.getUserName();
-        log.info("########### id : {}, username: {} ###########", id, userName);
+    public ResponseEntity<ResponseDTO<CreateOrderResponse>> createOrder(@RequestBody CreateOrderRequest createOrderRequestDto) {
         return ResponseEntity.ok(ResponseDTO.okWithData(orderService.createOrder(createOrderRequestDto)));
     }
-
 
 
     @GetMapping
@@ -45,9 +40,10 @@ public class OrderController {
                     size = 10,
                     sort = "createdAt",
                     direction = Sort.Direction.DESC) Pageable pageable,
-            @RequestParam(name = "keyword", defaultValue = "") String keyword)
+            @RequestParam(name = "keyword", defaultValue = "") String keyword,
+            @CurrentPassport Passport passport)
     {
-        return ResponseEntity.ok(ResponseDTO.okWithData(orderService.getOrders(pageable, keyword)));
+        return ResponseEntity.ok(ResponseDTO.okWithData(orderService.getOrders(pageable, keyword, passport)));
     }
 
 
@@ -61,22 +57,25 @@ public class OrderController {
     @PatchMapping("/{orderId}")
     public ResponseEntity<ResponseDTO<UpdateOrderStatusResponse>> updateOrderStatus(
             @PathVariable("orderId") UUID orderId,
-            @RequestBody UpdateOrderStatusRequest updateOrderStatusRequestDto)
-    {
-        return ResponseEntity.ok(ResponseDTO.okWithData(orderService.updateOrderStatus(orderId, updateOrderStatusRequestDto)));
+            @RequestBody UpdateOrderStatusRequest updateOrderStatusRequestDto,
+            @CurrentPassport Passport passport) {
+
+        return ResponseEntity.ok(ResponseDTO.okWithData(orderService.updateOrderStatus(orderId, updateOrderStatusRequestDto, passport)));
     }
 
 
     @PostMapping("/{orderId}/cancel")
-    public ResponseEntity<ResponseDTO<CancelOrderResponse>> cancelOrder(@PathVariable("orderId") UUID orderId) {
-        return ResponseEntity.ok(ResponseDTO.okWithData(orderService.cancelOrder(orderId)));
+    public ResponseEntity<ResponseDTO<CancelOrderResponse>> cancelOrder(@PathVariable("orderId") UUID orderId,
+                                                                        @CurrentPassport Passport passport)
+    {
+        return ResponseEntity.ok(ResponseDTO.okWithData(orderService.cancelOrder(orderId, passport)));
     }
 
 
     @DeleteMapping("/{orderId}")
     public ResponseEntity<ResponseDTO<Void>> deleteOrder(@PathVariable("orderId") UUID orderId,
                                                          @CurrentPassport Passport passport) {
-        orderService.deleteOrder(orderId, passport.getUserId());
+        orderService.deleteOrder(orderId, passport);
         return ResponseEntity.ok(ResponseDTO.ok());
     }
 

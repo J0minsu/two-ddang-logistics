@@ -15,6 +15,7 @@ import com.two_ddang.logistics.ai.infrastructure.exception.AINotFoundException;
 import com.two_ddang.logistics.core.entity.AiType;
 import com.two_ddang.logistics.core.entity.DeliveryStatus;
 import com.two_ddang.logistics.core.entity.DriverAgentType;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.vertexai.gemini.VertexAiGeminiChatModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -31,6 +32,7 @@ import java.util.UUID;
 
 @Service
 @Transactional
+@Slf4j
 public class GeminiService {
 
     private final GeminiRepository geminiRepository;
@@ -108,15 +110,9 @@ public class GeminiService {
                 if (results.length > 0) {
                     LatLng location = results[0].geometry.location;
                     requestToGemini.add(new LatLngRequestDto(location.lat, location.lng));
-
-
-
                 }
-
-
-
-
             } catch (IOException | InterruptedException | ApiException e) {
+                log.info(String.valueOf(e), "Geocoding API 호출 중 오류 발생!");
                 throw new RuntimeException(e);
             }
         });

@@ -1,10 +1,14 @@
 package com.two_ddang.logistics.ai.application.service;
 
-import com.two_ddang.logistics.ai.domain.AiType;
+import com.two_ddang.logistics.ai.application.service.feign.delivery.DeliveryService;
+import com.two_ddang.logistics.ai.application.service.feign.delivery.dto.DeliveryRes;
+import com.two_ddang.logistics.core.entity.AiType;
 import com.two_ddang.logistics.ai.domain.model.Gemini;
 import com.two_ddang.logistics.ai.infrastructure.exception.AINotFoundException;
 import com.two_ddang.logistics.ai.domain.repository.GeminiRepository;
 import com.two_ddang.logistics.ai.application.dto.GeminiReadResponseDto;
+import com.two_ddang.logistics.core.entity.DeliveryStatus;
+import com.two_ddang.logistics.core.entity.DriverAgentType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.vertexai.gemini.VertexAiGeminiChatModel;
 import org.springframework.data.domain.Page;
@@ -14,6 +18,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -23,6 +28,7 @@ public class GeminiService {
 
     private final GeminiRepository geminiRepository;
     private final VertexAiGeminiChatModel vertexAiGeminiChatModel;
+    private final DeliveryService deliveryService;
 
     public String chatToGeminiAndSave(String prompt, Long userId, AiType aiType) {
 
@@ -64,6 +70,7 @@ public class GeminiService {
     @Scheduled(cron = "0 0 6 * * *") //매일 오전 6시
     @Async
     protected void transitAgentDeliveryInfo() {
+        List<DeliveryRes> responses = deliveryService.getTransitAddressAndSlackId(DriverAgentType.TRANSIT, DeliveryStatus.BEFORE_TRANSIT);
 
     }
 }

@@ -35,6 +35,7 @@ public class DeliveryAgent extends BaseEntity {
 
     @Column(nullable = false)
     @Comment("배송 담당자 타입")
+    @Enumerated(EnumType.STRING)
     private DriverAgentType type;
 
     @Column(nullable = false)
@@ -43,6 +44,7 @@ public class DeliveryAgent extends BaseEntity {
 
     @Column(nullable = false)
     @Comment("현재 운행 상태")
+    @Enumerated(EnumType.STRING)
     private DriveStatus driveStatus;
 
     @Column

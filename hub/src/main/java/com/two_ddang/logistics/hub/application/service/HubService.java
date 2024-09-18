@@ -48,7 +48,9 @@ public class HubService {
 
         Hub hub = Hub.of(request.getName(), request.getAddress(), request.getLatitude(), request.getLongitude(), manager);
 
-        return hub.toVO();
+        hubRepository.save(hub);
+
+        return HubVO.fromEntity(hub);
 
     }
 
@@ -60,7 +62,7 @@ public class HubService {
 
         HubProduct hubProduct = hub.inbound(request.getProductId(), request.getCompanyId(), request.getProductName(), request.getQuantity());
 
-        return hubProduct.toVO();
+        return HubProductVO.fromEntity(hubProduct);
 
     }
 
@@ -79,7 +81,7 @@ public class HubService {
         }
         HubProduct afterHubProduct = hub.outbound(request.getProductId(), request.getCompanyId(), request.getQuantity());
 
-        return afterHubProduct.toVO();
+        return HubProductVO.fromEntity(afterHubProduct);
 
     }
 
@@ -91,7 +93,7 @@ public class HubService {
         HubRoute route = departmentHub.findRouteToHub(arriveHubId)
                     .orElseThrow(NoSuchElementApplicationException::new);
 
-        return route.toVO();
+        return HubRouteVO.fromEntity(route);
 
     }
 
@@ -99,7 +101,7 @@ public class HubService {
 
         Page<Hub> hubs = hubRepository.findByNameStartingWith(keyword, PageRequest.of(pageNumber, size, sort.getSort()));
 
-        Page<HubVO> result = hubs.map(Hub::toVO);
+        Page<HubVO> result = hubs.map(HubVO::fromEntity);
 
         return result;
     }
@@ -109,7 +111,7 @@ public class HubService {
         Hub hub = hubRepository.findById(hubId)
                 .orElseThrow(NoSuchElementApplicationException::new);
 
-        return hub.toVO();
+        return HubVO.fromEntity(hub);
     }
 
     @Transactional
@@ -120,7 +122,7 @@ public class HubService {
 
         hub.changeName(request.getName());
 
-        return hub.toVO();
+        return HubVO.fromEntity(hub);
 
     }
 

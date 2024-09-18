@@ -40,6 +40,7 @@ public class Transit extends BaseEntity {
     private int totalEstimateDistance;
     
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     @Comment("운송 상태")
     private TransitStatus transitStatus;
     
@@ -58,6 +59,10 @@ public class Transit extends BaseEntity {
         this.transitAgent = transitAgent;
         this.totalEstimateDistance = totalEstimateDistance;
         this.transitStatus = transitStatus;
+    }
+
+    public static Transit empty() {
+        return new Transit();
     }
 
     public static Transit of(DeliveryAgent transitAgent, int totalEstimateDistance, TransitStatus transitStatus, List<Delivery> deliveries) {

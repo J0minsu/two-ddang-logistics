@@ -2,12 +2,14 @@ package com.two_ddang.logistics.delivery.domain.vo;
 
 import com.two_ddang.logistics.core.entity.DriveStatus;
 import com.two_ddang.logistics.core.entity.DriverAgentType;
+import com.two_ddang.logistics.delivery.domain.model.Delivery;
 import com.two_ddang.logistics.delivery.domain.model.DeliveryAgent;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -31,6 +33,9 @@ public class DeliveryAgentVO {
     private final boolean isDeleted;
 
     public static DeliveryAgentVO fromEntity(DeliveryAgent deliveryAgent) {
+
+        deliveryAgent = Objects.isNull(deliveryAgent) ? DeliveryAgent.empty() : deliveryAgent;
+
         return new DeliveryAgentVO(
                 deliveryAgent.getId(), deliveryAgent.getUserId(), deliveryAgent.getRegisteredHubId(),
                 deliveryAgent.getType(), deliveryAgent.getSlackId(), deliveryAgent.getDriveStatus(), deliveryAgent.getStayHubId(),

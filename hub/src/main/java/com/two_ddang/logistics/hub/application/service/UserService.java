@@ -36,7 +36,7 @@ public class UserService {
 
         User savedUser = userRepository.save(user);
 
-        return savedUser.toVO();
+        return UserVO.fromEntity(savedUser);
 
     }
 
@@ -45,7 +45,7 @@ public class UserService {
         User user = userRepository.findByIdAndIsDeletedIsFalse(userId)
                 .orElseThrow(NoSuchElementApplicationException::new);
 
-        return user.toVO();
+        return UserVO.fromEntity(user);
 
     }
 
@@ -54,7 +54,7 @@ public class UserService {
         User user = userRepository.findByUsernameAndIsDeletedIsFalse(username)
                 .orElseThrow(NoSuchElementApplicationException::new);
 
-        return user.toVO();
+        return UserVO.fromEntity(user);
 
     }
 
@@ -62,7 +62,7 @@ public class UserService {
 
         Page<User> users = userRepository.findByRole(userType, PageRequest.of(pageNumber + 1, size, standard.getSort()));
 
-        Page<UserVO> result = users.map(User::toVO);
+        Page<UserVO> result = users.map(UserVO::fromEntity);
 
         return result;
     }
@@ -75,7 +75,7 @@ public class UserService {
 
         user.modifyUserInfo(request.getEmail(), request.getContact());
 
-        return user.toVO();
+        return UserVO.fromEntity(user);
 
     }
 

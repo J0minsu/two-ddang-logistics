@@ -33,8 +33,8 @@ import java.util.UUID;
 import java.util.stream.IntStream;
 
 
-@SecurityRequirement(name = "Bearer Authentication")
-@SecurityScheme( name = "Bearer Authentication", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "Bearer")
+//@SecurityRequirement(name = "Bearer Authentication")
+//@SecurityScheme( name = "Bearer Authentication", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "Bearer")
 @RestController
 @RequestMapping("/api/v1/deliveries")
 @Slf4j

@@ -79,10 +79,4 @@ public class User extends BaseEntity {
         this.contact = contact;
     }
 
-    public UserVO toVO() {
-
-        return new UserVO(id, username, null, name, email, contact, role, slackId,
-                getCreatedAt(), getUpdatedAt(), getDeletedAt(), getCreatedBy(), getUpdatedBy(), getDeletedBy(), isDeleted());
-
-    }
 }

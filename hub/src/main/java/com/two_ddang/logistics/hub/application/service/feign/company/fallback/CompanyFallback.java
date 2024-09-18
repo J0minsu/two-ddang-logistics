@@ -23,6 +23,9 @@ public class CompanyFallback implements CompanyFeignClient {
         if(cause instanceof FeignException.NotFound) {
             log.error("re-stock error!");
         }
+        else {
+            log.error("fallback error!");
+        }
 
     }
 }

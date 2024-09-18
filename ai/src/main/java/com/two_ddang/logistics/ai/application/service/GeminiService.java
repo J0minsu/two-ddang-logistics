@@ -95,6 +95,12 @@ public class GeminiService {
         List<DeliveryRes> responses = deliveryService.getTransitAddressAndSlackId(DriverAgentType.TRANSIT,
                 DeliveryStatus.BEFORE_TRANSIT);
 
+        List<LatLngRequestDto> requestDto = ToLanLng(responses);
+
+
+    }
+
+    private List<LatLngRequestDto> ToLanLng(List<DeliveryRes> responses) {
         List<LatLngRequestDto> requestToGemini = new ArrayList<>();
 
         responses.forEach(response -> {
@@ -117,11 +123,7 @@ public class GeminiService {
             }
         });
 
-
-
-
-
-
-
+        return requestToGemini;
     }
+
 }

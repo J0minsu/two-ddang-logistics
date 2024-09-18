@@ -26,6 +26,11 @@ spring:
           project-id: ${PROJECT_ID}
           location: asia-northeast3
 
+google:
+  maps:
+    api:
+      key: ${GOOGLE_MAPS_API_KEY}
+
 server:
   port: 19097
 eureka:

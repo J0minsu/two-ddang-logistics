@@ -95,6 +95,10 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
+	//google geocoding
+	// https://mvnrepository.com/artifact/com.google.maps/google-maps-services
+	implementation group: 'com.google.maps', name: 'google-maps-services', version: '2.2.0'
+
 
 }
 

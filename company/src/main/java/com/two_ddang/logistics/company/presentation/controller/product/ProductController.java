@@ -5,6 +5,8 @@ import com.two_ddang.logistics.company.application.service.product.ProductServic
 import com.two_ddang.logistics.company.presentation.dtos.product.CreateProductRequest;
 import com.two_ddang.logistics.company.presentation.dtos.product.RollbackStockRequest;
 import com.two_ddang.logistics.company.presentation.dtos.product.UpdateProductInfoRequest;
+import com.two_ddang.logistics.core.util.CurrentPassport;
+import com.two_ddang.logistics.core.util.Passport;
 import com.two_ddang.logistics.core.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,8 +26,11 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
-    public ResponseEntity<ResponseDTO<CreateProductResponse>> createProduct(@RequestBody CreateProductRequest createProductRequest) {
-        return ResponseEntity.ok(ResponseDTO.okWithData(productService.createProduct(createProductRequest)));
+    public ResponseEntity<ResponseDTO<CreateProductResponse>> createProduct(
+            @RequestBody CreateProductRequest createProductRequest,
+            @CurrentPassport Passport passport)
+    {
+        return ResponseEntity.ok(ResponseDTO.okWithData(productService.createProduct(createProductRequest, passport)));
     }
 
 
@@ -45,13 +50,13 @@ public class ProductController {
 
 
     @PatchMapping("/{productId}")
-    public ResponseEntity<ResponseDTO<UpdateProductInfoResponse>> updateProductInfo(@PathVariable UUID productId,
-                                               @RequestBody UpdateProductInfoRequest updateProductInfoRequest) {
-
-
+    public ResponseEntity<ResponseDTO<UpdateProductInfoResponse>> updateProductInfo(
+            @PathVariable UUID productId,
+            @RequestBody UpdateProductInfoRequest updateProductInfoRequest,
+            @CurrentPassport Passport passport)
+    {
         return ResponseEntity.ok(ResponseDTO.okWithData(
-                productService.updateProductInfo(productId, updateProductInfoRequest
-                )));
+                productService.updateProductInfo(productId, updateProductInfoRequest, passport)));
     }
 
 
@@ -64,8 +69,8 @@ public class ProductController {
 
 
     @DeleteMapping("/{productId}")
-    public ResponseEntity<ResponseDTO<Void>> deleteProduct(@PathVariable UUID productId) {
-        productService.deleteProduct(productId);
+    public ResponseEntity<ResponseDTO<Void>> deleteProduct(@PathVariable UUID productId, @CurrentPassport Passport passport) {
+        productService.deleteProduct(productId, passport);
         return ResponseEntity.ok(ResponseDTO.ok());
     }
 

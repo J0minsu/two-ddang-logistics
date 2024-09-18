@@ -49,8 +49,9 @@ public class OrderController {
 
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<ResponseDTO<OrderDetailResponse>> getOrder(@PathVariable("orderId") UUID orderId) {
-        return ResponseEntity.ok(ResponseDTO.okWithData(orderService.getOrder(orderId)));
+    public ResponseEntity<ResponseDTO<OrderDetailResponse>> getOrder(@PathVariable("orderId") UUID orderId,
+                                                                     @CurrentPassport Passport passport) {
+        return ResponseEntity.ok(ResponseDTO.okWithData(orderService.getOrder(orderId, passport)));
     }
 
 

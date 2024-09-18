@@ -82,9 +82,11 @@ public class OrderService {
     }
 
 
-    public OrderDetailResponse getOrder(UUID orderId) {
+    public OrderDetailResponse getOrder(UUID orderId, Passport passport) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
+
+        checkRole(passport, order);
 
         String reqCompanyName = companyService.getCompany(order.getReqCompanyId()).getData().getCompanyName();
         String resCompanyName = companyService.getCompany(order.getResCompanyId()).getData().getCompanyName();

@@ -270,7 +270,7 @@ public class GeminiService {
                 String estimateDistanceString = routeNode.get("estimateDistance").asText();
                 int estimateDistance = Integer.parseInt(estimateDistanceString.replaceAll("[^0-9]", ""));
 
-                String routeString = String.join(", ", objectMapper.convertValue(routeNode.get("route"), List.class));
+                String routeString = routeNode.get("route").asText();
 
                 TransitRouteResponse transitRouteResponse = new TransitRouteResponse(sequence, departmentHubId, departureAddress, arriveHubId,
                         arriveAddress, estimateTime, estimateDistance, routeString);

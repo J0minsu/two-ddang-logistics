@@ -9,17 +9,20 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 
 @Component
+@Slf4j
 public class TokenUtils {
 
     //도메인 서버에서 security filter를 사용하는 경우
     public Claims getClaimsByInternalToken(String internalToken, String internalSecretKey) {
 
         try {
+            log.info("Util internalToken", internalToken);
             SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(internalSecretKey));
             return Jwts.parser()
                     .verifyWith(key).build()

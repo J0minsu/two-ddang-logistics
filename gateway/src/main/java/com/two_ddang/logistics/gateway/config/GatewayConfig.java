@@ -23,7 +23,7 @@ public class GatewayConfig {
                         .uri("lb://company"))
                 .route("products", r -> r.path("/api/v1/products/**")
                         .uri("lb://product"))
-                .route("ais", r -> r.path("/api/v1/ais/**")
+                .route("ais", r -> r.path("/api/v1/ais/**", "/api/v1/ais")
                         .uri("lb://ai"))
                 .build();
     }

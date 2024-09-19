@@ -44,6 +44,7 @@ public class JwtAuthenticationFilter implements WebFilter {
         }
 
         String token = extractToken(exchange);
+        log.info("external token", token);
         if (token == null || !validateExternalToken(token, exchange)) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
@@ -79,6 +80,7 @@ public class JwtAuthenticationFilter implements WebFilter {
             }
 
             String internalToken = createInternalToken(claims);
+            log.info("jwt Filter Internal Token", internalToken);
 
             exchange.getRequest().mutate()
                     .header("InternalToken", "Bearer " + internalToken)

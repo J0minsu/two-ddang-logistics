@@ -25,7 +25,7 @@ public class AuthController {
 
         String token = authService.signIn(requestDto);
 
-        response.setHeader("Authorization", token);
+        response.setHeader("Authorization", "Bearer "+ token);
         return ResponseEntity.ok(ResponseDTO.ok());
 
     }

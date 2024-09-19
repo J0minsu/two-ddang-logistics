@@ -13,6 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class RecommendTransitRouteResponse {
 
+    //sequence, route-info
     Map<Integer, TransitRouteResponse> routes;
 
 }

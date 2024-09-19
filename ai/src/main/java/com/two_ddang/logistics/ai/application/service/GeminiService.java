@@ -216,9 +216,7 @@ public class GeminiService {
     @Async
     protected void hubDeliveryInfo() {
 
-        String context = "";
-        vertexAiGeminiChatModel.call(context);
-
+        deliveryService.hubTransitSchedule();
 
     }
 

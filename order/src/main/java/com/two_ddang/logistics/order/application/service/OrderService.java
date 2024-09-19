@@ -73,7 +73,7 @@ public class OrderService {
         }
 
         if (userType == UserType.HUB) {
-            UUID hubId = hubService.getHubIdByUserId(passport.getUserId());
+            UUID hubId = hubService.findHubByMangerUserId(passport.getUserId()).getData().getHubId();
             return orderRepository.findAllByReqHubIdOrResHubId(pageable, hubId, hubId).map(OrderResponse::of);
         }
 
@@ -173,7 +173,7 @@ public class OrderService {
         }
 
         if (userType == UserType.HUB) {
-            UUID hubId = hubService.getHubIdByUserId(userId);
+            UUID hubId = hubService.findHubByMangerUserId(userId).getData().getHubId();
             if (!order.getReqHubId().equals(hubId) || !order.getResHubId().equals(hubId)) {
                 throw new BusinessException(ErrorCode.CAN_NOT_ACTION_ROLE);
             }

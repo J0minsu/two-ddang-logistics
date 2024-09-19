@@ -1,8 +1,10 @@
 package com.two_ddang.logistics.order.infrastructure;
 
 import com.two_ddang.logistics.core.exception.ErrorCode;
+import com.two_ddang.logistics.core.util.ResponseDTO;
 import com.two_ddang.logistics.order.application.exception.BusinessException;
 import com.two_ddang.logistics.order.infrastructure.dtos.HubProductOutboundRequest;
+import com.two_ddang.logistics.order.infrastructure.dtos.HubRes;
 import feign.FeignException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.slf4j.Logger;
@@ -26,8 +28,8 @@ public interface HubFeignClient extends HubService {
     void outbound(@PathVariable UUID hubId, @RequestBody HubProductOutboundRequest request);
 
     @Override
-    @GetMapping("/api/v1/hubs/hubAgent/{userId}")
-    UUID getHubIdByUserId(@PathVariable Integer userId);
+    @GetMapping("/api/v1/hubs/users/{userId}")
+    ResponseDTO<HubRes> findHubByMangerUserId(@PathVariable Integer userId);
 
     default void outboundFallback(UUID hubId, HubProductOutboundRequest request, Throwable e) {
         log.error(e.getMessage());

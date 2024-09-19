@@ -4,6 +4,7 @@ import com.two_ddang.logistics.hub.domain.model.Hub;
 import com.two_ddang.logistics.hub.domain.model.HubProduct;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -11,7 +12,7 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 @EqualsAndHashCode
-public class HubProductVO {
+public class HubProductVO implements Serializable {
 
     private final UUID id;
     private final String productName;

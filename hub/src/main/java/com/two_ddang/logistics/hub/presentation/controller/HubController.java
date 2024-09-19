@@ -15,6 +15,7 @@ import com.two_ddang.logistics.hub.domain.vo.HubVO;
 import com.two_ddang.logistics.hub.infrastructrure.exception.PermissionDeniedApplicationException;
 import com.two_ddang.logistics.hub.presentation.request.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
@@ -39,8 +40,8 @@ import java.util.stream.Stream;
 
 import static com.two_ddang.logistics.core.util.ValidationUtils.*;
 
-//@SecurityRequirement(name = "Bearer Authentication")
-//@SecurityScheme( name = "Bearer Authentication", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "Bearer")
+@SecurityRequirement(name = "Bearer Authentication")
+@SecurityScheme( name = "Bearer Authentication", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "Bearer")
 @RestController
 @RequestMapping("/api/v1/hubs")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -56,7 +57,7 @@ public class HubController {
     @Operation(summary = "허브 생성", description = "허브 생성 API")
     public ResponseEntity<ResponseDTO<HubRes>> craete(
             @RequestBody HubCreateRequest request,
-            @CurrentPassport Passport passPort) {
+            @Parameter(hidden = true) @CurrentPassport Passport passPort) {
 
         validateRole(Stream.of(UserType.MASTER), passPort.getUserType());
 
@@ -71,8 +72,11 @@ public class HubController {
     @PostMapping("/{hubId}/products/inbound")
     @Operation(summary = "허브 물품 입고", description = "허브 물품 입고 API")
     public ResponseEntity<ResponseDTO<HubProductRes>> inboundProduct(
-            @PathVariable UUID hubId, @RequestBody HubProductInboundRequest request,
-            @CurrentPassport Passport passPort) {
+            @PathVariable UUID hubId,
+            @RequestBody HubProductInboundRequest request,
+            @Parameter(hidden = true) @CurrentPassport Passport passPort) {
+
+        log.info("passPort :: {}", passPort);
 
         validateRole(Stream.of(UserType.HUB, UserType.COMPANY, UserType.MASTER), passPort.getUserType());
 
@@ -88,7 +92,7 @@ public class HubController {
     @Operation(summary = "허브 물품 출고", description = "허브 물품 출고 API")
     public ResponseEntity<ResponseDTO<HubProductRes>> order(
             @PathVariable UUID hubId, @RequestBody HubProductOutboundRequest request,
-            @CurrentPassport Passport passPort) {
+            @Parameter(hidden = true) @CurrentPassport Passport passPort) {
 
         validateRole(Stream.of(UserType.HUB, UserType.COMPANY, UserType.MASTER), passPort.getUserType());
 
@@ -104,7 +108,7 @@ public class HubController {
     @Operation(summary = "허브 간 이동 경로 조회", description = "허브 간 이동 경로 조회 API")
     public ResponseEntity<ResponseDTO<HubRouteRes>> findRouteBetweenRoutes(
             @PathVariable UUID departHubId, @PathVariable UUID arriveHubId,
-            @CurrentPassport Passport passPort) {
+            @Parameter(hidden = true) @CurrentPassport Passport passPort) {
 
         validateRole(Stream.of(UserType.HUB, UserType.MASTER, UserType.DELIVERY), passPort.getUserType());
 
@@ -120,7 +124,7 @@ public class HubController {
     @Operation(summary = "사용자 관리 허브 조회", description = "사용자 관리 허브 조회 API")
     public ResponseEntity<ResponseDTO<HubRes>> findHubByMangerUserId(
             @PathVariable Integer userId,
-            @CurrentPassport Passport passPort) {
+            @Parameter(hidden = true) @CurrentPassport Passport passPort) {
 
         if(passPort.getUserType() != UserType.MASTER
             && !Objects.equals(userId, passPort.getUserId())) {

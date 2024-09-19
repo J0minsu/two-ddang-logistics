@@ -1,0 +1,79 @@
+services:
+  zipkin:
+    image: openzipkin/zipkin:latest
+    ports:
+      - "9411:9411"
+
+  database:
+    image: postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: ddang-logistics
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d ddang-logistics"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+  redis-stack:
+    image: redis/redis-stack
+    container_name: redis-stack-compose
+    restart: always
+    environment:
+      REDIS_ARGS: "--requirepass systempass"
+    ports:
+      - 6379:6379
+      - 8001:8001
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "systempass", "ping" ]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+  server:
+    build:
+      dockerfile: Dockerfile
+      args:
+        - FILE_DIRECTORY=./server
+    ports:
+      - "19090:19090"
+
+  gateway:
+    environment:
+      redis-url: redis-stack
+      redis-port: 6379
+      redis-username: default
+      redis-password: systempass
+    build:
+      dockerfile: ./gateway/Dockerfile
+      args:
+        - FILE_DIRECTORY=./gateway
+    ports:
+      - "19091:19091"
+    depends_on:
+      redis-stack:
+        condition: service_healthy
+
+  order:
+    environment:
+      url: database
+      username: admin
+      password: admin
+      redis-url: redis-stack
+      redis-port: 6379
+      redis-username: default
+      redis-password: systempass
+    build:
+      dockerfile: ./order/Dockerfile
+      args:
+        - FILE_DIRECTORY=order
+    depends_on:
+      database:
+        condition: service_healthy
+      redis-stack:
+        condition: service_healthy
+    ports:
+      - "19095:19095"

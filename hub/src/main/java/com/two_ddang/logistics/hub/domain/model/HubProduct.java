@@ -70,7 +70,7 @@ public class HubProduct extends BaseEntity {
     }
 
     public boolean isEnoughStock(int quantity) {
-        return 0 > stock - quantity;
+        return 0 < stock - quantity;
     }
 
     public void inbound(int quantity) {

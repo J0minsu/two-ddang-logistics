@@ -17,7 +17,7 @@ public class ValidationUtils {
      * @param userType : 호출자 사용자 타입
      */
     public static void validateRole(Stream<UserType> roles, UserType userType) {
-        if (roles.anyMatch(i -> i != userType)) {
+        if (!roles.anyMatch(i -> i == userType)) {
             throw new PermissionDeniedApplicationException();
         }
     }

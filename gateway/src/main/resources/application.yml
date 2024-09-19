@@ -17,21 +17,21 @@ spring:
           enabled: true
   data:
     redis:
-      host: localhost
-      port: 6379
-      username: default
-      password: systempass
+      host: ${redis-url}
+      port: ${redis-port}
+      username: ${redis-username}
+      password: ${redis-password}
 
 
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:19090/eureka/
+      defaultZone: http://server:19090/eureka/
 
 management:
   zipkin:
     tracing:
-      endpoint: "http://localhost:9411/api/v2/spans"
+      endpoint: "http://zipkin:9411/api/v2/spans"
   tracing:
     sampling:
       probability: 1.0
@@ -54,15 +54,18 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     urls[0]:
+      url: /auths/v3/api-docs
+      name: auth
+    urls[1]:
       url: /orders/v3/api-docs
       name: orders
-    urls[1]:
+    urls[2]:
       url: /companies/v3/api-docs
       name: companies
-    urls[2]:
+    urls[3]:
       url: /hubs/v3/api-docs
       name: hubs
-    urls[3]:
+    urls[4]:
       url: /deliveries/v3/api-docs
       name: deliveries
     use-root-path: true

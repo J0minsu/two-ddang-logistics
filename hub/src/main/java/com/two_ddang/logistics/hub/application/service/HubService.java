@@ -44,7 +44,7 @@ public class HubService {
         User manager = userRepository.findByIdAndIsDeletedIsFalse(request.getManagerId())
                 .orElseThrow(NoSuchElementApplicationException::new);
 
-        if(manager.getRole() != UserType.HUB) {
+        if(manager.getRole() != UserType.MASTER) {
             throw new PermissionDeniedApplicationException();
         }
 
@@ -76,7 +76,7 @@ public class HubService {
 
         HubProduct hubProduct = hub.findHubProductById(request.getProductId());
 
-        if(hubProduct.isEnoughStock(request.getQuantity())) {
+        if(!hubProduct.isEnoughStock(request.getQuantity())) {
             companyService.restock(
                     hubProduct.getCompanyId(), new RestockRequest(hubProduct.getProductId(), request.getQuantity())
             );

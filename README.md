@@ -53,7 +53,13 @@
 ![img_1.png](img_1.png)
 
 ### 실행방법
-
+**GOOGLE_APPLICATION_CREDENTIALS 세팅 필요**  
+구글 클라우드 키파일 깃으로 관리가 불가한이슈로 인해  
+zip 파일 안에 있는 'two-ddang-40b4e0dfa062.json' 파일의 절대경로를 잡아  
+docker-compose.yml 안에있는 GOOGLE_APPLICATION_CREDENTIALS 에 넣어주셔야 합니다(파일명.확장자 까지)  
+ex) GOOGLE_APPLICATION_CREDENTIALS=C:\two-ddang-40b4e0dfa062.json
+  
+  
 root gradle project 경로에서 아래 명령어 실행
 ```shell
   docker-compose up --build -d

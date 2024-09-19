@@ -90,11 +90,13 @@ public class TransitService {
 
                     //AI 요청
                     RecommendTransitRouteResponse aiResult = aiService.recommendRoute(
-                            new RecommendTransitRouteRequest(
-                                    arriveSet.stream()
-                                            .map(arrive ->
-                                                    new TransitRouteRequest(thisHub.getHubId(), thisHub.getAddress(), arrive, hubMap.get(arrive).getAddress())
-                                            ).toList()
+                            Map.of(agent.getSlackId(),
+                                    new RecommendTransitRouteRequest(
+                                        arriveSet.stream()
+                                                .map(arrive ->
+                                                        new TransitRouteRequest(thisHub.getHubId(), thisHub.getAddress(), arrive, hubMap.get(arrive).getAddress())
+                                                ).toList()
+                                    )
                             )
                     ).getData();
 

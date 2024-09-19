@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @FeignClient(
         name = "ai",
@@ -20,6 +22,6 @@ fallbackFactory = HubFallbackFactory.class)
 public interface AIFeignClient extends AIService {
 
     @Override
-    @PostMapping("/api/v1/TODO")
-    ResponseDTO<RecommendTransitRouteResponse> recommendRoute(@RequestBody RecommendTransitRouteRequest request);
+    @PostMapping("/api/v1/routes")
+    ResponseDTO<RecommendTransitRouteResponse> recommendRoute(@RequestBody Map<UUID, RecommendTransitRouteRequest> request);
 }

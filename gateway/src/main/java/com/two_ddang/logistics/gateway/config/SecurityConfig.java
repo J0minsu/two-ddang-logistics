@@ -4,9 +4,7 @@ import com.two_ddang.logistics.gateway.infrastructure.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
@@ -34,8 +32,8 @@ public class SecurityConfig {
                 .cors(ServerHttpSecurity.CorsSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .authorizeExchange(exchange ->
-                        exchange.pathMatchers("/auth/sign-in", "/auth/sign-up", "/api/v1/ais", "/api/v1/ais/**").permitAll()
-                                .anyExchange().authenticated())
+                        exchange.pathMatchers("/auth/sign-in", "/auth/sign-up", "/swagger-ui.html").permitAll()
+                                .anyExchange().permitAll())
                 .addFilterBefore(jwtAuthenticationFilter, SecurityWebFiltersOrder.HTTP_BASIC)
                 .build();
     }

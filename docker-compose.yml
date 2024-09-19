@@ -165,6 +165,9 @@ services:
       redis-port: 6379
       redis-username: default
       redis-password: systempass
+      GOOGLE_APPLICATION_CREDENTIALS: two-ddang-40b4e0dfa062.json
+    env_file:
+      - .env
     build:
       dockerfile: ./ai/Dockerfile
       args:

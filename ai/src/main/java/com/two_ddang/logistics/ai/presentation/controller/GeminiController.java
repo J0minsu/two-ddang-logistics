@@ -1,18 +1,22 @@
 package com.two_ddang.logistics.ai.presentation.controller;
 
+import com.slack.api.methods.SlackApiException;
+import com.two_ddang.logistics.ai.application.dto.RecommendTransitRouteRequest;
+import com.two_ddang.logistics.ai.application.dto.RecommendTransitRouteResponse;
 import com.two_ddang.logistics.ai.application.service.GeminiService;
-import com.two_ddang.logistics.core.util.CurrentPassport;
-import com.two_ddang.logistics.core.util.Passport;
 import com.two_ddang.logistics.core.util.ResponseDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -25,15 +29,15 @@ public class GeminiController {
 
     @GetMapping
     public ResponseEntity<ResponseDTO<String>> chatToGemini(
-            @CurrentPassport Passport passport
-            ) throws IOException, ExecutionException, InterruptedException {
+    ) throws IOException, ExecutionException, InterruptedException {
+
         return ResponseEntity.ok(ResponseDTO.okWithData(geminiService.chatToGeminiAndSaveTest()));
     }
 
-    @GetMapping("/recommend-routes")
-    public String recommendRoute(@RequestParam("department") String departmentAddress,
-                                 @RequestParam("arrive") String arriveAddress) {
+    @PostMapping("/routes")
+    public ResponseEntity<ResponseDTO<RecommendTransitRouteResponse>> recommendRoute(
+            @RequestBody Map<UUID, RecommendTransitRouteRequest> request) throws IOException, SlackApiException {
 
-        return geminiService.recommendRoute(departmentAddress,arriveAddress);
+        return ResponseEntity.ok(ResponseDTO.okWithData(geminiService.recommendRoute(request)));
     }
 }

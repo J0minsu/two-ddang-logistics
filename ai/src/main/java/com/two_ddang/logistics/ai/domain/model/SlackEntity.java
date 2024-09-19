@@ -22,9 +22,6 @@ public class SlackEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "receiver_id")
-    private UUID receiverID;
-
     @Column
     private String message;
 

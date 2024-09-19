@@ -144,7 +144,7 @@ public class GeminiService {
                 .append("- 예상 시간 (estimateTime)\n")
                 .append("- 예상 거리 (estimateDistance)\n")
                 .append("- 최적화된 경로 (route)\n")
-                .append("다른 설명은 하지 말고 json만 출력해줘.");
+                .append("다른 설명은 하지 말고 백틱 또는 기타 비유효 문자는 사용하지 말고 큰따옴표만 사용해서 json파일만 출력해줘.");
 
         String gptResponse = openAIService.chatToGPT(contextBuilder.toString());
 
@@ -159,7 +159,7 @@ public class GeminiService {
 
         SlackEntity slackEntity = new SlackEntity(message, LocalDateTime.now());
         slackService.saveMessage(slackEntity);
-        
+
         return convertToJsonObject(gptResponse);
     }
 
@@ -285,9 +285,20 @@ public class GeminiService {
 
     private int convertTime(String estimateTimeString) {
         String[] parts = estimateTimeString.split(" ");
-        return Integer.parseInt(parts[0].replaceAll("[^0-9]", "")) * 60 + Integer.parseInt(parts[1].replaceAll("[^0-9]", ""));
 
+        int totalMinutes = 0;
 
+        // 첫 번째 값(시간)을 처리
+        if (parts.length > 0) {
+            totalMinutes += Integer.parseInt(parts[0].replaceAll("[^0-9]", "")) * 60;
+        }
+
+        // 두 번째 값(분)이 있을 경우 처리
+        if (parts.length > 1) {
+            totalMinutes += Integer.parseInt(parts[1].replaceAll("[^0-9]", ""));
+        }
+
+        return totalMinutes;
     }
 
 }

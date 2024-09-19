@@ -66,7 +66,8 @@ public class GeminiService {
 
     public String chatToGeminiAndSaveTest() throws ExecutionException, InterruptedException, IOException {
 
-        String weatherInfo = weatherService.getWeatherInfo(37.5665851, 126.9782038).get();
+        String weatherInfo = weatherService.getWeatherInfo(60, 127);
+        log.info(weatherInfo);
 
         String prompt = weatherInfo + "이 정보를 요약해서 알려줘.";
         String context = vertexAiGeminiChatModel.call(prompt);
@@ -74,7 +75,12 @@ public class GeminiService {
         Gemini gemini = new Gemini(prompt, AiType.DELIVERY, context);
         geminiRepository.save(gemini);
 
-        String message = slackService.sendMessage(context);
+        // context를 슬랙 메시지 payload로 변환
+        String payload = "{\"text\":\"" + context + "\"}";
+
+        // 슬랙 메시지 전송
+        String message = slackService.sendMessage(payload);
+        log.info(message);
 
         SlackEntity slackEntity = new SlackEntity(message, LocalDateTime.now());
         slackService.saveMessage(slackEntity);
@@ -115,17 +121,17 @@ public class GeminiService {
 
 //        Set<LatLngRequestDto> request = ToLanLng(responses);
 //        List<String> weatherInfos = new ArrayList<>();
-        String weatherInfo = weatherService.getWeatherInfo(37.5665851, 126.9782038).get();
+        String weatherInfo = weatherService.getWeatherInfo(60, 127);
 
-        String prompt = weatherInfo + "이 정보를 요약해서 알려줘.";
+        String prompt = weatherInfo + "이 정보를 요약해서 500자 이내로 알려줘.";
         String context = vertexAiGeminiChatModel.call(prompt);
 
         Gemini gemini = new Gemini(prompt, AiType.DELIVERY, context);
         geminiRepository.save(gemini);
 
-        String message = slackService.sendMessage(context);
+        slackService.sendMessage(context);
 
-        SlackEntity slackEntity = new SlackEntity(message, LocalDateTime.now());
+        SlackEntity slackEntity = new SlackEntity(context, LocalDateTime.now());
         slackService.saveMessage(slackEntity);
 
 

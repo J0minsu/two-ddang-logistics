@@ -16,15 +16,15 @@ public class GatewayConfig {
                 .route("hub", r -> r.path("/api/v1/hubs/**", "/api/v1/users/**")
                         .uri("lb://hub"))
                 .route("orders", r -> r.path("/api/v1/orders/**")
-                        .uri("lb://orders"))
+                        .uri("lb://order"))
                 .route("delivery", r -> r.path("/api/v1/deliveries/**", "/api/v1/transits/**")
                         .uri("lb://delivery"))
                 .route("companies", r -> r.path("/api/v1/companies/**")
-                        .uri("lb://companies"))
+                        .uri("lb://company"))
                 .route("products", r -> r.path("/api/v1/products/**")
-                        .uri("lb://products"))
+                        .uri("lb://product"))
                 .route("ais", r -> r.path("/api/v1/ais/**")
-                        .uri("lb://ais"))
+                        .uri("lb://ai"))
                 .build();
     }
 

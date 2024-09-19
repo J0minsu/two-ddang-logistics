@@ -2,8 +2,9 @@ package com.two_ddang.logistics.auth.application.service;
 
 import com.two_ddang.logistics.auth.user.UserService;
 import com.two_ddang.logistics.auth.user.dto.SignInRequestDto;
-import com.two_ddang.logistics.auth.user.dto.SignUpRequestDto;
+import com.two_ddang.logistics.auth.user.dto.UserRegisterRequest;
 import com.two_ddang.logistics.auth.user.dto.UserRes;
+import com.two_ddang.logistics.core.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,14 +20,17 @@ public class AuthService {
 
     public String signIn(SignInRequestDto requestDto) {
 
-        UserRes responseDto = userService.getUserByUsername(requestDto.username());
+        ResponseDTO<UserRes> response = userService.getUserByUsername(requestDto.username());
 
-        return jwtTokenGenerator.createJwtToken(responseDto.userId(), responseDto.email(),
-                responseDto.email(), responseDto.role());
+        UserRes responseDto = response.getData();
+
+        return jwtTokenGenerator.createJwtToken(responseDto.getUserId(), responseDto.getEmail(),
+                responseDto.getUsername(), responseDto.getRole());
     }
 
-    public void signUp(SignUpRequestDto requestDto) {
+    public void signUp(UserRegisterRequest requestDto) {
         userService.createUser(requestDto);
+
     }
 
 }

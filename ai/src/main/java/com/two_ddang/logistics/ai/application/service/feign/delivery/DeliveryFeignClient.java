@@ -21,7 +21,4 @@ public interface DeliveryFeignClient extends DeliveryService {
     @GetMapping("/api/v1/deliveries") //group by로 슬랙 아이디 별로 묶으면 됨! slackId 없는 것도 보내도록 요청
     List<DeliveryRes> getTransitAddressAndSlackId(@RequestParam("agent-type") DriverAgentType agentType,
                                             @RequestParam("status")DeliveryStatus status);
-
-
-
 }

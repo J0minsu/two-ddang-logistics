@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface GeminiRepository extends JpaRepository<Gemini, UUID> {
 
-    Optional<Gemini> findByIdAndDeletedIsFalse(UUID uuid);
+    Optional<Gemini> findByIdAndDeletedAtIsNull(UUID uuid);
 
     Page<Gemini> findAllByDeletedIsFalse(Pageable pageable);
 

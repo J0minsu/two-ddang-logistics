@@ -89,14 +89,14 @@ public class GeminiService {
     }
 
     public GeminiReadResponseDto getGeminiById(UUID aiId) {
-        Gemini gemini = geminiRepository.findByIdAndDeletedIsFalse(aiId)
+        Gemini gemini = geminiRepository.findByIdAndDeletedAtIsNull(aiId)
                 .orElseThrow(AINotFoundException::new);
 
         return GeminiReadResponseDto.fromEntity(gemini);
     }
 
     public void deleteById(Integer userId, UUID aiId) {
-        Gemini gemini = geminiRepository.findByIdAndDeletedIsFalse(aiId)
+        Gemini gemini = geminiRepository.findByIdAndDeletedAtIsNull(aiId)
                 .orElseThrow(AINotFoundException::new);
 
         gemini.delete(userId);

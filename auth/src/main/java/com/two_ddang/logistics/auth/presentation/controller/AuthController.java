@@ -2,7 +2,7 @@ package com.two_ddang.logistics.auth.presentation.controller;
 
 import com.two_ddang.logistics.auth.application.service.AuthService;
 import com.two_ddang.logistics.auth.user.dto.SignInRequestDto;
-import com.two_ddang.logistics.auth.user.dto.SignUpRequestDto;
+import com.two_ddang.logistics.auth.user.dto.UserRegisterRequest;
 import com.two_ddang.logistics.core.util.ResponseDTO;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class AuthController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<ResponseDTO<Void>> signUp(@RequestBody SignUpRequestDto requestDto) {
+    public ResponseEntity<ResponseDTO<Void>> signUp(@RequestBody UserRegisterRequest requestDto) {
 
         authService.signUp(requestDto);
 

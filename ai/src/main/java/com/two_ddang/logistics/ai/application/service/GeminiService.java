@@ -79,7 +79,7 @@ public class GeminiService {
         SlackEntity slackEntity = new SlackEntity(message, LocalDateTime.now());
         slackService.saveMessage(slackEntity);
 
-        return null;
+        return message;
     }
 
 

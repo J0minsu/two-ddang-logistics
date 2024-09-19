@@ -1,6 +1,8 @@
 package com.two_ddang.logistics.ai.presentation.controller;
 
 import com.two_ddang.logistics.ai.application.service.GeminiService;
+import com.two_ddang.logistics.core.util.CurrentPassport;
+import com.two_ddang.logistics.core.util.Passport;
 import com.two_ddang.logistics.core.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +22,9 @@ public class GeminiController {
     private final GeminiService geminiService;
 
     @GetMapping
-    public ResponseEntity<ResponseDTO<String>> chatToGemini() throws IOException, ExecutionException, InterruptedException {
+    public ResponseEntity<ResponseDTO<String>> chatToGemini(
+            @CurrentPassport Passport passport
+            ) throws IOException, ExecutionException, InterruptedException {
         return ResponseEntity.ok(ResponseDTO.okWithData(geminiService.chatToGeminiAndSaveTest()));
     }
 

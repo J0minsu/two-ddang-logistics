@@ -9,6 +9,10 @@ import com.two_ddang.logistics.core.util.CurrentPassport;
 import com.two_ddang.logistics.core.util.Passport;
 import com.two_ddang.logistics.core.util.ResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+@SecurityRequirement(name = "Bearer Authentication")
+@SecurityScheme( name = "Bearer Authentication", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "Bearer")
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
@@ -33,7 +39,7 @@ public class ProductController {
     @Operation(summary = "상품 생성", description = "상품 생성 API")
     public ResponseEntity<ResponseDTO<CreateProductResponse>> createProduct(
             @RequestBody CreateProductRequest createProductRequest,
-            @CurrentPassport Passport passport)
+            @Parameter(hidden = true) @CurrentPassport Passport passport)
     {
         return ResponseEntity.ok(ResponseDTO.okWithData(productService.createProduct(createProductRequest, passport)));
     }
@@ -65,7 +71,7 @@ public class ProductController {
     public ResponseEntity<ResponseDTO<UpdateProductInfoResponse>> updateProductInfo(
             @PathVariable UUID productId,
             @RequestBody UpdateProductInfoRequest updateProductInfoRequest,
-            @CurrentPassport Passport passport)
+            @Parameter(hidden = true) @CurrentPassport Passport passport)
     {
         return ResponseEntity.ok(ResponseDTO.okWithData(
                 productService.updateProductInfo(productId, updateProductInfoRequest, passport)));
@@ -83,7 +89,8 @@ public class ProductController {
 
     @DeleteMapping("/{productId}")
     @Operation(summary = "상품 삭제", description = "상품 삭제 API")
-    public ResponseEntity<ResponseDTO<Void>> deleteProduct(@PathVariable UUID productId, @CurrentPassport Passport passport) {
+    public ResponseEntity<ResponseDTO<Void>> deleteProduct(@PathVariable UUID productId,
+                                                           @Parameter(hidden = true) @CurrentPassport Passport passport) {
         productService.deleteProduct(productId, passport);
         return ResponseEntity.ok(ResponseDTO.ok());
     }

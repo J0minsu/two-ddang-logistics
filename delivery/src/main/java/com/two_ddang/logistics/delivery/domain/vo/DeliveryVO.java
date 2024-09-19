@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,6 +38,8 @@ public class DeliveryVO {
     private final boolean isDeleted;
 
     public static DeliveryVO fromEntity(Delivery delivery) {
+
+        delivery = Objects.isNull(delivery) ? Delivery.empty() : delivery;
 
         DeliveryAgentVO deliveryAgentVO = DeliveryAgentVO.fromEntity(
                 Optional.ofNullable(delivery.getDeliveryAgent()).orElse(DeliveryAgent.empty())

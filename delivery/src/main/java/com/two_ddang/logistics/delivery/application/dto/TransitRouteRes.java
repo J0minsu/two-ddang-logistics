@@ -20,7 +20,6 @@ public class TransitRouteRes {
     private int sequence;
     private UUID transitRouteId;
     private UUID deliveryId;
-    private UUID orderId;
     private UUID departmentHubId;
     private UUID arriveHunId;
     private String route;
@@ -31,7 +30,7 @@ public class TransitRouteRes {
 
         return new TransitRouteRes(
                 route.getSequence(),
-                route.getId(), route.getDelivery().getId(), route.getDelivery().getOrderId(),
+                route.getId(), route.getDeliveryId(),
                 route.getDepartmentHubId(), route.getArriveHubId(),
                 route.getRoute(), route.getTransitStatus(), route.getArriveAt()
         );

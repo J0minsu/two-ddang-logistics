@@ -5,19 +5,18 @@ import com.two_ddang.logistics.company.application.dtos.company.CompanyResponse;
 import com.two_ddang.logistics.company.application.dtos.company.CreateCompanyResponse;
 import com.two_ddang.logistics.company.application.dtos.company.UpdateCompanyInfoResponse;
 import com.two_ddang.logistics.company.application.exception.BusinessException;
-import com.two_ddang.logistics.company.application.service.product.ProductService;
 import com.two_ddang.logistics.company.domain.model.company.Company;
 import com.two_ddang.logistics.company.domain.model.product.Product;
 import com.two_ddang.logistics.company.domain.repository.company.CompanyRepository;
 import com.two_ddang.logistics.company.domain.repository.product.ProductRepository;
 import com.two_ddang.logistics.company.infrastrucuture.HubService;
-import com.two_ddang.logistics.company.infrastrucuture.dtos.HubProductRes;
 import com.two_ddang.logistics.company.infrastrucuture.dtos.RestockHubRequest;
 import com.two_ddang.logistics.company.presentation.dtos.company.CreatedCompanyRequest;
 import com.two_ddang.logistics.company.presentation.dtos.company.RestockRequest;
 import com.two_ddang.logistics.company.presentation.dtos.company.UpdateCompanyInfoRequest;
+import com.two_ddang.logistics.core.entity.UserType;
 import com.two_ddang.logistics.core.exception.ErrorCode;
-import com.two_ddang.logistics.core.util.ResponseDTO;
+import com.two_ddang.logistics.core.util.Passport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,10 +33,12 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
     private final HubService hubService;
     private final ProductRepository productRepository;
-    private final ProductService productService;
 
     @Transactional
-    public CreateCompanyResponse createCompany(CreatedCompanyRequest createdCompanyRequestDto) {
+    public CreateCompanyResponse createCompany(CreatedCompanyRequest createdCompanyRequestDto, Passport passport) {
+
+        validateCreateCompanyRole(createdCompanyRequestDto, passport);
+
         Company company = Company.create(createdCompanyRequestDto);
         companyRepository.save(company);
         return CreateCompanyResponse.of(company);
@@ -57,21 +58,27 @@ public class CompanyService {
         return CompanyDetailResponse.of(company, hubName);
     }
 
+
     @Transactional
-    public UpdateCompanyInfoResponse updateCompanyInfo(UUID companyId, UpdateCompanyInfoRequest updateCompanyRequestDto) {
+    public UpdateCompanyInfoResponse updateCompanyInfo(UUID companyId, UpdateCompanyInfoRequest updateCompanyRequestDto, Passport passport) {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
+
+        checkRole(passport, company);
+
         company.updateInfo(updateCompanyRequestDto);
 
         String hubName = hubService.getHubInfo(company.getHubId()).getData().getName();
         return UpdateCompanyInfoResponse.of(company, hubName);
     }
 
+
     @Transactional
-    public void deleteCompany(UUID companyId) {
+    public void deleteCompany(UUID companyId, Passport passport) {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
-//        company.delete();
+        checkRole(passport, company);
+        company.delete(passport.getUserId());
     }
 
 
@@ -84,6 +91,42 @@ public class CompanyService {
 
         RestockHubRequest request = RestockHubRequest.create(product, restockRequest);
 
-        ResponseDTO<HubProductRes> hubProductResResponseDTO = hubService.inboundProduct(product.getHubId(), request);
+        hubService.inboundProduct(product.getHubId(), request);
+    }
+
+    private void checkRole(Passport passport, Company company) {
+        UserType userType = passport.getUserType();
+        Integer userId = passport.getUserId();
+
+        if (userType == UserType.DELIVERY) {
+            throw new BusinessException(ErrorCode.CAN_NOT_ACTION_ROLE);
+        }
+
+        if (userType == UserType.COMPANY) {
+            if (!company.getCompanyManager().equals(userId)) {
+                throw new BusinessException(ErrorCode.CAN_NOT_ACTION_ROLE);
+            }
+        }
+
+        if (userType == UserType.HUB) {
+            UUID hubId = hubService.findHubByMangerUserId(userId).getData().getHubId();
+            if (!company.getHubId().equals(hubId)) {
+                throw new BusinessException(ErrorCode.CAN_NOT_ACTION_ROLE);
+            }
+        }
+    }
+
+    private void validateCreateCompanyRole(CreatedCompanyRequest createdCompanyRequestDto, Passport passport) {
+        UserType userType = passport.getUserType();
+        if (userType == UserType.COMPANY || userType == UserType.DELIVERY) {
+            throw new BusinessException(ErrorCode.CAN_NOT_ACTION_ROLE);
+        }
+
+        if (userType == UserType.HUB) {
+            UUID hubId = hubService.findHubByMangerUserId(passport.getUserId()).getData().getHubId();
+            if (!hubId.equals(createdCompanyRequestDto.getHubId())) {
+                throw new BusinessException(ErrorCode.CAN_NOT_ACTION_ROLE);
+            }
+        }
     }
 }

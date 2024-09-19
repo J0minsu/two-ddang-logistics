@@ -16,7 +16,7 @@ import java.util.UUID;
 @Getter
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(exclude = "")
+@ToString
 @Comment("배송")
 public class Delivery extends BaseEntity {
 
@@ -29,6 +29,7 @@ public class Delivery extends BaseEntity {
     private UUID orderId;
     
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     @Comment("배송 상태")
     private DeliveryStatus deliveryStatus;
 
@@ -55,8 +56,8 @@ public class Delivery extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "delivery")
     private TransitRoute transitRoute;
 
-    public static DeliveryAgent empty() {
-        return new DeliveryAgent();
+    public static Delivery empty() {
+        return new Delivery();
     }
 
     public void assignmentAgent(DeliveryAgent deliveryAgent) {

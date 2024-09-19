@@ -2,16 +2,14 @@ package com.two_ddang.logistics.order.application.dtos.response;
 
 import com.two_ddang.logistics.core.entity.OrderStatus;
 import com.two_ddang.logistics.order.domain.model.Order;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder

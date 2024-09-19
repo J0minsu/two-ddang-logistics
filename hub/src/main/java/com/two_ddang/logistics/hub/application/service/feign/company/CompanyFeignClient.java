@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.UUID;
 
-@FeignClient(name = "company",
+@FeignClient(name = "companies",
 configuration = FeignClientConfig.class,
 fallbackFactory = CompanyFallbackFactory.class)
 public interface CompanyFeignClient extends CompanyService {
 
     @Override
     @PostMapping("/api/v1/companies/{companyId}/restock")
-    void restock(@PathVariable UUID companyId, @RequestBody RestockRequest request);
+    void restock(@PathVariable UUID companyId, RestockRequest request);
 
 }

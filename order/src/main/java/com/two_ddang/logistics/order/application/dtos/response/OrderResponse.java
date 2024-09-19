@@ -5,12 +5,14 @@ import com.two_ddang.logistics.order.domain.model.Order;
 import com.two_ddang.logistics.order.domain.model.OrderProduct;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

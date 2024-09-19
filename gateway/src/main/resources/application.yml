@@ -16,7 +16,23 @@ spring:
         locator:
           enabled: true
 
-
+springdoc:
+  enable-native-support: true
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
+    urls:
+#      - url: /v3/api-docs
+#        name: API Gateway Service
+#        primaryName: API Gateway Service
+      - url: http://localhost:19093/api/hub/v3/api-docs
+        name: hub
+      - url: http://localhost:19093/api/delivery/v3/api-docs
+        name: delivery
+    use-root-path: true
 
 
   data:

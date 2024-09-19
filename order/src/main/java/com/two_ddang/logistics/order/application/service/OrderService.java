@@ -1,7 +1,9 @@
 package com.two_ddang.logistics.order.application.service;
 
 import com.two_ddang.logistics.core.entity.OrderStatus;
+import com.two_ddang.logistics.core.entity.UserType;
 import com.two_ddang.logistics.core.exception.ErrorCode;
+import com.two_ddang.logistics.core.util.Passport;
 import com.two_ddang.logistics.order.application.dtos.response.*;
 import com.two_ddang.logistics.order.application.exception.BusinessException;
 import com.two_ddang.logistics.order.domain.model.Order;
@@ -9,10 +11,10 @@ import com.two_ddang.logistics.order.domain.model.OrderProduct;
 import com.two_ddang.logistics.order.domain.repository.OrderRepository;
 import com.two_ddang.logistics.order.infrastructure.CompanyService;
 import com.two_ddang.logistics.order.infrastructure.HubService;
-import com.two_ddang.logistics.order.infrastructure.fallback.DeliveryServiceFallbackHandler;
 import com.two_ddang.logistics.order.infrastructure.dtos.CompanyDetailResponse;
 import com.two_ddang.logistics.order.infrastructure.dtos.CompanyProductResponse;
 import com.two_ddang.logistics.order.infrastructure.dtos.HubProductOutboundRequest;
+import com.two_ddang.logistics.order.infrastructure.fallback.DeliveryServiceFallbackHandler;
 import com.two_ddang.logistics.order.presentation.dtos.CreateOrderRequest;
 import com.two_ddang.logistics.order.presentation.dtos.UpdateOrderStatusRequest;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +37,7 @@ public class OrderService {
     private final HubService hubService;
     private final OrderRepository orderRepository;
     private final CompanyService companyService;
-    private final DeliveryServiceFallbackHandler deliveryServiceCircuitBreaker;
+    private final DeliveryServiceFallbackHandler deliveryServiceFallbackHandler;
 
     @Transactional
     public CreateOrderResponse createOrder(CreateOrderRequest createOrderRequest) {
@@ -44,13 +46,13 @@ public class OrderService {
         UUID resCompanyId = createOrderRequest.getResCompanyId();
         CompanyDetailResponse resCompany = companyService.getCompany(resCompanyId).getData();
 
-        List<OrderProduct> orderProducts = validAndCreateOrderProduct(reqCompanyId,createOrderRequest);
+        List<OrderProduct> orderProducts = validAndCreateOrderProduct(reqCompanyId, createOrderRequest);
 
-        Order order = orderRepository.save(Order.create(createOrderRequest, orderProducts));
+        Order order = orderRepository.save(Order.create(reqCompany, resCompany, orderProducts));
 
         order.updateStatus(OrderStatus.PENDING);
 
-        UUID deliveryId = deliveryServiceCircuitBreaker
+        UUID deliveryId = deliveryServiceFallbackHandler
                 .createDelivery(order, reqCompanyId, resCompany);
 
         if (deliveryId != null) {
@@ -61,14 +63,30 @@ public class OrderService {
     }
 
 
-    public Page<OrderResponse> getOrders(Pageable pageable, String keyword) {
+    public Page<OrderResponse> getOrders(Pageable pageable, String keyword, Passport passport) {
+        UserType userType = passport.getUserType();
+        if (userType == UserType.DELIVERY) {
+            throw new BusinessException(ErrorCode.CAN_NOT_ACTION_ROLE);
+        }
+        if (userType == UserType.COMPANY) {
+            return orderRepository.findAllByCreatedBy(pageable, passport.getUserId()).map(OrderResponse::of);
+        }
+
+        if (userType == UserType.HUB) {
+            UUID hubId = hubService.findHubByMangerUserId(passport.getUserId()).getData().getHubId();
+            return orderRepository.findAllByReqHubIdOrResHubId(pageable, hubId, hubId).map(OrderResponse::of);
+        }
+
         return orderRepository.findAll(pageable).map(OrderResponse::of);
+
     }
 
 
-    public OrderDetailResponse getOrder(UUID orderId) {
+    public OrderDetailResponse getOrder(UUID orderId, Passport passport) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
+
+        checkRole(passport, order);
 
         String reqCompanyName = companyService.getCompany(order.getReqCompanyId()).getData().getCompanyName();
         String resCompanyName = companyService.getCompany(order.getResCompanyId()).getData().getCompanyName();
@@ -78,30 +96,36 @@ public class OrderService {
 
 
     @Transactional
-    public UpdateOrderStatusResponse updateOrderStatus(UUID orderId, UpdateOrderStatusRequest updateOrderStatusRequestDto) {
+    public UpdateOrderStatusResponse updateOrderStatus(UUID orderId, UpdateOrderStatusRequest updateOrderStatusRequestDto, Passport passport) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
+
+        checkRole(passport, order);
+
         order.updateStatus(updateOrderStatusRequestDto.getOrderStatus());
         return UpdateOrderStatusResponse.of(order);
     }
 
     @Transactional
-    public CancelOrderResponse cancelOrder(UUID orderId) {
+    public CancelOrderResponse cancelOrder(UUID orderId, Passport passport) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
+
+        checkRole(passport, order);
         order.cancel();
         return CancelOrderResponse.of(order);
     }
 
 
     @Transactional
-    public void deleteOrder(UUID orderId) {
+    public void deleteOrder(UUID orderId, Passport passport) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
-        //유저 정보 받아 오는 방법 ??
-//        order.delete();
-    }
 
+        checkRole(passport, order);
+
+        order.delete(passport.getUserId());
+    }
 
 
     private List<OrderProduct> validAndCreateOrderProduct(UUID hubId, CreateOrderRequest createOrderRequest) {
@@ -119,18 +143,40 @@ public class OrderService {
                     .ifPresentOrElse(
                             product -> {
                                 orderProducts.add(OrderProduct.create(product, orderProduct.getQuantity()));
-                                hubService.order(hubId, HubProductOutboundRequest.of(
+                                hubService.outbound(hubId, HubProductOutboundRequest.of(
                                         product.getProductId(),
                                         createOrderRequest.getReqCompanyId(),
                                         orderProduct.getQuantity()
                                 ));
                             },
                             () -> {
-                                  throw new BusinessException(ErrorCode.COMPANY_PRODUCT_NOT_FOUND);
+                                throw new BusinessException(ErrorCode.COMPANY_PRODUCT_NOT_FOUND);
                             }
                     );
         }
 
         return orderProducts;
+    }
+
+    private void checkRole(Passport passport, Order order) {
+        UserType userType = passport.getUserType();
+        Integer userId = passport.getUserId();
+
+        if (userType == UserType.DELIVERY) {
+            throw new BusinessException(ErrorCode.CAN_NOT_ACTION_ROLE);
+        }
+
+        if (userType == UserType.COMPANY) {
+            if (!order.getCreatedBy().equals(userId)) {
+                throw new BusinessException(ErrorCode.CAN_NOT_ACTION_ROLE);
+            }
+        }
+
+        if (userType == UserType.HUB) {
+            UUID hubId = hubService.findHubByMangerUserId(userId).getData().getHubId();
+            if (!order.getReqHubId().equals(hubId) || !order.getResHubId().equals(hubId)) {
+                throw new BusinessException(ErrorCode.CAN_NOT_ACTION_ROLE);
+            }
+        }
     }
 }

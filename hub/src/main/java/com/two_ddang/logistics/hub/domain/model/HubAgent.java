@@ -53,12 +53,4 @@ public class HubAgent extends BaseEntity {
         return new HubAgent();
     }
 
-    public HubAgentVO toVO() {
-
-        UserVO userVO = Optional.ofNullable(user).orElse(User.emptyObject()).toVO();
-
-        return new HubAgentVO(id, userVO, hub.toVO(),
-            getCreatedAt(), getUpdatedAt(), getDeletedAt(), getCreatedBy(), getUpdatedBy(), getDeletedBy(), isDeleted());
-    }
-
 }

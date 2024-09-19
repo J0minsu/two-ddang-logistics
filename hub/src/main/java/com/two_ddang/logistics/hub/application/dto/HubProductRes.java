@@ -5,8 +5,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 import java.util.UUID;
 
@@ -22,7 +20,7 @@ public class HubProductRes {
     private int quantity;
 
     public static HubProductRes fromVO(HubProductVO hubProduct) {
-        return new HubProductRes(hubProduct.getHub().getId(), hubProduct.getProductId(), hubProduct.getCompanyId(),
+        return new HubProductRes(hubProduct.getHubId(), hubProduct.getProductId(), hubProduct.getCompanyId(),
                 hubProduct.getProductName(), hubProduct.getStock());
     }
 

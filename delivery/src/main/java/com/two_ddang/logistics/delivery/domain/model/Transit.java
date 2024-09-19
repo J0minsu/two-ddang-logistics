@@ -2,6 +2,7 @@ package com.two_ddang.logistics.delivery.domain.model;
 
 import com.two_ddang.logistics.core.entity.BaseEntity;
 import com.two_ddang.logistics.core.entity.TransitStatus;
+import com.two_ddang.logistics.delivery.application.service.feign.ai.dto.res.TransitRouteResponse;
 import com.two_ddang.logistics.delivery.infrastructrure.exception.NoSuchElementApplicationException;
 import com.two_ddang.logistics.delivery.presentation.request.TransitRouteArriveRequest;
 import jakarta.persistence.*;
@@ -12,10 +13,8 @@ import lombok.ToString;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity(name = "p_transits")
 @Getter
@@ -40,6 +39,7 @@ public class Transit extends BaseEntity {
     private int totalEstimateDistance;
     
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     @Comment("운송 상태")
     private TransitStatus transitStatus;
     
@@ -60,13 +60,20 @@ public class Transit extends BaseEntity {
         this.transitStatus = transitStatus;
     }
 
-    public static Transit of(DeliveryAgent transitAgent, int totalEstimateDistance, TransitStatus transitStatus, List<Delivery> deliveries) {
+    public static Transit empty() {
+        return new Transit();
+    }
+
+    public static Transit of(DeliveryAgent transitAgent, int totalEstimateDistance, TransitStatus transitStatus, List<Delivery> deliveries, Map<Integer, TransitRouteResponse> routes) {
 
         Transit transit = new Transit(transitAgent, totalEstimateDistance, TransitStatus.WAIT);
 
         /**
          * TODO TransitRoute
          */
+
+//        deliveries.;
+
 
         return transit;
 

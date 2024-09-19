@@ -9,6 +9,7 @@ import com.two_ddang.logistics.core.util.ResponseDTO;
 import com.two_ddang.logistics.delivery.application.dto.TransitRes;
 import com.two_ddang.logistics.delivery.application.dto.TransitRouteRes;
 import com.two_ddang.logistics.delivery.application.service.TransitService;
+import com.two_ddang.logistics.delivery.domain.model.Transit;
 import com.two_ddang.logistics.delivery.domain.vo.TransitRouteVO;
 import com.two_ddang.logistics.delivery.domain.vo.TransitVO;
 import com.two_ddang.logistics.delivery.presentation.request.TransitRouteArriveRequest;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 import static com.two_ddang.logistics.core.util.ValidationUtils.*;
@@ -38,6 +40,17 @@ public class TransitController {
 
     private final TransitService transitService;
 
+    @PostMapping("/schedules")
+    @Operation(summary = "운송 스캐줄러로 생성", description = "운송 스캐줄러로 생성 API")
+    public ResponseEntity<ResponseDTO<List<TransitRes>>> schedule() {
+
+        List<TransitVO> transits = transitService.createTransitSchedule();
+
+        List<TransitRes> result = transits.stream().map(TransitRes::fromEntity).toList();
+
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
+
+    }
 
     @PostMapping("/hubs/{hubId}")
     @Operation(summary = "허브에서 운송 생성", description = "허브에서 운송 생성 API")

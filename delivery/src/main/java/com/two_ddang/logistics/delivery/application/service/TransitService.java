@@ -1,9 +1,12 @@
 package com.two_ddang.logistics.delivery.application.service;
 
 import com.two_ddang.logistics.core.entity.DeliveryStatus;
+import com.two_ddang.logistics.core.entity.DriveStatus;
+import com.two_ddang.logistics.core.entity.DriverAgentType;
 import com.two_ddang.logistics.core.entity.TransitStatus;
 import com.two_ddang.logistics.delivery.application.service.feign.hub.HubService;
 import com.two_ddang.logistics.delivery.application.service.feign.hub.dto.req.HubRouteModifyRequest;
+import com.two_ddang.logistics.delivery.application.service.feign.hub.dto.res.HubRes;
 import com.two_ddang.logistics.delivery.domain.model.Delivery;
 import com.two_ddang.logistics.delivery.domain.model.DeliveryAgent;
 import com.two_ddang.logistics.delivery.domain.model.Transit;
@@ -24,9 +27,14 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +47,55 @@ public class TransitService {
     private final DeliveryAgentRepository deliveryAgentRepository;
 
     private final HubService hubService;
+
+    private final LocalDate STANDARD = LocalDate.of(2022, 1, 1);
+
+    @Transactional
+    public List<TransitVO> createTransitSchedule() {
+
+        LocalDate NOW = LocalDate.now();
+
+        int page = (int) ChronoUnit.DAYS.between(NOW, LocalDate.now());
+
+        Queue<DeliveryAgent> agents = new LinkedList<>(deliveryAgentRepository.findByTypeAndDriveStatusIsDeletedIsFalse(DriverAgentType.TRANSIT, DriveStatus.WAITING));
+
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        List<HubRes> allHubs = hubService.findAllHubs(pageRequest).getData().getContent();
+
+        allHubs.forEach(i -> {
+            List<Delivery> deliveries = deliveryRepository.findByDepartmentHubIdAndDeliveryStatus(i.getHubId(), DeliveryStatus.BEFORE_TRANSIT);
+
+            Set<UUID> arriveSet = deliveries.stream()
+                    .map(Delivery::getArriveHubId).collect(Collectors.toSet());
+
+            DeliveryAgent agent = agents.poll();
+
+            if(agent == null) {
+                return;
+            }
+
+            /**
+             * AI call
+             */
+
+            List<HubRouteModifyRequest> request = deliveries.stream()
+                    .map(d -> new HubRouteModifyRequest(
+                            d.getDepartmentHubId(), d.getArriveHubId(),
+                            1, "route",
+                            agent.getId())).toList();
+
+            CompletableFuture.runAsync(() -> hubService.modifyRoutes(request));
+
+
+        });
+
+        log.info("allHubs :: {}", allHubs);
+
+        allHubs.forEach(System.out::println);
+
+        return null;
+    }
+
 
     @Transactional
     public TransitVO create(Integer userId, UUID hubId) {
@@ -56,6 +113,7 @@ public class TransitService {
         /**
          * AI Service Route 조회
          */
+
 
 
         List<HubRouteModifyRequest> request = deliveries.stream()
@@ -146,4 +204,5 @@ public class TransitService {
         transit.delete(userId);
 
     }
+
 }

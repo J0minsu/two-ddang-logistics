@@ -27,10 +27,9 @@ public class SlackService {
         slackRepository.save(slackEntity);
     }
 
-    @Async
-    public CompletableFuture<String> sendMessage(String message) throws IOException {
+    public String sendMessage(String message) throws IOException {
         WebhookResponse response = slack.send(slackWebHookUrl, message);
-        return CompletableFuture.completedFuture(response.getMessage());
+        return response.getMessage();
     }
 
 }

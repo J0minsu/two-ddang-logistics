@@ -19,3 +19,7 @@ public class HubRouteModifyRequest {
     private UUID updateDeliveryAgentId;
 
 }
+
+/**
+ * 내가 department 에서 출발하는데 경유해야할 곳이 List<ArriveHub> 야. 최단 거리의 운송 순서 sequence 및 경로, 예상 소요시간을 json 형식으로 반환해줘
+ */

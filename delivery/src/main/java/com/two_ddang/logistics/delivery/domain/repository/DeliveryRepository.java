@@ -18,7 +18,7 @@ public interface DeliveryRepository extends JpaRepository<Delivery, UUID> {
 
     Page<Delivery> findByDeliveryStatus(DeliveryStatus status, Pageable pageable);
 
-    List<Delivery> findByDepartmentHubIdAndDeliveryStatus(UUID departmentHubId, DeliveryStatus status, Pageable pageable);
+    List<Delivery> findByDepartmentHubIdAndDeliveryStatus(UUID departmentHubId, DeliveryStatus status);
 
 
 }

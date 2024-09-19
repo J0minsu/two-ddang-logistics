@@ -18,7 +18,7 @@ public class SecurityConfig {
 
     private static final String[] RESOURCE_WHITELIST = {
             "/v3/**", // v3 : SpringBoot 3(없으면 swagger 예시 api 목록 제공)
-            "/swagger-ui/**",
+            "/swagger-ui**",
             "/swagger-resources/**",
             "/webjars/**",
             "*/v3/api-docs",
@@ -33,7 +33,7 @@ public class SecurityConfig {
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .authorizeExchange(exchange ->
                         exchange.pathMatchers("/auth/sign-in", "/auth/sign-up", "/swagger-ui.html").permitAll()
-                                .anyExchange().authenticated())
+                                .anyExchange().permitAll())
                 .addFilterBefore(jwtAuthenticationFilter, SecurityWebFiltersOrder.HTTP_BASIC)
                 .build();
     }

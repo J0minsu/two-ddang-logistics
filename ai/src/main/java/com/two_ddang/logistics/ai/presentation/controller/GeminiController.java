@@ -17,6 +17,7 @@ public class GeminiController {
     @GetMapping("/recommend-routes")
     public String recommendRoute(@RequestParam("department") String departmentAddress,
                                  @RequestParam("arrive") String arriveAddress) {
+
         return geminiService.recommendRoute(departmentAddress,arriveAddress);
     }
 }

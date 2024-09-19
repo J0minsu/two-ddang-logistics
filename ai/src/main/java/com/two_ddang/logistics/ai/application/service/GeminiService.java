@@ -1,5 +1,8 @@
 package com.two_ddang.logistics.ai.application.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.errors.ApiException;
@@ -8,7 +11,9 @@ import com.google.maps.model.LatLng;
 import com.two_ddang.logistics.ai.application.dto.GeminiReadResponseDto;
 import com.two_ddang.logistics.ai.application.dto.LatLngRequestDto;
 import com.two_ddang.logistics.ai.application.dto.RecommendTransitRouteRequest;
+import com.two_ddang.logistics.ai.application.dto.RecommendTransitRouteResponse;
 import com.two_ddang.logistics.ai.application.dto.TransitRouteRequest;
+import com.two_ddang.logistics.ai.application.dto.TransitRouteResponse;
 import com.two_ddang.logistics.ai.application.service.feign.delivery.DeliveryService;
 import com.two_ddang.logistics.ai.application.service.feign.delivery.dto.DeliveryRes;
 import com.two_ddang.logistics.ai.domain.model.Gemini;
@@ -29,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -55,13 +61,15 @@ public class GeminiService {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    public GeminiService(GeminiRepository geminiRepository,
-                         VertexAiGeminiChatModel vertexAiGeminiChatModel,
-                         DeliveryService deliveryService,
-                         @Value("${google.maps.api.key}") String geoCodingApiKey,
-                         WeatherService weatherService,
-                         SlackService slackService,
-                         RedisTemplate<String, String> redisTemplate) {
+    private final OpenAIService openAIService;
+
+    private final ObjectMapper objectMapper;
+
+    public GeminiService(GeminiRepository geminiRepository, VertexAiGeminiChatModel vertexAiGeminiChatModel,
+                         DeliveryService deliveryService, @Value("${google.maps.api.key}") String geoCodingApiKey,
+                         WeatherService weatherService, SlackService slackService,
+                         RedisTemplate<String, String> redisTemplate, OpenAIService openAIService,
+                         ObjectMapper objectMapper) {
         this.geminiRepository = geminiRepository;
         this.vertexAiGeminiChatModel = vertexAiGeminiChatModel;
         this.deliveryService = deliveryService;
@@ -69,6 +77,8 @@ public class GeminiService {
         this.weatherService = weatherService;
         this.slackService = slackService;
         this.redisTemplate = redisTemplate;
+        this.openAIService = openAIService;
+        this.objectMapper = objectMapper;
     }
 
 
@@ -135,7 +145,15 @@ public class GeminiService {
                 .append("- 최적화된 경로 (route)\n")
                 .append("다른 설명은 하지 말고 json만 출력해줘.");
 
-        return vertexAiGeminiChatModel.call(contextBuilder.toString());
+        String response = openAIService.chatToGPT(contextBuilder.toString());
+
+        Gemini gemini = new Gemini(contextBuilder.toString(), AiType.DELIVERY, response);
+        geminiRepository.save(gemini);
+
+        //json -> object
+
+
+        return response;
     }
 
 
@@ -222,4 +240,48 @@ public class GeminiService {
         return requestToGemini;
     }
 
+    private RecommendTransitRouteResponse convertToJsonObject(String response) throws JsonProcessingException {
+
+        JsonNode jsonNode = objectMapper.readTree(response);
+
+        Map<Integer, TransitRouteResponse> routeMap = new HashMap<>();
+
+        JsonNode routesNode = jsonNode.get("routes");
+        if (routesNode.isArray()) {
+            for (JsonNode routeNode : routesNode) {
+                int sequence = routeNode.get("sequence").asInt();
+                UUID departmentHubId = UUID.fromString(routeNode.get("departmentHubId").asText()); // UUID 변환
+                String departureAddress = routeNode.get("departureAddress").asText();
+                UUID arriveHubId = UUID.fromString(routeNode.get("arriveHubId").asText()); // UUID 변환
+                String arriveAddress = routeNode.get("arriveAddress").asText();
+
+                // "1시간 10분" 같은 시간을 분 단위로 파싱
+                String estimateTimeString = routeNode.get("estimateTime").asText();
+                int estimateTime = convertTime(estimateTimeString);
+
+                // "65km" 같은 거리를 숫자로 변환
+                String estimateDistanceString = routeNode.get("estimateDistance").asText();
+                int estimateDistance = Integer.parseInt(estimateDistanceString.replaceAll("[^0-9]", ""));
+
+                String routeString = String.join(", ", objectMapper.convertValue(routeNode.get("route"), List.class));
+
+                TransitRouteResponse transitRouteResponse = new TransitRouteResponse(sequence, departmentHubId, departureAddress, arriveHubId,
+                        arriveAddress, estimateTime, estimateDistance, routeString);
+
+                routeMap.put(sequence, transitRouteResponse);
+            }
+        }
+
+        return new RecommendTransitRouteResponse(routeMap);
+
+    }
+
+    private int convertTime(String estimateTimeString) {
+        String[] parts = estimateTimeString.split(" ");
+        return Integer.parseInt(parts[0].replaceAll("[^0-9]", "")) * 60 + Integer.parseInt(parts[1].replaceAll("[^0-9]", ""));
+
+
+    }
+
 }
+

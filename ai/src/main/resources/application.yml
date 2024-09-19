@@ -25,6 +25,10 @@ spring:
         gemini:
           project-id: ${project-id}
           location: asia-northeast3
+    openai:
+      api-key: ${openai-api-key}
+    retry:
+      max-attempts: 2
 
 google:
   maps:
@@ -37,6 +41,8 @@ weather:
 slack:
   webhook:
     url: ${slack-webhook-url}
+  bot:
+    token: ${slack-bot-token}
 
 server:
   port: 19097

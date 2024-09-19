@@ -18,7 +18,7 @@ public class UserFallback implements UserFeignClient {
     public UserRes findUserById(int userId) {
 
         if(cause instanceof FeignException.NotFound) {
-            log.info("HubFallback ");
+            log.info("AIFallback ");
         }
 
         return null;

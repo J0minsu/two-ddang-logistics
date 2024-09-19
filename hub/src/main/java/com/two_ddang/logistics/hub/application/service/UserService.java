@@ -10,6 +10,9 @@ import com.two_ddang.logistics.hub.presentation.request.UserModifyRequest;
 import com.two_ddang.logistics.hub.presentation.request.UserRegisterRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +29,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
+    @CachePut(cacheNames = "userVO", key = "#result.id")
     public UserVO register(UserRegisterRequest request) {
 
         request.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -40,6 +44,7 @@ public class UserService {
 
     }
 
+    @CachePut(cacheNames = "userVO", key = "args[0]")
     public UserVO findById(int userId) {
 
         User user = userRepository.findByIdAndIsDeletedIsFalse(userId)
@@ -49,6 +54,7 @@ public class UserService {
 
     }
 
+    @CachePut(cacheNames = "userVO", key = "#result.id")
     public UserVO findByUsername(String username) {
 
         User user = userRepository.findByUsernameAndIsDeletedIsFalse(username)
@@ -68,6 +74,7 @@ public class UserService {
     }
 
     @Transactional
+    @CachePut(cacheNames = "userVO", key = "args[0]")
     public UserVO modify(int userId, UserModifyRequest request) {
 
         User user = userRepository.findByIdAndIsDeletedIsFalse(userId)
@@ -80,6 +87,7 @@ public class UserService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "userVO", key = "args[0]")
     public void delete(int userId) {
 
         User user = userRepository.findByIdAndIsDeletedIsFalse(userId)

@@ -3,6 +3,7 @@ package com.two_ddang.logistics.delivery.application.service.feign.ai;
 import com.two_ddang.logistics.core.util.ResponseDTO;
 import com.two_ddang.logistics.delivery.application.service.feign.ai.dto.req.RecommendTransitRouteRequest;
 import com.two_ddang.logistics.delivery.application.service.feign.ai.dto.res.RecommendTransitRouteResponse;
+import com.two_ddang.logistics.delivery.application.service.feign.ai.fallback.AIFallbackFactory;
 import com.two_ddang.logistics.delivery.application.service.feign.hub.HubService;
 import com.two_ddang.logistics.delivery.application.service.feign.hub.dto.req.HubRouteModifyRequest;
 import com.two_ddang.logistics.delivery.application.service.feign.hub.fallback.HubFallbackFactory;
@@ -18,7 +19,7 @@ import java.util.UUID;
 @FeignClient(
         name = "ai",
 configuration = FeignClientConfig.class,
-fallbackFactory = HubFallbackFactory.class)
+fallbackFactory = AIFallbackFactory.class)
 public interface AIFeignClient extends AIService {
 
     @Override

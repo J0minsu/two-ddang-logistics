@@ -1,5 +1,6 @@
 package com.two_ddang.logistics.core.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -9,6 +10,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
+@Slf4j
 public class PassportArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final TokenUtils tokenUtils;
@@ -37,6 +39,7 @@ public class PassportArgumentResolver implements HandlerMethodArgumentResolver {
 
     private String extractToken(NativeWebRequest request) {
         String authHeader = request.getHeader("InternalToken");
+        log.info("resolver external Token");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);
         }

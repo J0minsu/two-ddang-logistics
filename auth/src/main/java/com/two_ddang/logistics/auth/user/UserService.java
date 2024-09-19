@@ -1,12 +1,13 @@
 package com.two_ddang.logistics.auth.user;
 
-import com.two_ddang.logistics.auth.user.dto.SignUpRequestDto;
+import com.two_ddang.logistics.auth.user.dto.UserRegisterRequest;
 import com.two_ddang.logistics.auth.user.dto.UserRes;
+import com.two_ddang.logistics.core.util.ResponseDTO;
 
 public interface UserService {
 
-    UserRes getUserByUsername(String username);
+    ResponseDTO<UserRes> getUserByUsername(String username);
 
-    void createUser(SignUpRequestDto requestDto);
+    ResponseDTO<UserRes> createUser(UserRegisterRequest requestDto);
 
 }

@@ -38,20 +38,19 @@ public class JwtAuthenticationFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
 
-        return chain.filter(exchange);
+        String path = exchange.getRequest().getURI().getPath();
+        if (path.equals("/auth/sign-in") || path.equals("/auth/sign-up")) {
+            return chain.filter(exchange);
+        }
 
-//        String path = exchange.getRequest().getURI().getPath();
-//        if (path.equals("/auth/sign-in") || path.equals("/auth/sign-up") ) {
-//            return chain.filter(exchange);
-//        }
-//
-//        String token = extractToken(exchange);
-//        if (token == null || !validateExternalToken(token, exchange)) {
-//            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-//            return exchange.getResponse().setComplete();
-//        }
-//
-//        return chain.filter(exchange);
+        String token = extractToken(exchange);
+        log.info("external token", token);
+        if (token == null || !validateExternalToken(token, exchange)) {
+            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+            return exchange.getResponse().setComplete();
+        }
+
+        return chain.filter(exchange);
     }
 
     private String extractToken(ServerWebExchange exchange) {
@@ -81,6 +80,7 @@ public class JwtAuthenticationFilter implements WebFilter {
             }
 
             String internalToken = createInternalToken(claims);
+            log.info("jwt Filter Internal Token", internalToken);
 
             exchange.getRequest().mutate()
                     .header("InternalToken", "Bearer " + internalToken)

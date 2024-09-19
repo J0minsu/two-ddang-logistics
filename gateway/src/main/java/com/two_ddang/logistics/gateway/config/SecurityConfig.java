@@ -4,9 +4,7 @@ import com.two_ddang.logistics.gateway.infrastructure.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
@@ -20,7 +18,7 @@ public class SecurityConfig {
 
     private static final String[] RESOURCE_WHITELIST = {
             "/v3/**", // v3 : SpringBoot 3(없으면 swagger 예시 api 목록 제공)
-            "/swagger-ui**",
+            "/swagger-ui/**",
             "/swagger-resources/**",
             "/webjars/**",
             "*/v3/api-docs",
@@ -34,7 +32,7 @@ public class SecurityConfig {
                 .cors(ServerHttpSecurity.CorsSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .authorizeExchange(exchange ->
-                        exchange.pathMatchers("/auth/sign-in", "/auth/sign-up", "/api/v1/ais", "/api/v1/ais/**").permitAll()
+                        exchange.pathMatchers("/auth/sign-in", "/auth/sign-up", "/swagger-ui.html").permitAll()
                                 .anyExchange().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, SecurityWebFiltersOrder.HTTP_BASIC)
                 .build();

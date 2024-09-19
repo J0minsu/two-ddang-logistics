@@ -68,6 +68,9 @@ springdoc:
     urls[4]:
       url: /deliveries/v3/api-docs
       name: deliveries
+    urls[5]:
+      url: /ais/v3/api-docs
+      name: ais
     use-root-path: true
   remove-broken-reference-definitions: false
 

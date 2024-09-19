@@ -15,6 +15,7 @@ public class SwaggerConfig {
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
         return builder
                 .routes()
+                .route(r -> r.path("ais/swagger-ui.html").and().method(HttpMethod.GET).uri("lb://ai"))
                 .route(r -> r.path("/auths/swagger-ui.html").and().method(HttpMethod.GET).uri("lb://auth"))
                 .route(r -> r.path("/orders/swagger-ui.html").and().method(HttpMethod.GET).uri("lb://order"))
                 .route(r -> r.path("/companies/swagger-ui.html").and().method(HttpMethod.GET).uri("lb://company"))

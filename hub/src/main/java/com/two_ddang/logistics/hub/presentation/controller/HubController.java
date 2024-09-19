@@ -156,7 +156,24 @@ public class HubController {
 
         Page<HubRes> result = hubs.map(HubRes::fromVO);
 
+        result.getContent().forEach(System.out::println);
+
         return ResponseEntity.ok(ResponseDTO.okWithData(result));
+
+    }
+
+    @GetMapping("/schedules")
+    @Operation(summary = "스케줄링 용 허브 검색", description = "스케줄링 용 허브 검색 API")
+    public ResponseEntity<ResponseDTO<List<HubRes>>> forSchedules(
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "CREATED_DESC") HubSortStandard sort) {
+
+        Page<HubVO> hubs = hubService.searchHub(pageNumber, size, "", sort);
+
+        Page<HubRes> result = hubs.map(HubRes::fromVO);
+
+        return ResponseEntity.ok(ResponseDTO.okWithData(result.getContent()));
 
     }
 

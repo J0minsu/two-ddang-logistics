@@ -1,12 +1,17 @@
 package com.two_ddang.logistics.delivery.application.service.feign.ai.fallback;
 
+import com.two_ddang.logistics.core.util.ResponseDTO;
 import com.two_ddang.logistics.delivery.application.service.feign.ai.AIFeignClient;
+import com.two_ddang.logistics.delivery.application.service.feign.ai.dto.req.RecommendTransitRouteRequest;
+import com.two_ddang.logistics.delivery.application.service.feign.ai.dto.res.RecommendTransitRouteResponse;
 import com.two_ddang.logistics.delivery.application.service.feign.hub.HubFeignClient;
 import com.two_ddang.logistics.delivery.application.service.feign.hub.dto.req.HubRouteModifyRequest;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 public class AIFallback implements AIFeignClient {
@@ -18,7 +23,7 @@ public class AIFallback implements AIFeignClient {
     }
 
     @Override
-    public void requestRoutes(List<HubRouteModifyRequest> routes) {
-        AIFeignClient.super.requestRoutes(routes);
+    public ResponseDTO<RecommendTransitRouteResponse> recommendRoute(Map<UUID, RecommendTransitRouteRequest> request) {
+        return null;
     }
 }

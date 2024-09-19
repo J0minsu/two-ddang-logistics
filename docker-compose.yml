@@ -38,6 +38,8 @@ services:
       dockerfile: Dockerfile
       args:
         - FILE_DIRECTORY=./server
+    ports:
+      - "19090:19090"
 
   gateway:
     environment:
@@ -46,7 +48,7 @@ services:
       redis-username: default
       redis-password: systempass
     build:
-      dockerfile: Dockerfile
+      dockerfile: ./gateway/Dockerfile
       args:
         - FILE_DIRECTORY=./gateway
     ports:
@@ -65,9 +67,9 @@ services:
       redis-username: default
       redis-password: systempass
     build:
-      dockerfile: Dockerfile
+      dockerfile: ./order/Dockerfile
       args:
-        - FILE_DIRECTORY=./order
+        - FILE_DIRECTORY=order
     depends_on:
       database:
         condition: service_healthy

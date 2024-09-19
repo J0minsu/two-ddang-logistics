@@ -1,6 +1,6 @@
 spring:
   application:
-    name: hubs
+    name: hub
   datasource:
     url: jdbc:postgresql://${url}/ddang_logistics
     username: ${username}
@@ -65,3 +65,10 @@ springdoc:
   enable-spring-security: true
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
+  remove-broken-reference-definitions: false
+
+
+openapi:
+  service:
+    # API Gateway 포트
+    url: http://localhost:19091

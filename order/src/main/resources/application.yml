@@ -98,3 +98,4 @@ springdoc:
   enable-spring-security: true
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
+  remove-broken-reference-definitions: false

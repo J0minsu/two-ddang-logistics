@@ -15,9 +15,10 @@ public class SwaggerConfig {
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
         return builder
                 .routes()
-                .route(r -> r.path("/orders/swagger-ui.html").and().method(HttpMethod.GET).uri("lb://orders"))
-                .route(r -> r.path("/companies/swagger-ui.html").and().method(HttpMethod.GET).uri("lb://companies"))
-                .route(r -> r.path("/hubs/swagger-ui.html").and().method(HttpMethod.GET).uri("lb://hubs"))
+                .route(r -> r.path("/orders/swagger-ui.html").and().method(HttpMethod.GET).uri("lb://order"))
+                .route(r -> r.path("/companies/swagger-ui.html").and().method(HttpMethod.GET).uri("lb://company"))
+                .route(r -> r.path("/hubs/swagger-ui.html").and().method(HttpMethod.GET).uri("lb://hub"))
+                .route(r -> r.path("/deliveries/swagger-ui.html").and().method(HttpMethod.GET).uri("lb://delivery"))
                 .build();
     }
 }

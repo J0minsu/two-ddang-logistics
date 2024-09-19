@@ -72,7 +72,7 @@ public class TransitController {
 
     @PostMapping("/users")
     @Operation(summary = "운송 기사 등록", description = "운송 기사 등록 API")
-    public ResponseEntity<ResponseDTO<DeliveryAgentRes>> entryDriverAgent(DeliveryAgentEntryRequest request) {
+    public ResponseEntity<ResponseDTO<DeliveryAgentRes>> entryDriverAgent(@RequestBody DeliveryAgentEntryRequest request) {
 
         if(request.getType() != DriverAgentType.TRANSIT || request.getHubId() != null) {
             throw new PermissionDeniedApplicationException();

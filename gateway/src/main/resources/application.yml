@@ -62,6 +62,9 @@ springdoc:
     urls[2]:
       url: /hubs/v3/api-docs
       name: hubs
+    urls[3]:
+      url: /deliveries/v3/api-docs
+      name: deliveries
     use-root-path: true
   remove-broken-reference-definitions: false
 

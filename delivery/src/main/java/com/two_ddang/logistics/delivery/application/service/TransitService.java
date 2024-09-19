@@ -18,9 +18,11 @@ import com.two_ddang.logistics.delivery.domain.model.TransitRoute;
 import com.two_ddang.logistics.delivery.domain.repository.DeliveryAgentRepository;
 import com.two_ddang.logistics.delivery.domain.repository.DeliveryRepository;
 import com.two_ddang.logistics.delivery.domain.repository.TransitRepository;
+import com.two_ddang.logistics.delivery.domain.vo.DeliveryAgentVO;
 import com.two_ddang.logistics.delivery.domain.vo.TransitRouteVO;
 import com.two_ddang.logistics.delivery.domain.vo.TransitVO;
 import com.two_ddang.logistics.delivery.infrastructrure.exception.NoSuchElementApplicationException;
+import com.two_ddang.logistics.delivery.presentation.request.DeliveryAgentEntryRequest;
 import com.two_ddang.logistics.delivery.presentation.request.TransitRouteArriveRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -229,4 +231,13 @@ public class TransitService {
 
     }
 
+    @Transactional
+    public DeliveryAgentVO entryTransitAgent(DeliveryAgentEntryRequest request) {
+
+        DeliveryAgent deliveryAgent = deliveryAgentRepository.save(DeliveryAgent.ofTransitAgent(request.getUserId(), request.getSlackId(), null));
+
+        DeliveryAgent savedAgent = deliveryAgentRepository.save(deliveryAgent);
+
+        return DeliveryAgentVO.fromEntity(savedAgent);
+    }
 }

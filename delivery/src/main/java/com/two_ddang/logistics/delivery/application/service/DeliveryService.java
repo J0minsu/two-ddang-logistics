@@ -6,9 +6,11 @@ import com.two_ddang.logistics.delivery.domain.model.Delivery;
 import com.two_ddang.logistics.delivery.domain.model.DeliveryAgent;
 import com.two_ddang.logistics.delivery.domain.repository.DeliveryAgentRepository;
 import com.two_ddang.logistics.delivery.domain.repository.DeliveryRepository;
+import com.two_ddang.logistics.delivery.domain.vo.DeliveryAgentVO;
 import com.two_ddang.logistics.delivery.domain.vo.DeliveryVO;
 import com.two_ddang.logistics.delivery.infrastructrure.exception.AlreadyWorkOutApplicationException;
 import com.two_ddang.logistics.delivery.infrastructrure.exception.NoSuchElementApplicationException;
+import com.two_ddang.logistics.delivery.presentation.request.DeliveryAgentEntryRequest;
 import com.two_ddang.logistics.delivery.presentation.request.DeliveryCreateRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -104,6 +106,17 @@ public class DeliveryService {
                 .orElseThrow(NoSuchElementApplicationException::new);
 
         delivery.delete(userId);
+
+    }
+
+    @Transactional
+    public DeliveryAgentVO entryDeliveryAgent(DeliveryAgentEntryRequest request) {
+
+        DeliveryAgent deliveryAgent = DeliveryAgent.ofDeliveryAgent(request.getUserId(), request.getHubId(), request.getSlackId());
+
+        DeliveryAgent savedDeliveryAgent = deliveryAgentRepository.save(deliveryAgent);
+
+        return DeliveryAgentVO.fromEntity(savedDeliveryAgent);
 
     }
 }

@@ -2,7 +2,7 @@ spring:
   application:
     name: delivery
   datasource:
-    url: jdbc:postgresql://${url}/ddang_logistics
+    url: jdbc:postgresql://${url}/ddang-logistics
     username: ${username}
     password: ${password}
     driver-class-name: org.postgresql.Driver
@@ -29,12 +29,12 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:19090/eureka/
+      defaultZone: http://server:19090/eureka/
 
 management:
   zipkin:
     tracing:
-      endpoint: "http://localhost:9411/api/v2/spans"
+      endpoint: "http://zipkin:9411/api/v2/spans"
   tracing:
     sampling:
       probability: 1.0
@@ -67,4 +67,4 @@ springdoc:
 openapi:
   service:
     # API Gateway 포트
-    url: http://localhost:19091
+    url: http://gateway:19091

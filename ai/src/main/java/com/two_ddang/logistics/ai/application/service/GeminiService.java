@@ -1,6 +1,7 @@
 package com.two_ddang.logistics.ai.application.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.maps.GeoApiContext;
@@ -215,9 +216,7 @@ public class GeminiService {
     @Async
     protected void hubDeliveryInfo() {
 
-        String context = "";
-        vertexAiGeminiChatModel.call(context);
-
+        deliveryService.hubTransitSchedule();
 
     }
 
@@ -270,7 +269,10 @@ public class GeminiService {
                 String estimateDistanceString = routeNode.get("estimateDistance").asText();
                 int estimateDistance = Integer.parseInt(estimateDistanceString.replaceAll("[^0-9]", ""));
 
-                String routeString = String.join(", ", objectMapper.convertValue(routeNode.get("route"), List.class));
+                String routeString = routeNode.get("route").isArray()
+                        ? String.join(", ", objectMapper.convertValue(routeNode.get("route"), new TypeReference<List<String>>() {}))
+                        : routeNode.get("route").asText();
+
 
                 TransitRouteResponse transitRouteResponse = new TransitRouteResponse(sequence, departmentHubId, departureAddress, arriveHubId,
                         arriveAddress, estimateTime, estimateDistance, routeString);

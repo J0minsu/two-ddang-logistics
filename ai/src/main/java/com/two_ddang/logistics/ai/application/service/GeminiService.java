@@ -93,6 +93,11 @@ public class GeminiService {
         gemini.delete(userId);
     }
 
+    public String recommendRoute(String departAddress, String arriveAddress) {
+        String context = "";
+        return vertexAiGeminiChatModel.call(context);
+    }
+
     @Scheduled(cron = "0 0 6 * * *") //매일 오전 6시
     @Async
     protected void transitAgentDeliveryInfo() {

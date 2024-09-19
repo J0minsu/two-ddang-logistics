@@ -3,6 +3,8 @@ package com.two_ddang.logistics.delivery.presentation.controller;
 
 import com.two_ddang.logistics.core.entity.TransitStatus;
 import com.two_ddang.logistics.core.util.CommonApiResponses;
+import com.two_ddang.logistics.core.util.CurrentPassport;
+import com.two_ddang.logistics.core.util.Passport;
 import com.two_ddang.logistics.core.util.ResponseDTO;
 import com.two_ddang.logistics.delivery.application.dto.TransitRes;
 import com.two_ddang.logistics.delivery.application.dto.TransitRouteRes;
@@ -12,9 +14,6 @@ import com.two_ddang.logistics.delivery.domain.vo.TransitVO;
 import com.two_ddang.logistics.delivery.presentation.request.TransitRouteArriveRequest;
 import com.two_ddang.logistics.delivery.presentation.request.TransitSortStandard;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+import static com.two_ddang.logistics.core.util.ValidationUtils.*;
 
 //@SecurityRequirement(name = "Bearer Authentication")
 //@SecurityScheme( name = "Bearer Authentication", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "Bearer")
@@ -37,16 +37,14 @@ import java.util.UUID;
 public class TransitController {
 
     private final TransitService transitService;
-    /**
-     * TODO Passport
-     */
-    Integer userId = 1;
+
 
     @PostMapping("/hubs/{hubId}")
     @Operation(summary = "허브에서 운송 생성", description = "허브에서 운송 생성 API")
-    public ResponseEntity<ResponseDTO<TransitRes>> craete(@PathVariable UUID hubId) {
+    public ResponseEntity<ResponseDTO<TransitRes>> craete(@PathVariable UUID hubId,
+                @CurrentPassport Passport passport) {
 
-        TransitVO transit = transitService.create(userId, hubId);
+        TransitVO transit = transitService.create(passport.getUserId(), hubId);
 
         TransitRes result = TransitRes.fromEntity(transit);
 

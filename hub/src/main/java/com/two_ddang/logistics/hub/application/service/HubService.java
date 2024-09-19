@@ -3,10 +3,8 @@ package com.two_ddang.logistics.hub.application.service;
 import com.two_ddang.logistics.core.entity.UserType;
 import com.two_ddang.logistics.hub.application.service.feign.company.CompanyService;
 import com.two_ddang.logistics.hub.application.service.feign.company.dto.req.RestockRequest;
-import com.two_ddang.logistics.hub.domain.model.Hub;
-import com.two_ddang.logistics.hub.domain.model.HubProduct;
-import com.two_ddang.logistics.hub.domain.model.HubRoute;
-import com.two_ddang.logistics.hub.domain.model.User;
+import com.two_ddang.logistics.hub.domain.model.*;
+import com.two_ddang.logistics.hub.domain.repository.HubAgentRepository;
 import com.two_ddang.logistics.hub.domain.repository.HubRepository;
 import com.two_ddang.logistics.hub.domain.repository.UserRepository;
 import com.two_ddang.logistics.hub.domain.vo.HubProductVO;
@@ -17,12 +15,15 @@ import com.two_ddang.logistics.hub.infrastructrure.exception.PermissionDeniedApp
 import com.two_ddang.logistics.hub.presentation.request.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -33,11 +34,12 @@ public class HubService {
 
     private final HubRepository hubRepository;
     private final UserRepository userRepository;
-
+    private final HubAgentRepository hubAgentRepository;
     private final CompanyService companyService;
 
     @Transactional
-    public HubVO create(HubCreateRequest request) {
+    @CachePut(cacheNames = "hubVO", key = "#result.id")
+    public HubVO create(Integer userId, HubCreateRequest request) {
 
         User manager = userRepository.findByIdAndIsDeletedIsFalse(request.getManagerId())
                 .orElseThrow(NoSuchElementApplicationException::new);
@@ -106,6 +108,7 @@ public class HubService {
         return result;
     }
 
+    @Cacheable(cacheNames = "hubVO", key = "args[0]")
     public HubVO findById(UUID hubId) {
 
         Hub hub = hubRepository.findById(hubId)
@@ -115,6 +118,7 @@ public class HubService {
     }
 
     @Transactional
+    @Cacheable(cacheNames = "hubVO", key = "args[0]")
     public HubVO modifyHub(UUID hubId, HubModifyRequest request) {
 
         Hub hub = hubRepository.findById(hubId)
@@ -152,6 +156,15 @@ public class HubService {
          * @TODO Auditing
          */
         arriveHub.delete(1);
+
+    }
+
+    public HubVO findHubByMangerUserId(Integer userId) {
+
+        HubAgent hubAgent = hubAgentRepository.findByUserIdAndIsDeletedIsFalse(userId)
+                .orElseThrow(NoSuchElementApplicationException::new);
+
+        return HubVO.fromEntity(hubAgent.getHub());
 
     }
 }

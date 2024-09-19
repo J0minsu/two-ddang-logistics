@@ -6,19 +6,14 @@ import com.two_ddang.logistics.core.util.CommonApiResponses;
 import com.two_ddang.logistics.core.util.ResponseDTO;
 import com.two_ddang.logistics.delivery.application.dto.DeliveryRes;
 import com.two_ddang.logistics.delivery.application.service.DeliveryService;
-import com.two_ddang.logistics.delivery.domain.model.Delivery;
 import com.two_ddang.logistics.delivery.domain.vo.DeliveryVO;
 import com.two_ddang.logistics.delivery.presentation.request.DeliveryCreateRequest;
 import com.two_ddang.logistics.delivery.presentation.request.DeliverySortStandard;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,10 +22,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.IntStream;
+
+import static com.two_ddang.logistics.core.util.ValidationUtils.*;
 
 
 //@SecurityRequirement(name = "Bearer Authentication")
@@ -48,6 +42,7 @@ public class DeliveryController {
     @PostMapping
     @Operation(summary = "배송 생성", description = "배송건 생성 API")
     public ResponseEntity<ResponseDTO<DeliveryRes>> craete(@RequestBody DeliveryCreateRequest request) {
+
 
 
         DeliveryVO delivery = deliveryService.createDelivery(request);

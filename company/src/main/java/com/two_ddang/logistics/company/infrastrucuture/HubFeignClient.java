@@ -1,7 +1,7 @@
 package com.two_ddang.logistics.company.infrastrucuture;
 
 import com.two_ddang.logistics.company.application.exception.BusinessException;
-import com.two_ddang.logistics.company.infrastrucuture.dtos.HubInfo;
+import com.two_ddang.logistics.company.infrastrucuture.dtos.HubRes;
 import com.two_ddang.logistics.company.infrastrucuture.dtos.RestockHubRequest;
 import com.two_ddang.logistics.core.exception.ErrorCode;
 import com.two_ddang.logistics.core.util.ResponseDTO;
@@ -23,17 +23,17 @@ public interface HubFeignClient extends HubService {
 
     @GetMapping("/api/v1/hubs/{hubId}")
     @CircuitBreaker(name = "hubService", fallbackMethod = "getHubInfoFallback")
-    ResponseDTO<HubInfo> getHubInfo(@PathVariable UUID hubId);
+    ResponseDTO<HubRes> getHubInfo(@PathVariable UUID hubId);
 
     @PostMapping("/api/v1/hubs/{hubId}/products/inbound")
     @CircuitBreaker(name = "hubService", fallbackMethod = "inboundProductFallback")
     void inboundProduct(@PathVariable UUID hubId, RestockHubRequest request);
 
-    @GetMapping("/api/v1/hubs/hubAgent/{userId}")
-    UUID getHubIdByUserId(@PathVariable Integer userId);
+    @GetMapping("/api/v1/hubs/users/{userId}")
+    ResponseDTO<HubRes> findHubByMangerUserId(@PathVariable Integer userId);
 
 
-    default ResponseDTO<HubInfo> getHubInfoFallback(UUID hubId, Throwable e)  {
+    default ResponseDTO<HubRes> getHubInfoFallback(UUID hubId, Throwable e)  {
         log.error(e.getMessage());
         if (e instanceof FeignException.NotFound) {
             throw new BusinessException(ErrorCode.NOT_FOUND);
@@ -41,7 +41,7 @@ public interface HubFeignClient extends HubService {
         throw new BusinessException(ErrorCode.SERVER_ERROR);
     }
 
-    default ResponseDTO<HubInfo> inboundProductFallback(UUID hubId, RestockHubRequest request, Throwable e)  {
+    default ResponseDTO<HubRes> inboundProductFallback(UUID hubId, RestockHubRequest request, Throwable e)  {
         log.error(e.getMessage());
         if (e instanceof FeignException.NotFound) {
             throw new BusinessException(ErrorCode.NOT_FOUND);

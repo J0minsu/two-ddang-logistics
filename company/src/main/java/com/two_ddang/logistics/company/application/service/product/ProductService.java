@@ -118,7 +118,7 @@ public class ProductService {
         }
 
         if (userType == UserType.HUB) {
-            UUID hubId = hubService.getHubIdByUserId(userId);
+            UUID hubId = hubService.findHubByMangerUserId(userId).getData().getHubId();
             if (!product.getHubId().equals(hubId)) {
                 throw new BusinessException(ErrorCode.CAN_NOT_ACTION_ROLE);
             }
@@ -140,7 +140,7 @@ public class ProductService {
         }
 
         if (userType == UserType.HUB) {
-            UUID hubId = hubService.getHubIdByUserId(passport.getUserId());
+            UUID hubId = hubService.findHubByMangerUserId(passport.getUserId()).getData().getHubId();
             if (!hubId.equals(createProductRequest.getHubId())) {
                 throw new BusinessException(ErrorCode.CAN_NOT_ACTION_ROLE);
             }

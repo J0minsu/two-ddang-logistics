@@ -13,6 +13,10 @@ import com.two_ddang.logistics.core.util.CurrentPassport;
 import com.two_ddang.logistics.core.util.Passport;
 import com.two_ddang.logistics.core.util.ResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,7 +28,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-
+@SecurityRequirement(name = "Bearer Authentication")
+@SecurityScheme( name = "Bearer Authentication", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "Bearer")
 @RestController
 @RequestMapping("/api/v1/companies")
 @RequiredArgsConstructor
@@ -38,7 +43,7 @@ public class CompanyController {
     @Operation(summary = "업체 생성", description = "업체 생성 API")
     public ResponseEntity<ResponseDTO<CreateCompanyResponse>> createCompany(
             @RequestBody CreatedCompanyRequest createdCompanyRequestDto,
-            @CurrentPassport Passport passport)
+            @Parameter(hidden = true) @CurrentPassport Passport passport)
     {
         return ResponseEntity.ok(ResponseDTO.okWithData(companyService.createCompany(createdCompanyRequestDto, passport)));
     }
@@ -66,7 +71,7 @@ public class CompanyController {
     public ResponseEntity<ResponseDTO<UpdateCompanyInfoResponse>> updateCompanyInfo(
             @PathVariable UUID companyId,
             @RequestBody UpdateCompanyInfoRequest updateCompanyRequestDto,
-            @CurrentPassport Passport passport)
+            @Parameter(hidden = true) @CurrentPassport Passport passport)
     {
         return ResponseEntity.ok(ResponseDTO.okWithData(
                 companyService.updateCompanyInfo(companyId, updateCompanyRequestDto, passport)));
@@ -75,7 +80,7 @@ public class CompanyController {
     @DeleteMapping("/{companyId}")
     @Operation(summary = "업체 삭제", description = "업체 삭제 API")
     public ResponseEntity<ResponseDTO<Void>> deleteCompany(@PathVariable UUID companyId,
-                                                           @CurrentPassport Passport passport) {
+                                                           @Parameter(hidden = true) @CurrentPassport Passport passport) {
         companyService.deleteCompany(companyId, passport);
         return ResponseEntity.ok(ResponseDTO.ok());
     }

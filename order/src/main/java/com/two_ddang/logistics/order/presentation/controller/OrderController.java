@@ -9,6 +9,10 @@ import com.two_ddang.logistics.order.infrastructure.swagger.SwaggerOrderControll
 import com.two_ddang.logistics.order.presentation.dtos.CreateOrderRequest;
 import com.two_ddang.logistics.order.presentation.dtos.UpdateOrderStatusRequest;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+@SecurityRequirement(name = "Bearer Authentication")
+@SecurityScheme( name = "Bearer Authentication", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "Bearer")
 @RestController
 @RequestMapping("/api/v1/orders")
 @RequiredArgsConstructor
@@ -45,7 +51,7 @@ public class OrderController implements SwaggerOrderController {
                     sort = "createdAt",
                     direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(name = "keyword", defaultValue = "") String keyword,
-            @CurrentPassport Passport passport)
+            @Parameter(hidden = true) @CurrentPassport Passport passport)
     {
         return ResponseEntity.ok(ResponseDTO.okWithData(orderService.getOrders(pageable, keyword, passport)));
     }
@@ -54,7 +60,7 @@ public class OrderController implements SwaggerOrderController {
     @GetMapping("/{orderId}")
     @Operation(summary = "주문 단건 조회", description = "주문 단건 조회 API")
     public ResponseEntity<ResponseDTO<OrderDetailResponse>> getOrder(@PathVariable("orderId") UUID orderId,
-                                                                     @CurrentPassport Passport passport) {
+                                                                     @Parameter(hidden = true) @CurrentPassport Passport passport) {
         return ResponseEntity.ok(ResponseDTO.okWithData(orderService.getOrder(orderId, passport)));
     }
 
@@ -73,7 +79,7 @@ public class OrderController implements SwaggerOrderController {
     @PostMapping("/{orderId}/cancel")
     @Operation(summary = "주문 취소", description = "주문 취소 API")
     public ResponseEntity<ResponseDTO<CancelOrderResponse>> cancelOrder(@PathVariable("orderId") UUID orderId,
-                                                                        @CurrentPassport Passport passport)
+                                                                        @Parameter(hidden = true) @CurrentPassport Passport passport)
     {
         return ResponseEntity.ok(ResponseDTO.okWithData(orderService.cancelOrder(orderId, passport)));
     }
@@ -82,7 +88,7 @@ public class OrderController implements SwaggerOrderController {
     @DeleteMapping("/{orderId}")
     @Operation(summary = "주문 삭제", description = "주문 삭제 API")
     public ResponseEntity<ResponseDTO<Void>> deleteOrder(@PathVariable("orderId") UUID orderId,
-                                                         @CurrentPassport Passport passport) {
+                                                         @Parameter(hidden = true) @CurrentPassport Passport passport) {
         orderService.deleteOrder(orderId, passport);
         return ResponseEntity.ok(ResponseDTO.ok());
     }

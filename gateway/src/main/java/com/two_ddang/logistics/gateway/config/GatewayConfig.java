@@ -19,7 +19,7 @@ public class GatewayConfig {
                         .uri("lb://order"))
                 .route("delivery", r -> r.path("/api/v1/deliveries/**", "/api/v1/transits/**", "/deliveries/v3/api-docs")
                         .uri("lb://delivery"))
-                .route("companies", r -> r.path("/api/v1/companies/**", "/api/v1/products/**", "/companies/v3/api-docs")
+                .route("company", r -> r.path("/api/v1/companies/**", "/api/v1/products/**", "/companies/v3/api-docs")
                         .uri("lb://company"))
                 .route("ai", r -> r.path("/api/v1/ais/**", "/ais/v3/api-docs")
                         .uri("lb://ai"))

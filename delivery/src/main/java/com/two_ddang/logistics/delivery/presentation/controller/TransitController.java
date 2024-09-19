@@ -116,12 +116,12 @@ public class TransitController {
     }
 
 
-    @PatchMapping("/{transitId}/routes/{routeId}/transit")
+    @PatchMapping("/{transitId}/sequence/{sequence}/transit")
     @Operation(summary = "운송 시작", description = "운송 시작 API")
     public ResponseEntity<ResponseDTO<TransitRes>> startTransitRoute(
-            @PathVariable UUID transitId, @PathVariable UUID routeId) {
+            @PathVariable UUID transitId, @PathVariable int sequence) {
 
-        TransitVO transit = transitService.startTransitRoute(transitId, routeId);
+        TransitVO transit = transitService.startTransitRoute(transitId, sequence);
 
         TransitRes result = TransitRes.fromEntity(transit);
 
@@ -129,13 +129,13 @@ public class TransitController {
 
     }
 
-    @PatchMapping("/{transitId}/routes/{routeId}/arrive")
+    @PatchMapping("/{transitId}/sequence/{sequence}/arrive")
     @Operation(summary = "경유 허브 도착", description = "경유 허브 도착 API")
     public ResponseEntity<ResponseDTO<TransitRes>> arriveTransitRoute(
-            @PathVariable UUID transitId, @PathVariable UUID routeId,
+            @PathVariable UUID transitId, @PathVariable int sequence,
             @RequestBody TransitRouteArriveRequest request) {
 
-        TransitVO transitVO = transitService.arriveTransitRoute(transitId, routeId, request);
+        TransitVO transitVO = transitService.arriveTransitRoute(transitId, sequence, request);
 
         TransitRes result = TransitRes.fromEntity(transitVO);
 

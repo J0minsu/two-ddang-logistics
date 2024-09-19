@@ -52,13 +52,13 @@ public class JwtAuthenticationFilter implements WebFilter {
             return chain.filter(exchange);
         }
 
-
         String token = extractToken(exchange);
-        log.info("external token", token);
         if (token == null || !validateExternalToken(token, exchange)) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
+
+        log.info("패스임?");
 
         return chain.filter(exchange);
     }
@@ -75,6 +75,7 @@ public class JwtAuthenticationFilter implements WebFilter {
 
     private boolean validateExternalToken(String token, ServerWebExchange exchange) {
 
+
         try {
             SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(externalSecretKey));
             Jws<Claims> claimsJws = Jwts.parser()
@@ -90,7 +91,7 @@ public class JwtAuthenticationFilter implements WebFilter {
             }
 
             String internalToken = createInternalToken(claims);
-            log.info("jwt Filter Internal Token", internalToken);
+            log.info("jwt Filter Internal Token :: {}", internalToken);
 
             exchange.getRequest().mutate()
                     .header("InternalToken", "Bearer " + internalToken)

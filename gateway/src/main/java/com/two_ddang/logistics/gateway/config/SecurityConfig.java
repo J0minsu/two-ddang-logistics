@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .authorizeExchange(exchange ->
                         exchange.pathMatchers("/auth/sign-in", "/auth/sign-up", "/api/v1/ais").permitAll()
                                 .pathMatchers(RESOURCE_WHITELIST).permitAll()
-                                .anyExchange().authenticated())
+                                .anyExchange().permitAll())
                 .addFilterBefore(jwtAuthenticationFilter, SecurityWebFiltersOrder.HTTP_BASIC)
                 .build();
     }

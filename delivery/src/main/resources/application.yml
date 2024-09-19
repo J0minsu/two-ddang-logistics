@@ -55,9 +55,14 @@ resilience4j:
 
 springdoc:
   api-docs:
-    path: /delivery/v3/api-docs
-  swagger-ui:
-    path: /delivery/swagger-ui/index.html
+    version: openapi_3_1
+    enabled: true
+    path: /deliveries/v3/api-docs
+  enable-spring-security: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  remove-broken-reference-definitions: false
+
 
 openapi:
   service:

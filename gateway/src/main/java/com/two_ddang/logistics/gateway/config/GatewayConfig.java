@@ -11,19 +11,17 @@ public class GatewayConfig {
     @Bean
     public RouteLocator gatewayRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("auth", r -> r.path("/auth/**")
+                .route("auth", r -> r.path("/auth/**", "/auths/v3/api-docs")
                         .uri("lb://auth"))
-                .route("hub", r -> r.path("/api/v1/hubs/**", "/api/v1/users/**")
+                .route("hub", r -> r.path("/api/v1/hubs/**", "/api/v1/users/**", "/hubs/v3/api-docs")
                         .uri("lb://hub"))
-                .route("orders", r -> r.path("/api/v1/orders/**")
+                .route("order", r -> r.path("/api/v1/orders/**", "/orders/v3/api-docs")
                         .uri("lb://order"))
-                .route("delivery", r -> r.path("/api/v1/deliveries/**", "/api/v1/transits/**")
+                .route("delivery", r -> r.path("/api/v1/deliveries/**", "/api/v1/transits/**", "/deliveries/v3/api-docs")
                         .uri("lb://delivery"))
-                .route("companies", r -> r.path("/api/v1/companies/**")
+                .route("companies", r -> r.path("/api/v1/companies/**", "/api/v1/products/**", "/companies/v3/api-docs")
                         .uri("lb://company"))
-                .route("products", r -> r.path("/api/v1/products/**")
-                        .uri("lb://product"))
-                .route("ais", r -> r.path("/api/v1/ais/**", "/api/v1/ais")
+                .route("ai", r -> r.path("/api/v1/ais/**", "/ais/v3/api-docs")
                         .uri("lb://ai"))
                 .build();
     }

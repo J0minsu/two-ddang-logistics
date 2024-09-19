@@ -1,17 +1,22 @@
 package com.two_ddang.logistics.delivery.presentation.controller;
 
 
+import com.two_ddang.logistics.core.entity.DriverAgentType;
 import com.two_ddang.logistics.core.entity.TransitStatus;
 import com.two_ddang.logistics.core.util.CommonApiResponses;
 import com.two_ddang.logistics.core.util.CurrentPassport;
 import com.two_ddang.logistics.core.util.Passport;
 import com.two_ddang.logistics.core.util.ResponseDTO;
+import com.two_ddang.logistics.delivery.application.dto.DeliveryAgentRes;
 import com.two_ddang.logistics.delivery.application.dto.TransitRes;
 import com.two_ddang.logistics.delivery.application.dto.TransitRouteRes;
 import com.two_ddang.logistics.delivery.application.service.TransitService;
 import com.two_ddang.logistics.delivery.domain.model.Transit;
+import com.two_ddang.logistics.delivery.domain.vo.DeliveryAgentVO;
 import com.two_ddang.logistics.delivery.domain.vo.TransitRouteVO;
 import com.two_ddang.logistics.delivery.domain.vo.TransitVO;
+import com.two_ddang.logistics.delivery.infrastructrure.exception.PermissionDeniedApplicationException;
+import com.two_ddang.logistics.delivery.presentation.request.DeliveryAgentEntryRequest;
 import com.two_ddang.logistics.delivery.presentation.request.TransitRouteArriveRequest;
 import com.two_ddang.logistics.delivery.presentation.request.TransitSortStandard;
 import io.swagger.v3.oas.annotations.Operation;
@@ -65,6 +70,22 @@ public class TransitController {
 //
 //    }
 
+    @PostMapping("/users")
+    @Operation(summary = "운송 기사 등록", description = "운송 기사 등록 API")
+    public ResponseEntity<ResponseDTO<DeliveryAgentRes>> entryDriverAgent(@RequestBody DeliveryAgentEntryRequest request) {
+
+        if(request.getType() != DriverAgentType.TRANSIT || request.getHubId() != null) {
+            throw new PermissionDeniedApplicationException();
+        }
+
+        DeliveryAgentVO agent = transitService.entryTransitAgent(request);
+
+        DeliveryAgentRes result = DeliveryAgentRes.fromVO(agent);
+
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
+
+    }
+
     @GetMapping("/{transitId}")
     @Operation(summary = "운송 상세 조회", description = "운송 상세 조회 API")
     public ResponseEntity<ResponseDTO<TransitRes>> findById(@PathVariable UUID transitId) {
@@ -116,12 +137,12 @@ public class TransitController {
     }
 
 
-    @PatchMapping("/{transitId}/routes/{routeId}/transit")
+    @PatchMapping("/{transitId}/sequence/{sequence}/transit")
     @Operation(summary = "운송 시작", description = "운송 시작 API")
     public ResponseEntity<ResponseDTO<TransitRes>> startTransitRoute(
-            @PathVariable UUID transitId, @PathVariable UUID routeId) {
+            @PathVariable UUID transitId, @PathVariable int sequence) {
 
-        TransitVO transit = transitService.startTransitRoute(transitId, routeId);
+        TransitVO transit = transitService.startTransitRoute(transitId, sequence);
 
         TransitRes result = TransitRes.fromEntity(transit);
 
@@ -129,13 +150,13 @@ public class TransitController {
 
     }
 
-    @PatchMapping("/{transitId}/routes/{routeId}/arrive")
+    @PatchMapping("/{transitId}/sequence/{sequence}/arrive")
     @Operation(summary = "경유 허브 도착", description = "경유 허브 도착 API")
     public ResponseEntity<ResponseDTO<TransitRes>> arriveTransitRoute(
-            @PathVariable UUID transitId, @PathVariable UUID routeId,
+            @PathVariable UUID transitId, @PathVariable int sequence,
             @RequestBody TransitRouteArriveRequest request) {
 
-        TransitVO transitVO = transitService.arriveTransitRoute(transitId, routeId, request);
+        TransitVO transitVO = transitService.arriveTransitRoute(transitId, sequence, request);
 
         TransitRes result = TransitRes.fromEntity(transitVO);
 

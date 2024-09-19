@@ -4,7 +4,6 @@ import com.two_ddang.logistics.core.entity.DeliveryStatus;
 import com.two_ddang.logistics.core.entity.DriveStatus;
 import com.two_ddang.logistics.core.entity.DriverAgentType;
 import com.two_ddang.logistics.core.entity.TransitStatus;
-import com.two_ddang.logistics.core.util.ResponseDTO;
 import com.two_ddang.logistics.delivery.application.service.feign.ai.AIService;
 import com.two_ddang.logistics.delivery.application.service.feign.ai.dto.req.RecommendTransitRouteRequest;
 import com.two_ddang.logistics.delivery.application.service.feign.ai.dto.req.TransitRouteRequest;
@@ -19,25 +18,23 @@ import com.two_ddang.logistics.delivery.domain.model.TransitRoute;
 import com.two_ddang.logistics.delivery.domain.repository.DeliveryAgentRepository;
 import com.two_ddang.logistics.delivery.domain.repository.DeliveryRepository;
 import com.two_ddang.logistics.delivery.domain.repository.TransitRepository;
+import com.two_ddang.logistics.delivery.domain.vo.DeliveryAgentVO;
 import com.two_ddang.logistics.delivery.domain.vo.TransitRouteVO;
 import com.two_ddang.logistics.delivery.domain.vo.TransitVO;
 import com.two_ddang.logistics.delivery.infrastructrure.exception.NoSuchElementApplicationException;
+import com.two_ddang.logistics.delivery.presentation.request.DeliveryAgentEntryRequest;
 import com.two_ddang.logistics.delivery.presentation.request.TransitRouteArriveRequest;
-import com.two_ddang.logistics.delivery.presentation.request.TransitSortStandard;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -74,7 +71,7 @@ public class TransitService {
 
         IntStream.range(1, allHubs.size() + 1)
                 .boxed()
-                .filter(i -> i % 2 == 0)
+                .filter(i -> i % 2 == page)
                 .forEach(i -> {
 
                     //운송 생성 기준 허브
@@ -95,11 +92,13 @@ public class TransitService {
 
                     //AI 요청
                     RecommendTransitRouteResponse aiResult = aiService.recommendRoute(
-                            new RecommendTransitRouteRequest(
-                                    arriveSet.stream()
-                                            .map(arrive ->
-                                                    new TransitRouteRequest(thisHub.getHubId(), thisHub.getAddress(), arrive, hubMap.get(arrive).getAddress())
-                                            ).toList()
+                            Map.of(agent.getSlackId(),
+                                    new RecommendTransitRouteRequest(
+                                        arriveSet.stream()
+                                                .map(arrive ->
+                                                        new TransitRouteRequest(thisHub.getHubId(), thisHub.getAddress(), arrive, hubMap.get(arrive).getAddress())
+                                                ).toList()
+                                    )
                             )
                     ).getData();
 
@@ -176,7 +175,7 @@ public class TransitService {
         Transit transit = transitRepository.findByIdAndIsDeletedIsFalse(transitId)
                 .orElseThrow(NoSuchElementApplicationException::new);
 
-        TransitRoute transitRoute = transit.getSpecificRoute(routeId)
+        TransitRoute transitRoute = transit.getSpecificRouteId(routeId)
                 .orElseThrow(NoSuchElementApplicationException::new);
 
         return TransitRouteVO.fromEntity(transitRoute);
@@ -193,29 +192,28 @@ public class TransitService {
     }
 
     @Transactional
-    public TransitVO startTransitRoute(UUID transitId, UUID routeId) {
+    public TransitVO startTransitRoute(UUID transitId, int sequence) {
 
         Transit transit = transitRepository.findByIdAndIsDeletedIsFalse(transitId)
                 .orElseThrow(NoSuchElementApplicationException::new);
 
-        transit.startTransitRoute(routeId);
+        transit.startTransitSequence(sequence);
 
         return TransitVO.fromEntity(transit);
 
     }
 
     @Transactional
-    public TransitVO arriveTransitRoute(UUID transitId, UUID routeId, TransitRouteArriveRequest request) {
+    public TransitVO arriveTransitRoute(UUID transitId, int sequence, TransitRouteArriveRequest request) {
 
         Transit transit = transitRepository.findByIdAndIsDeletedIsFalse(transitId)
                 .orElseThrow(NoSuchElementApplicationException::new);
 
-        TransitRoute transitRoute = transit.getSpecificRoute(routeId)
-                .orElseThrow(NoSuchElementApplicationException::new);
+        List<TransitRoute> transitRoutes = transit.getSpecificSequence(sequence);
 
-        transitRoute.arriveTransit(request.getActualDistance(), request.getActualTime());
+        transitRoutes.forEach(i -> i.arriveTransit(request.getActualDistance(), request.getActualTime()));
 
-        transit.arriveHub(routeId);
+        transit.arriveHub(transitRoutes.get(0).getArriveHubId());
 
         return TransitVO.fromEntity(transit);
 
@@ -233,4 +231,13 @@ public class TransitService {
 
     }
 
+    @Transactional
+    public DeliveryAgentVO entryTransitAgent(DeliveryAgentEntryRequest request) {
+
+        DeliveryAgent deliveryAgent = deliveryAgentRepository.save(DeliveryAgent.ofTransitAgent(request.getUserId(), request.getSlackId(), null));
+
+        DeliveryAgent savedAgent = deliveryAgentRepository.save(deliveryAgent);
+
+        return DeliveryAgentVO.fromEntity(savedAgent);
+    }
 }

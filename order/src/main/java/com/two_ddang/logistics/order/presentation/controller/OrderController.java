@@ -1,12 +1,11 @@
 package com.two_ddang.logistics.order.presentation.controller;
 
-import com.two_ddang.logistics.core.entity.UserType;
 import com.two_ddang.logistics.core.util.CurrentPassport;
 import com.two_ddang.logistics.core.util.Passport;
-import com.two_ddang.logistics.core.util.PassportRoleCheck;
 import com.two_ddang.logistics.core.util.ResponseDTO;
 import com.two_ddang.logistics.order.application.dtos.response.*;
 import com.two_ddang.logistics.order.application.service.OrderService;
+import com.two_ddang.logistics.order.infrastructure.swagger.SwaggerOrderController;
 import com.two_ddang.logistics.order.presentation.dtos.CreateOrderRequest;
 import com.two_ddang.logistics.order.presentation.dtos.UpdateOrderStatusRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,7 +26,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "주문 API")
-public class OrderController {
+public class OrderController implements SwaggerOrderController {
 
     private final OrderService orderService;
 
@@ -50,7 +49,6 @@ public class OrderController {
     {
         return ResponseEntity.ok(ResponseDTO.okWithData(orderService.getOrders(pageable, keyword, passport)));
     }
-
 
 
     @GetMapping("/{orderId}")

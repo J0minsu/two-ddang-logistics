@@ -19,6 +19,8 @@ spring:
       port: ${redis-port}
       username: ${redis-username}
       password: ${redis-password}
+  config:
+    import: optional:classpath:.env[.properties]
 
 server:
   port: 19093
@@ -53,11 +55,18 @@ resilience4j:
         permittedNumberOfCallsInHalfOpenState: 3
         waitDurationInOpenState: 20s
 
+
+
 springdoc:
   api-docs:
-    path: /hub/v3/api-docs
-  swagger-ui:
-    path: /hub/swagger-ui.html
+    version: openapi_3_1
+    enabled: true
+    path: /hubs/v3/api-docs
+  enable-spring-security: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  remove-broken-reference-definitions: false
+
 
 openapi:
   service:

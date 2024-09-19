@@ -2,11 +2,16 @@ package com.two_ddang.logistics.delivery.presentation.controller;
 
 
 import com.two_ddang.logistics.core.entity.DeliveryStatus;
+import com.two_ddang.logistics.core.entity.DriverAgentType;
 import com.two_ddang.logistics.core.util.CommonApiResponses;
 import com.two_ddang.logistics.core.util.ResponseDTO;
+import com.two_ddang.logistics.delivery.application.dto.DeliveryAgentRes;
 import com.two_ddang.logistics.delivery.application.dto.DeliveryRes;
 import com.two_ddang.logistics.delivery.application.service.DeliveryService;
+import com.two_ddang.logistics.delivery.domain.vo.DeliveryAgentVO;
 import com.two_ddang.logistics.delivery.domain.vo.DeliveryVO;
+import com.two_ddang.logistics.delivery.infrastructrure.exception.PermissionDeniedApplicationException;
+import com.two_ddang.logistics.delivery.presentation.request.DeliveryAgentEntryRequest;
 import com.two_ddang.logistics.delivery.presentation.request.DeliveryCreateRequest;
 import com.two_ddang.logistics.delivery.presentation.request.DeliverySortStandard;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,6 +43,22 @@ import static com.two_ddang.logistics.core.util.ValidationUtils.*;
 public class DeliveryController {
 
     private final DeliveryService deliveryService;
+
+    @PostMapping("/users")
+    @Operation(summary = "배송 기사 등록", description = "배송 기사 등록 API")
+    public ResponseEntity<ResponseDTO<DeliveryAgentRes>> entryDriverAgent(@RequestBody DeliveryAgentEntryRequest request) {
+
+        if(request.getType() != DriverAgentType.DELIVERY || request.getHubId() == null) {
+            throw new PermissionDeniedApplicationException();
+        }
+
+        DeliveryAgentVO agent = deliveryService.entryDeliveryAgent(request);
+
+        DeliveryAgentRes result = DeliveryAgentRes.fromVO(agent);
+
+        return ResponseEntity.ok(ResponseDTO.okWithData(result));
+
+    }
 
     @PostMapping
     @Operation(summary = "배송 생성", description = "배송건 생성 API")

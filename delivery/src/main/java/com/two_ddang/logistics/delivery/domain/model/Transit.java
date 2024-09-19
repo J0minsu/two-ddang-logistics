@@ -3,8 +3,6 @@ package com.two_ddang.logistics.delivery.domain.model;
 import com.two_ddang.logistics.core.entity.BaseEntity;
 import com.two_ddang.logistics.core.entity.TransitStatus;
 import com.two_ddang.logistics.delivery.application.service.feign.ai.dto.res.TransitRouteResponse;
-import com.two_ddang.logistics.delivery.infrastructrure.exception.NoSuchElementApplicationException;
-import com.two_ddang.logistics.delivery.presentation.request.TransitRouteArriveRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -68,12 +66,22 @@ public class Transit extends BaseEntity {
 
         Transit transit = new Transit(transitAgent, totalEstimateDistance, TransitStatus.WAIT);
 
-        /**
-         * TODO TransitRoute
-         */
+        Map<UUID, TransitRouteResponse> routeMap = routes.values()
+                .stream()
+                .collect(Collectors.toMap(TransitRouteResponse::getArriveHubId, t -> t));
 
-//        deliveries.;
+        List<TransitRoute> routeList =  deliveries.stream().map(d -> {
 
+            TransitRouteResponse arriveInfo = routeMap.get(d.getArriveHubId());
+
+            return TransitRoute.of(
+                    d, transit, transitAgent, arriveInfo.getSequence(), transitStatus,
+                    arriveInfo.getArriveHubId(), arriveInfo.getRoute(), d.getDepartmentHubId(),
+                    arriveInfo.getEstimateDistance(), arriveInfo.getEstimateTime());
+        }
+        ).toList();
+
+        transit.getTransitRoutes().addAll(routeList);
 
         return transit;
 
@@ -93,19 +101,23 @@ public class Transit extends BaseEntity {
 
     }
 
-    public Optional<TransitRoute> getSpecificRoute(UUID routeId) {
+    public List<TransitRoute> getSpecificSequence(int sequence) {
 
-        return transitRoutes.stream().filter(i -> i.equals(routeId)).findFirst();
+        return transitRoutes.stream().filter(i -> i.getSequence() == sequence).toList();
 
     }
 
-    public void startTransitRoute(UUID routeId) {
-        TransitRoute transitRoute = transitRoutes.stream()
-                .filter(i -> i.equals(routeId))
-                .findFirst()
-                .orElseThrow(NoSuchElementApplicationException::new);
+    public Optional<TransitRoute> getSpecificRouteId(UUID routeId) {
 
-        transitRoute.startTransit();
+        return transitRoutes.stream().filter(i -> i.getId().equals(routeId)).findFirst();
+
+    }
+
+    public void startTransitSequence(int sequence) {
+        transitRoutes.stream()
+                .filter(i -> i.getSequence() == sequence)
+                .forEach(TransitRoute::startTransit);
+
 
     }
 }

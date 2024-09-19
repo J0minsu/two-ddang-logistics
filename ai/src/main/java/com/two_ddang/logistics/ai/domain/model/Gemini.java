@@ -34,10 +34,10 @@ public class Gemini extends BaseEntity {
     @Column
     private UUID referenceId;
 
-    @Column
+    @Column(length = 1000)
     private String prompt;
 
-    @Column
+    @Column(length = 1000)
     private String content;
 
     public Gemini(String prompt, AiType aiType, String content) {

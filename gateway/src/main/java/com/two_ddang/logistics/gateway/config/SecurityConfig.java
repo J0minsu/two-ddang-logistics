@@ -34,9 +34,8 @@ public class SecurityConfig {
                 .cors(ServerHttpSecurity.CorsSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .authorizeExchange(exchange ->
-                        exchange.pathMatchers("/auth/sign-in", "/auth/sign-up", "/api/v1/ais").permitAll()
-                                .pathMatchers(RESOURCE_WHITELIST).permitAll()
-                                .anyExchange().permitAll())
+                        exchange.pathMatchers("/auth/sign-in", "/auth/sign-up", "/api/v1/ais", "/api/v1/ais/**").permitAll()
+                                .anyExchange().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, SecurityWebFiltersOrder.HTTP_BASIC)
                 .build();
     }

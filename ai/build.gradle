@@ -82,6 +82,9 @@ dependencies {
 	//gemini
 	implementation 'org.springframework.ai:spring-ai-vertex-ai-gemini-spring-boot-starter'
 
+	//chat gpt
+	implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
+
 	implementation project(path: ':core')
 
 

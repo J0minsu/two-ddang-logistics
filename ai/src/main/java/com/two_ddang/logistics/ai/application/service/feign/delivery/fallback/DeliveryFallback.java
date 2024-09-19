@@ -2,8 +2,10 @@ package com.two_ddang.logistics.ai.application.service.feign.delivery.fallback;
 
 import com.two_ddang.logistics.ai.application.service.feign.delivery.DeliveryFeignClient;
 import com.two_ddang.logistics.ai.application.service.feign.delivery.dto.DeliveryRes;
+import com.two_ddang.logistics.ai.application.service.feign.delivery.dto.TransitRes;
 import com.two_ddang.logistics.core.entity.DeliveryStatus;
 import com.two_ddang.logistics.core.entity.DriverAgentType;
+import com.two_ddang.logistics.core.util.ResponseDTO;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,11 +20,19 @@ public class DeliveryFallback implements DeliveryFeignClient {
         this.cause = cause;
     }
 
-    @Override
-    public List<DeliveryRes> getTransitAddressAndSlackId(DriverAgentType agentType, DeliveryStatus status) {
+//    @Override
+//    public List<DeliveryRes> getTransitAddressAndSlackId(DriverAgentType agentType, DeliveryStatus status) {
+//
+//        if(cause instanceof FeignException.NotFound) {
+//            log.info("getTransitAddressAndSlackId 메서드 호출 중 Not found 오류 발생");
+//        }
+//        return null;
+//    }
 
+    @Override
+    public ResponseDTO<List<TransitRes>> hubTransitSchedule() {
         if(cause instanceof FeignException.NotFound) {
-            log.info("getTransitAddressAndSlackId 메서드 호출 중 Not found 오류 발생");
+            log.info("hubTransitSchedule 메서드 호출 중 Not found 오류 발생");
         }
         return null;
     }

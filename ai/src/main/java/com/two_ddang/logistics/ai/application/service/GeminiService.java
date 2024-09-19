@@ -8,6 +8,7 @@ import com.google.maps.GeocodingApi;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.LatLng;
+import com.slack.api.methods.SlackApiException;
 import com.two_ddang.logistics.ai.application.dto.GeminiReadResponseDto;
 import com.two_ddang.logistics.ai.application.dto.LatLngRequestDto;
 import com.two_ddang.logistics.ai.application.dto.RecommendTransitRouteRequest;
@@ -106,7 +107,7 @@ public class GeminiService {
         return message;
     }
 
-    public String recommendRoute(Map<UUID, RecommendTransitRouteRequest> request) {
+    public RecommendTransitRouteResponse recommendRoute(Map<UUID, RecommendTransitRouteRequest> request) throws IOException, SlackApiException {
 
         StringBuilder contextBuilder = new StringBuilder();
 
@@ -145,15 +146,21 @@ public class GeminiService {
                 .append("- 최적화된 경로 (route)\n")
                 .append("다른 설명은 하지 말고 json만 출력해줘.");
 
-        String response = openAIService.chatToGPT(contextBuilder.toString());
+        String gptResponse = openAIService.chatToGPT(contextBuilder.toString());
+
+        String context = gptResponse + "이 json 정보를 요약해줘.";
+        String response = vertexAiGeminiChatModel.call(context);
 
         Gemini gemini = new Gemini(contextBuilder.toString(), AiType.DELIVERY, response);
         geminiRepository.save(gemini);
 
-        //json -> object
+        //슬랙 id는 string으로 입력 받아야 함.
+        String message = slackService.sendDirectMessage(response, "D060B6Z4GM6");
 
-
-        return response;
+        SlackEntity slackEntity = new SlackEntity(message, LocalDateTime.now());
+        slackService.saveMessage(slackEntity);
+        
+        return convertToJsonObject(gptResponse);
     }
 
 

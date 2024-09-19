@@ -1,6 +1,9 @@
 package com.two_ddang.logistics.ai.presentation.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.slack.api.methods.SlackApiException;
 import com.two_ddang.logistics.ai.application.dto.RecommendTransitRouteRequest;
+import com.two_ddang.logistics.ai.application.dto.RecommendTransitRouteResponse;
 import com.two_ddang.logistics.ai.application.service.GeminiService;
 import com.two_ddang.logistics.core.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +33,9 @@ public class GeminiController {
     }
 
     @GetMapping("/routes")
-    public String recommendRoute(@RequestBody Map<UUID, RecommendTransitRouteRequest> request) {
+    public ResponseEntity<ResponseDTO<RecommendTransitRouteResponse>> recommendRoute(
+            @RequestBody Map<UUID, RecommendTransitRouteRequest> request) throws IOException, SlackApiException {
 
-        return geminiService.recommendRoute(request);
+        return ResponseEntity.ok(ResponseDTO.okWithData(geminiService.recommendRoute(request)));
     }
 }

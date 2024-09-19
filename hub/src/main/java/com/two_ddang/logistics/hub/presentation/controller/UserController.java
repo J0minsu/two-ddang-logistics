@@ -8,6 +8,7 @@ import com.two_ddang.logistics.hub.application.service.HubService;
 import com.two_ddang.logistics.hub.application.service.UserService;
 import com.two_ddang.logistics.hub.domain.repository.UserRepository;
 import com.two_ddang.logistics.hub.domain.vo.UserVO;
+import com.two_ddang.logistics.hub.infrastructrure.exception.IllegalParameterUserRegisterApplicationException;
 import com.two_ddang.logistics.hub.presentation.request.HubSortStandard;
 import com.two_ddang.logistics.hub.presentation.request.UserModifyRequest;
 import com.two_ddang.logistics.hub.presentation.request.UserRegisterRequest;
@@ -16,16 +17,23 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import static com.two_ddang.logistics.core.util.ValidationUtils.*;
+
+
+import javax.management.InvalidApplicationException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -45,7 +53,14 @@ public class UserController {
 
     @PostMapping
     @Operation(summary = "사용자 생성", description = "사용자 생성 API")
-    public ResponseEntity<ResponseDTO<UserRes>> register(@RequestBody UserRegisterRequest request) {
+    public ResponseEntity<ResponseDTO<UserRes>> register(
+            @RequestBody @Valid UserRegisterRequest request,
+            BindingResult bindingResult
+    ) {
+
+        if(bindingResult.hasErrors()) {
+            throw new IllegalParameterUserRegisterApplicationException();
+        }
 
         UserVO user = userService.register(request);
 

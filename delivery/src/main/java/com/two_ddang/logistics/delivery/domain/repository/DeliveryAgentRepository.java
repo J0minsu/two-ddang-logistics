@@ -14,6 +14,6 @@ import java.util.UUID;
 public interface DeliveryAgentRepository extends JpaRepository<DeliveryAgent, UUID> {
 
     Optional<DeliveryAgent> findByUserIdAndIsDeletedIsFalse(Integer userId);
-    List<DeliveryAgent> findByTypeAndDriveStatusIsDeletedIsFalse(DriverAgentType type, DriveStatus driveStatus);
+    List<DeliveryAgent> findByTypeAndDriveStatusAndIsDeletedIsFalse(DriverAgentType type, DriveStatus driveStatus);
 
 }

@@ -52,18 +52,18 @@ public class TransitController {
 
     }
 
-    @PostMapping("/hubs/{hubId}")
-    @Operation(summary = "허브에서 운송 생성", description = "허브에서 운송 생성 API")
-    public ResponseEntity<ResponseDTO<TransitRes>> craete(@PathVariable UUID hubId,
-                @CurrentPassport Passport passport) {
-
-        TransitVO transit = transitService.create(passport.getUserId(), hubId);
-
-        TransitRes result = TransitRes.fromEntity(transit);
-
-        return ResponseEntity.ok(ResponseDTO.okWithData(result));
-
-    }
+//    @PostMapping("/hubs/{hubId}")
+//    @Operation(summary = "허브에서 운송 생성", description = "허브에서 운송 생성 API")
+//    public ResponseEntity<ResponseDTO<TransitRes>> craete(@PathVariable UUID hubId,
+//                @CurrentPassport Passport passport) {
+//
+//        TransitVO transit = transitService.create(passport.getUserId(), hubId);
+//
+//        TransitRes result = TransitRes.fromEntity(transit);
+//
+//        return ResponseEntity.ok(ResponseDTO.okWithData(result));
+//
+//    }
 
     @GetMapping("/{transitId}")
     @Operation(summary = "운송 상세 조회", description = "운송 상세 조회 API")

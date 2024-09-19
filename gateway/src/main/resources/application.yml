@@ -54,15 +54,18 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     urls[0]:
+      url: /auths/v3/api-docs
+      name: auth
+    urls[1]:
       url: /orders/v3/api-docs
       name: orders
-    urls[1]:
+    urls[2]:
       url: /companies/v3/api-docs
       name: companies
-    urls[2]:
+    urls[3]:
       url: /hubs/v3/api-docs
       name: hubs
-    urls[3]:
+    urls[4]:
       url: /deliveries/v3/api-docs
       name: deliveries
     use-root-path: true

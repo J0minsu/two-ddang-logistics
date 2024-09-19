@@ -64,3 +64,13 @@ openapi:
   service:
     # API Gateway 포트
     url: http://localhost:19091
+
+springdoc:
+  api-docs:
+    version: openapi_3_1
+    enabled: true
+    path: /auths/v3/api-docs
+  enable-spring-security: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  remove-broken-reference-definitions: false

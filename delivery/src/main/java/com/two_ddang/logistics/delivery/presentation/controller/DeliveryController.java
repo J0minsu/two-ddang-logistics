@@ -15,6 +15,9 @@ import com.two_ddang.logistics.delivery.presentation.request.DeliveryAgentEntryR
 import com.two_ddang.logistics.delivery.presentation.request.DeliveryCreateRequest;
 import com.two_ddang.logistics.delivery.presentation.request.DeliverySortStandard;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +35,8 @@ import java.util.UUID;
 import static com.two_ddang.logistics.core.util.ValidationUtils.*;
 
 
-//@SecurityRequirement(name = "Bearer Authentication")
-//@SecurityScheme( name = "Bearer Authentication", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "Bearer")
+@SecurityRequirement(name = "Bearer Authentication")
+@SecurityScheme( name = "Bearer Authentication", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "Bearer")
 @RestController
 @RequestMapping("/api/v1/deliveries")
 @Slf4j

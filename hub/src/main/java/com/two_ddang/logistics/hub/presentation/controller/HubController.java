@@ -39,8 +39,8 @@ import java.util.stream.Stream;
 
 import static com.two_ddang.logistics.core.util.ValidationUtils.*;
 
-//@SecurityRequirement(name = "Bearer Authentication")
-//@SecurityScheme( name = "Bearer Authentication", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "Bearer")
+@SecurityRequirement(name = "Bearer Authentication")
+@SecurityScheme( name = "Bearer Authentication", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "Bearer")
 @RestController
 @RequestMapping("/api/v1/hubs")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)

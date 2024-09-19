@@ -4,6 +4,7 @@ import com.two_ddang.logistics.ai.application.service.GeminiService;
 import com.two_ddang.logistics.core.util.CurrentPassport;
 import com.two_ddang.logistics.core.util.Passport;
 import com.two_ddang.logistics.core.util.ResponseDTO;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ import java.util.concurrent.ExecutionException;
 @RestController
 @RequestMapping("/api/v1/ais")
 @RequiredArgsConstructor
+@Tag(name = "Gemini API")
 public class GeminiController {
 
     private final GeminiService geminiService;

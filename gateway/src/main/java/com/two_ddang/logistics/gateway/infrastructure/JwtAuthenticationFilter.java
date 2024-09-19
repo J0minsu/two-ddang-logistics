@@ -15,6 +15,7 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import javax.crypto.SecretKey;
+import java.util.Arrays;
 import java.util.Date;
 
 @Slf4j
@@ -26,6 +27,13 @@ public class JwtAuthenticationFilter implements WebFilter {
     private final Long expirationTime;
 
     private final SecretKey internalKey;
+
+    private static final String[] RESOURCE_WHITELIST = {
+            "v3/api-docs", // v3 : SpringBoot 3(없으면 swagger 예시 api 목록 제공)
+            "/swagger-ui",
+            "/swagger-resources/",
+            "/webjars/",
+    };
 
     public JwtAuthenticationFilter(@Value("${server.jwt.secret-key}") String externalSecretKey,
                                    @Value("${server.jwt.access-expiration}") Long expirationTime,
@@ -39,9 +47,11 @@ public class JwtAuthenticationFilter implements WebFilter {
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
 
         String path = exchange.getRequest().getURI().getPath();
-        if (path.equals("/auth/sign-in") || path.equals("/auth/sign-up")) {
+        log.info("path :: {}", path);
+        if (path.equals("/auth/sign-in") || path.equals("/auth/sign-up") || Arrays.stream(RESOURCE_WHITELIST).anyMatch(path::contains) || path.equals("/")) {
             return chain.filter(exchange);
         }
+
 
         String token = extractToken(exchange);
         log.info("external token", token);

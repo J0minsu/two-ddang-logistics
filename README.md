@@ -56,7 +56,7 @@
 
 root gradle project 경로에서 아래 명령어 실행
 ```shell
-  docker compose up --build -d
+  docker-compose up --build -d
 ```
 이 후 http://localhost:19091/ 접속,
 ![img_2.png](img_2.png)

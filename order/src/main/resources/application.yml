@@ -4,7 +4,7 @@ spring:
   application:
     name: order
   datasource:
-    url: jdbc:postgresql://${url}/ddang_logistics
+    url: jdbc:postgresql://${url}/ddang-logistics
     username: ${username}
     password: ${password}
     driver-class-name: org.postgresql.Driver

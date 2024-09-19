@@ -3,6 +3,7 @@ package com.two_ddang.logistics.ai.application.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -10,6 +11,7 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class WeatherService {
@@ -24,18 +26,16 @@ public class WeatherService {
         this.objectMapper = objectMapper;
     }
 
-    public String getWeatherInfo(Double latitude, Double longitude) {
-    
+    @Async
+    public CompletableFuture<String> getWeatherInfo(Double latitude, Double longitude) {
         // 오늘 날짜와 시간 가져오기
         String baseDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-
-        // 현재 시간을 "HH00" 형식으로 변환
         String baseTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH")) + "00";
 
-        // WebClient로 기상청 API 호출
+        // WebClient로 기상청 API 호출 비동기 처리
         WebClient client = WebClient.create(baseUrl);
 
-        String responseBody = client.get()
+        return client.get()
                 .uri(uriBuilder -> uriBuilder
                         .queryParam("serviceKey", serviceKey)
                         .queryParam("dataType", "JSON")
@@ -48,20 +48,14 @@ public class WeatherService {
                 .bodyToMono(String.class) // 응답을 String으로 받기
                 .flatMap(response -> {
                     try {
-
                         // JSON 응답 파싱
                         JsonNode jsonNode = objectMapper.readTree(response);
-                        // 바디 부분 추출 (API 응답의 JSON 구조에 따라 수정 필요)
                         JsonNode bodyNode = jsonNode.path("response").path("body");
                         return Mono.just(bodyNode.toString()); // 바디를 String으로 변환
                     } catch (Exception e) {
                         return Mono.error(e); // 파싱 에러 처리
                     }
                 })
-                .block(); // 동기적으로 대기
-
-        return responseBody; // 바디만 추출된 응답 반환
-
+                .toFuture(); // Mono를 CompletableFuture로 변환
     }
-
 }

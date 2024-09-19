@@ -34,6 +34,10 @@ google:
 weather:
   api-key: ${WEATHER_API_KEY}
 
+slack:
+  webhook:
+    url: ${SLACK_WEBHOOK_URL}
+
 server:
   port: 19097
 eureka:

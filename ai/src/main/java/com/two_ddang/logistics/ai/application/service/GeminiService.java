@@ -13,8 +13,6 @@ import com.two_ddang.logistics.ai.domain.model.Gemini;
 import com.two_ddang.logistics.ai.domain.repository.GeminiRepository;
 import com.two_ddang.logistics.ai.infrastructure.exception.AINotFoundException;
 import com.two_ddang.logistics.core.entity.AiType;
-import com.two_ddang.logistics.core.entity.DeliveryStatus;
-import com.two_ddang.logistics.core.entity.DriverAgentType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.vertexai.gemini.VertexAiGeminiChatModel;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,11 +24,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @Transactional
@@ -38,39 +36,35 @@ import java.util.UUID;
 public class GeminiService {
 
     private final GeminiRepository geminiRepository;
+
     private final VertexAiGeminiChatModel vertexAiGeminiChatModel;
+
     private final DeliveryService deliveryService;
+
     private final String geoCodingApiKey;
+
     private final WeatherService weatherService;
+
+    private final SlackService slackService;
 
     public GeminiService(GeminiRepository geminiRepository,
                          VertexAiGeminiChatModel vertexAiGeminiChatModel,
                          DeliveryService deliveryService,
-                         @Value("${google.maps.api.key}")String geoCodingApiKey,
-                         WeatherService weatherService) {
+                         @Value("${google.maps.api.key}") String geoCodingApiKey,
+                         WeatherService weatherService,
+                         SlackService slackService) {
         this.geminiRepository = geminiRepository;
         this.vertexAiGeminiChatModel = vertexAiGeminiChatModel;
         this.deliveryService = deliveryService;
         this.geoCodingApiKey = geoCodingApiKey;
         this.weatherService = weatherService;
+        this.slackService = slackService;
     }
 
 
     public String chatToGeminiAndSave(String prompt, Long userId, AiType aiType) {
 
-        //기사별 배송 정보 가져오기
-
-        //기사의 소속 허브의 그 날의 날씨 정보 불러오기
-
-        //두 내용으로 content 만들기
-
-
-        String content = vertexAiGeminiChatModel.call(prompt);
-
-        Gemini gemini = new Gemini(userId, prompt, aiType, content);
-        geminiRepository.save(gemini);
-
-        return content;
+        return null;
     }
 
 
@@ -86,7 +80,7 @@ public class GeminiService {
         return GeminiReadResponseDto.fromEntity(gemini);
     }
 
-    public void deleteById(Integer userId ,UUID aiId) {
+    public void deleteById(Integer userId, UUID aiId) {
         Gemini gemini = geminiRepository.findByIdAndDeletedIsFalse(aiId)
                 .orElseThrow(AINotFoundException::new);
 
@@ -100,20 +94,25 @@ public class GeminiService {
 
     @Scheduled(cron = "0 0 6 * * *") //매일 오전 6시
     @Async
-    protected void transitAgentDeliveryInfo() {
-        List<DeliveryRes> responses = deliveryService.getTransitAddressAndSlackId(DriverAgentType.TRANSIT,
-                DeliveryStatus.BEFORE_TRANSIT);
+    protected void transitAgentDeliveryInfo() throws IOException, ExecutionException, InterruptedException {
+//        List<DeliveryRes> responses = deliveryService.getTransitAddressAndSlackId(DriverAgentType.TRANSIT,
+//                DeliveryStatus.BEFORE_TRANSIT);
 
-        Set<LatLngRequestDto> request = ToLanLng(responses);
-        List<String> weatherInfos = new ArrayList<>();
+//        Set<LatLngRequestDto> request = ToLanLng(responses);
+//        List<String> weatherInfos = new ArrayList<>();
+        String weatherInfo = weatherService.getWeatherInfo(37.5665851, 126.9782038).get();
 
-        request.forEach(requestDto -> {
-            weatherInfos.add(weatherService.getWeatherInfo(requestDto.latitude(), requestDto.longitude()));
-        });
+        String prompt = weatherInfo + "이 정보를 요약해서 알려줘.";
+        String context = vertexAiGeminiChatModel.call(prompt);
 
+        Gemini gemini = new Gemini(prompt, AiType.DELIVERY, context);
+        geminiRepository.save(gemini);
 
+        String message = slackService.sendMessage(context).get();
 
-
+//        request.forEach(requestDto -> {
+//            weatherInfos.add(weatherService.getWeatherInfo(requestDto.latitude(), requestDto.longitude()));
+//        });
     }
 
     private Set<LatLngRequestDto> ToLanLng(List<DeliveryRes> responses) {

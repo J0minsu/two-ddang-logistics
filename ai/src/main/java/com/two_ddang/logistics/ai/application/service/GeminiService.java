@@ -88,6 +88,11 @@ public class GeminiService {
         return message;
     }
 
+    public String recommendRoute(String departAddress, String arriveAddress) {
+        String context = "";
+        return vertexAiGeminiChatModel.call(context);
+    }
+
 
     public Page<GeminiReadResponseDto> getAllGemini(Pageable pageable) {
         return geminiRepository.findAllByDeletedIsFalse(pageable)
@@ -108,10 +113,6 @@ public class GeminiService {
         gemini.delete(userId);
     }
 
-    public String recommendRoute(String departAddress, String arriveAddress) {
-        String context = "";
-        return vertexAiGeminiChatModel.call(context);
-    }
 
     @Scheduled(cron = "0 0 6 * * *") //매일 오전 6시
     @Async
@@ -138,6 +139,16 @@ public class GeminiService {
 //        request.forEach(requestDto -> {
 //            weatherInfos.add(weatherService.getWeatherInfo(requestDto.latitude(), requestDto.longitude()));
 //        });
+    }
+
+    @Scheduled(cron = "0 0 8 * * *") //매일 오전 8시
+    @Async
+    protected void hubDeliveryInfo() {
+
+        String context = "";
+        vertexAiGeminiChatModel.call(context);
+
+
     }
 
     private Set<LatLngRequestDto> ToLanLng(List<DeliveryRes> responses) {

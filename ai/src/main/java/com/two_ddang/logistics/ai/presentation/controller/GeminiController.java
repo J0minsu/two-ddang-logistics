@@ -26,7 +26,7 @@ public class GeminiController {
         return ResponseEntity.ok(ResponseDTO.okWithData(geminiService.chatToGeminiAndSaveTest()));
     }
 
-    @GetMapping("/recommend-routes")
+    @GetMapping("/routes")
     public String recommendRoute(@RequestParam("department") String departmentAddress,
                                  @RequestParam("arrive") String arriveAddress) {
 

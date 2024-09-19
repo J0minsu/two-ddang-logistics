@@ -10,6 +10,7 @@ import com.two_ddang.logistics.ai.application.dto.LatLngRequestDto;
 import com.two_ddang.logistics.ai.application.service.feign.delivery.DeliveryService;
 import com.two_ddang.logistics.ai.application.service.feign.delivery.dto.DeliveryRes;
 import com.two_ddang.logistics.ai.domain.model.Gemini;
+import com.two_ddang.logistics.ai.domain.model.SlackEntity;
 import com.two_ddang.logistics.ai.domain.repository.GeminiRepository;
 import com.two_ddang.logistics.ai.infrastructure.exception.AINotFoundException;
 import com.two_ddang.logistics.core.entity.AiType;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -109,6 +111,10 @@ public class GeminiService {
         geminiRepository.save(gemini);
 
         String message = slackService.sendMessage(context).get();
+
+        SlackEntity slackEntity = new SlackEntity(message, LocalDateTime.now());
+        slackService.saveMessage(slackEntity);
+
 
 //        request.forEach(requestDto -> {
 //            weatherInfos.add(weatherService.getWeatherInfo(requestDto.latitude(), requestDto.longitude()));

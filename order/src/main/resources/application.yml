@@ -2,7 +2,7 @@ spring:
   config:
     import: optional:classpath:.env[.properties]
   application:
-    name: orders
+    name: order
   datasource:
     url: jdbc:postgresql://${url}/ddang_logistics
     username: ${username}
@@ -89,3 +89,12 @@ management:
 gemini:
   api:
     key: ${gemini}service
+
+springdoc:
+  api-docs:
+    version: openapi_3_1
+    enabled: true
+    path: /orders/v3/api-docs
+  enable-spring-security: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json

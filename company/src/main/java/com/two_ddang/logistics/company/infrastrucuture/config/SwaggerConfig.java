@@ -1,4 +1,4 @@
-package com.two_ddang.logistics.hub.infrastructrure.configuration;
+package com.two_ddang.logistics.company.infrastrucuture.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 @OpenAPIDefinition(
-        info = @Info(title = "hub API 명세서",
+        info = @Info(title = "company API 명세서",
                 version = "v1"))
 @Configuration
 public class SwaggerConfig {
@@ -18,7 +18,7 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .servers(List.of(new Server().url("http://localhost:19091/hubs")));
+                .servers(List.of(new Server().url("http://localhost:19091/companies")));
     }
 
 

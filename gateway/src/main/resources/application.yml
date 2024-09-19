@@ -15,30 +15,12 @@ spring:
       discovery:
         locator:
           enabled: true
-
-springdoc:
-  enable-native-support: true
-  api-docs:
-    enabled: true
-  swagger-ui:
-    enabled: true
-    path: /swagger-ui.html
-    config-url: /v3/api-docs/swagger-config
-    urls:
-#      - url: /v3/api-docs
-#        name: API Gateway Service
-#        primaryName: API Gateway Service
-      - url: http://localhost:19093/api/hub/v3/api-docs
-        name: hub
-      - url: http://localhost:19093/api/delivery/v3/api-docs
-        name: delivery
-    use-root-path: true
-
-
   data:
     redis:
       host: localhost
       port: 6379
+      username: default
+      password: systempass
 
 
 eureka:
@@ -62,7 +44,24 @@ server:
     secret-key: 401b09eab3c013d4ca54922bb802bec8fd5318192b0a75f201d8b3727429080fb337591abd3e44453b954555b7a0812e1081c39b740293f765eae731f5a65ed1
     internal-secret-key: 45c7553fdd3c31912b36e569f8e26a4218051ef3709bf4ba16ec9c8d2ba14d535ce63db771f0a7b899b53a3d6f33f8dda7c6c6b1fb35c99d5bb9e93122f82a4b
 
+
+
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    urls[0]:
+      url: /orders/v3/api-docs
+      name: orders
+    urls[1]:
+      url: /companies/v3/api-docs
+      name: companies
+    urls[2]:
+      url: /hubs/v3/api-docs
+      name: hubs
+    use-root-path: true
+  remove-broken-reference-definitions: false
 

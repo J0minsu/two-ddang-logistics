@@ -40,7 +40,7 @@ public class ProductController {
 
 
     @GetMapping
-    @Operation(summary = "상품 리스트 조회", description = "상품 생성 API")
+    @Operation(summary = "상품 리스트 조회", description = "상품 리스트 조회 API")
     public ResponseEntity<ResponseDTO<Page<ProductResponse>>> getProducts(
             @PageableDefault(page = 0,
                     size = 10,

@@ -8,13 +8,14 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.*;
 
 @Getter
 @AllArgsConstructor
 @EqualsAndHashCode
-public class HubVO {
+public class HubVO implements Serializable {
 
     private final UUID id;
     private final String name;

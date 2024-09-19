@@ -4,6 +4,7 @@ import com.two_ddang.logistics.core.entity.UserType;
 import com.two_ddang.logistics.hub.domain.model.User;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -11,7 +12,7 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 @EqualsAndHashCode
-public class UserVO {
+public class UserVO implements Serializable {
 
     private final Integer id;
     private final String username;

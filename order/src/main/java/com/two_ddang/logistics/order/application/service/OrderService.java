@@ -15,6 +15,7 @@ import com.two_ddang.logistics.order.infrastructure.dtos.CompanyDetailResponse;
 import com.two_ddang.logistics.order.infrastructure.dtos.CompanyProductResponse;
 import com.two_ddang.logistics.order.infrastructure.dtos.HubProductOutboundRequest;
 import com.two_ddang.logistics.order.infrastructure.fallback.DeliveryServiceFallbackHandler;
+import com.two_ddang.logistics.order.presentation.dtos.CreateOrderProductRequest;
 import com.two_ddang.logistics.order.presentation.dtos.CreateOrderRequest;
 import com.two_ddang.logistics.order.presentation.dtos.UpdateOrderStatusRequest;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.two_ddang.logistics.order.presentation.dtos.CreateOrderRequest.CreateOrderProductRequest;
 
 @Service
 @RequiredArgsConstructor

@@ -22,7 +22,7 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchange ->
                         exchange.pathMatchers("/auth/sign-in", "/auth/sign-up").permitAll()
-                                .anyExchange().authenticated())
+                                .anyExchange().permitAll())
                 .addFilterBefore(jwtAuthenticationFilter, SecurityWebFiltersOrder.HTTP_BASIC)
                 .build();
     }

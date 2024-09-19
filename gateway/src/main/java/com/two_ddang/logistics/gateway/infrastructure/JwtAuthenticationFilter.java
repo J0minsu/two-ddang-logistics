@@ -38,18 +38,20 @@ public class JwtAuthenticationFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
 
-        String path = exchange.getRequest().getURI().getPath();
-        if (path.equals("/auth/sign-in") || path.equals("/auth/sign-up")) {
-            return chain.filter(exchange);
-        }
-
-        String token = extractToken(exchange);
-        if (token == null || !validateExternalToken(token, exchange)) {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
-        }
-
         return chain.filter(exchange);
+
+//        String path = exchange.getRequest().getURI().getPath();
+//        if (path.equals("/auth/sign-in") || path.equals("/auth/sign-up") ) {
+//            return chain.filter(exchange);
+//        }
+//
+//        String token = extractToken(exchange);
+//        if (token == null || !validateExternalToken(token, exchange)) {
+//            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+//            return exchange.getResponse().setComplete();
+//        }
+//
+//        return chain.filter(exchange);
     }
 
     private String extractToken(ServerWebExchange exchange) {

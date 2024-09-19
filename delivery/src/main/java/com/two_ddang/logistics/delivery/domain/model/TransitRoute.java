@@ -85,10 +85,11 @@ public class TransitRoute extends BaseEntity {
     private LocalDateTime arriveAt;
 
     protected TransitRoute(
-            Delivery delivery, Transit transit, int sequence, TransitStatus transitStatus,
+            Delivery delivery, Transit transit, DeliveryAgent transitAgent, int sequence, TransitStatus transitStatus,
             UUID arriveHubId, String route, UUID departmentHubId, int estimateDistance, int estimateTime) {
         this.delivery = delivery;
         this.transit = transit;
+        this.transitAgent = transitAgent;
         this.sequence = sequence;
         this.transitStatus = transitStatus;
         this.arriveHubId = arriveHubId;
@@ -99,10 +100,10 @@ public class TransitRoute extends BaseEntity {
     }
 
     public static TransitRoute of(
-            Delivery delivery, Transit transit, int sequence, TransitStatus transitStatus,
+            Delivery delivery, Transit transit, DeliveryAgent transitAgent, int sequence, TransitStatus transitStatus,
                         UUID arriveHubId, String route, UUID departmentHubId, int estimateDistance, int estimateTime) {
 
-        return new TransitRoute(delivery, transit, sequence, TransitStatus.WAIT,
+        return new TransitRoute(delivery, transit, transitAgent, sequence, TransitStatus.WAIT,
                 arriveHubId, route, departmentHubId, estimateDistance, estimateTime);
 
     }

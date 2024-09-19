@@ -10,6 +10,8 @@ import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 public class AIFallback implements AIFeignClient {
@@ -21,7 +23,7 @@ public class AIFallback implements AIFeignClient {
     }
 
     @Override
-    public ResponseDTO<RecommendTransitRouteResponse> recommendRoute(RecommendTransitRouteRequest request) {
+    public ResponseDTO<RecommendTransitRouteResponse> recommendRoute(Map<UUID, RecommendTransitRouteRequest> request) {
         return null;
     }
 }

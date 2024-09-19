@@ -6,9 +6,11 @@ import com.two_ddang.logistics.delivery.application.service.feign.ai.dto.res.Rec
 import com.two_ddang.logistics.delivery.application.service.feign.hub.dto.req.HubRouteModifyRequest;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public interface AIService {
 
-    ResponseDTO<RecommendTransitRouteResponse> recommendRoute(RecommendTransitRouteRequest request);
+    ResponseDTO<RecommendTransitRouteResponse> recommendRoute(Map<UUID, RecommendTransitRouteRequest> request);
 
 }

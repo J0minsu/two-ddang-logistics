@@ -1,15 +1,18 @@
 package com.two_ddang.logistics.ai.presentation.controller;
 
+import com.two_ddang.logistics.ai.application.dto.RecommendTransitRouteRequest;
 import com.two_ddang.logistics.ai.application.service.GeminiService;
 import com.two_ddang.logistics.core.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -27,9 +30,8 @@ public class GeminiController {
     }
 
     @GetMapping("/routes")
-    public String recommendRoute(@RequestParam("department") String departmentAddress,
-                                 @RequestParam("arrive") String arriveAddress) {
+    public String recommendRoute(@RequestBody Map<UUID, RecommendTransitRouteRequest> request) {
 
-        return geminiService.recommendRoute(departmentAddress,arriveAddress);
+        return geminiService.recommendRoute(request);
     }
 }

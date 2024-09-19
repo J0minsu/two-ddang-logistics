@@ -2,7 +2,7 @@ package com.two_ddang.logistics.order.domain.model;
 
 import com.two_ddang.logistics.core.entity.BaseEntity;
 import com.two_ddang.logistics.core.entity.OrderStatus;
-import com.two_ddang.logistics.order.presentation.dtos.CreateOrderRequest;
+import com.two_ddang.logistics.order.infrastructure.dtos.CompanyDetailResponse;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
@@ -40,15 +40,20 @@ public class Order extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
 
+    private UUID reqHubId;
+    private UUID resHubId;
 
-    public static Order create(CreateOrderRequest createOrderRequest, List<OrderProduct> orderProducts) {
+
+    public static Order create(CompanyDetailResponse reqCompany,CompanyDetailResponse resCompany, List<OrderProduct> orderProducts) {
 
         Order order = Order.builder()
-                .reqCompanyId(createOrderRequest.getReqCompanyId())
-                .resCompanyId(createOrderRequest.getResCompanyId())
+                .reqCompanyId(reqCompany.getCompanyId())
+                .resCompanyId(resCompany.getCompanyId())
                 .orderStatus(OrderStatus.CREATED)
                 .orderProducts(orderProducts)
                 .totalPrice(orderProducts.stream().mapToLong(OrderProduct::sumPrice).sum())
+                .reqHubId(reqCompany.getHubId())
+                .resHubId(resCompany.getHubId())
                 .build();
 
         orderProducts.forEach(orderProduct -> orderProduct.addOrder(order));

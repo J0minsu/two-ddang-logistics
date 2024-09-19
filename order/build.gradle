@@ -29,6 +29,8 @@ ext {
 
 dependencies {
 
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0'
+
 	implementation project(':core')
 
 	//Querydsl 추가

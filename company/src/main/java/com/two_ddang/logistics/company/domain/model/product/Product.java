@@ -6,6 +6,7 @@ import com.two_ddang.logistics.company.presentation.dtos.product.UpdateProductIn
 import com.two_ddang.logistics.core.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.UUID;
 
@@ -15,6 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Getter
+@SQLRestriction(value = "is_deleted = false")
 public class Product extends BaseEntity {
 
     @Id

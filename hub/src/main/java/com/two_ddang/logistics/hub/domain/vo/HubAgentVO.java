@@ -5,6 +5,7 @@ import com.two_ddang.logistics.hub.domain.model.HubAgent;
 import com.two_ddang.logistics.hub.domain.model.User;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -12,7 +13,7 @@ import java.util.UUID;
 @Getter
 @EqualsAndHashCode
 @AllArgsConstructor
-public class HubAgentVO {
+public class HubAgentVO implements Serializable {
 
     private final UUID id;
     private final Integer userId;

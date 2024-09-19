@@ -72,8 +72,11 @@ public class HubController {
     @PostMapping("/{hubId}/products/inbound")
     @Operation(summary = "허브 물품 입고", description = "허브 물품 입고 API")
     public ResponseEntity<ResponseDTO<HubProductRes>> inboundProduct(
-            @PathVariable UUID hubId, @RequestBody HubProductInboundRequest request,
+            @PathVariable UUID hubId,
+            @RequestBody HubProductInboundRequest request,
             @Parameter(hidden = true) @CurrentPassport Passport passPort) {
+
+        log.info("passPort :: {}", passPort);
 
         validateRole(Stream.of(UserType.HUB, UserType.COMPANY, UserType.MASTER), passPort.getUserType());
 
